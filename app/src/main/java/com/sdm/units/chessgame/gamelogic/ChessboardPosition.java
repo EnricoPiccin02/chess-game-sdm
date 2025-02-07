@@ -2,11 +2,7 @@ package com.sdm.units.chessgame.gamelogic;
 
 import java.util.stream.Stream;
 
-public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) {
-
-    public ChessboardPosition(char fileCharacter, int rankNumber) {
-        this(ChessboardFile.valueOf(fileCharacter), ChessboardRank.valueOf(rankNumber));
-    }
+public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) implements Comparable<ChessboardPosition> {
 
     public boolean isWithinChessboard() {
         return Stream.of(ChessboardFile.values()).anyMatch(file::equals) &&
@@ -36,5 +32,10 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) {
 
     public int distance(ChessboardPosition otherPosition) {
         return this.file.distance(otherPosition.file) + this.rank.distance(otherPosition.rank);
+    }
+
+    @Override
+    public int compareTo(ChessboardPosition otheChessboardPosition) {
+        return this.rank.compareTo(otheChessboardPosition.rank) + this.file.compareTo(otheChessboardPosition.file);
     }
 }

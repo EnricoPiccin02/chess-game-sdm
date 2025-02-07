@@ -1,7 +1,5 @@
 package test.chessgame.gamelogic;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,13 +7,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.ChessboardInitialSetup;
 import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.ChessboardRank;
+
+import test.chessgame.TestChessPiecePositionUtil;
 
 public class ChessboardInitialSetupTest {
 
@@ -91,19 +90,6 @@ public class ChessboardInitialSetupTest {
         assertEquals(expectedPosition, position);
     }
 
-    private static List<Arguments> argumentsLoadProvider(List<ChessboardPosition> expectedPositions, List<ChessboardPosition> actualPositions) {
-        List<Arguments> expectedActualPositions = new ArrayList<>();
-
-        Iterator<ChessboardPosition> expectedIterator = expectedPositions.iterator();
-        Iterator<ChessboardPosition> actualIterator = actualPositions.iterator();
-
-        while(expectedIterator.hasNext() && actualIterator.hasNext()) {
-            expectedActualPositions.add(arguments(actualIterator.next(), expectedIterator.next()));
-        }
-
-        return expectedActualPositions;
-    }
-
     public static List<Arguments> whitePawnStartingPositionsProvider() {
         List<ChessboardPosition> expectedWhitePawnStartingPositions = List.of(
             new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO),
@@ -116,7 +102,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.H, ChessboardRank.TWO)
         );
 
-        return argumentsLoadProvider(expectedWhitePawnStartingPositions, ChessboardInitialSetup.getPawnStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhitePawnStartingPositions, ChessboardInitialSetup.getPawnStartingPositions(ChessPieceColor.WHITE));
     }
 
     public static List<Arguments> blackPawnStartingPositionsProvider() {
@@ -131,7 +117,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.H, ChessboardRank.SEVEN)
         );
 
-        return argumentsLoadProvider(expectedBlackPawnStartingPositions, ChessboardInitialSetup.getPawnStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackPawnStartingPositions, ChessboardInitialSetup.getPawnStartingPositions(ChessPieceColor.BLACK));
     }
 
     public static List<Arguments> whiteRookStartingPositionsProvider() {
@@ -140,7 +126,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.H, ChessboardRank.ONE)
         );
 
-        return argumentsLoadProvider(expectedWhiteRookStartingPositions, ChessboardInitialSetup.getRookStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteRookStartingPositions, ChessboardInitialSetup.getRookStartingPositions(ChessPieceColor.WHITE));
     }
 
     public static List<Arguments> blackRookStartingPositionsProvider() {
@@ -149,7 +135,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.H, ChessboardRank.EIGHT)
         );
 
-        return argumentsLoadProvider(expectedBlackRookStartingPositions, ChessboardInitialSetup.getRookStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackRookStartingPositions, ChessboardInitialSetup.getRookStartingPositions(ChessPieceColor.BLACK));
     }
 
     public static List<Arguments> whiteKnightStartingPositionsProvider() {
@@ -158,7 +144,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.G, ChessboardRank.ONE)
         );
 
-        return argumentsLoadProvider(expectedWhiteKnightStartingPositions, ChessboardInitialSetup.getKnightStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteKnightStartingPositions, ChessboardInitialSetup.getKnightStartingPositions(ChessPieceColor.WHITE));
     }
 
     public static List<Arguments> blackKnightStartingPositionsProvider() {
@@ -167,7 +153,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.G, ChessboardRank.EIGHT)
         );
 
-        return argumentsLoadProvider(expectedBlackKnightStartingPositions, ChessboardInitialSetup.getKnightStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackKnightStartingPositions, ChessboardInitialSetup.getKnightStartingPositions(ChessPieceColor.BLACK));
     }
 
     public static List<Arguments> whiteBishopStartingPositionsProvider() {
@@ -176,7 +162,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE)
         );
 
-        return argumentsLoadProvider(expectedWhiteBishopStartingPositions, ChessboardInitialSetup.getBishopStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteBishopStartingPositions, ChessboardInitialSetup.getBishopStartingPositions(ChessPieceColor.WHITE));
     }
 
     public static List<Arguments> blackBishopStartingPositionsProvider() {
@@ -185,7 +171,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT)
         );
 
-        return argumentsLoadProvider(expectedBlackBishopStartingPositions, ChessboardInitialSetup.getBishopStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackBishopStartingPositions, ChessboardInitialSetup.getBishopStartingPositions(ChessPieceColor.BLACK));
     }
 
     public static List<Arguments> whiteQueenStartingPositionProvider() {
@@ -193,7 +179,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.D, ChessboardRank.ONE)
         );
 
-        return argumentsLoadProvider(expectedWhiteQueenStartingPosition, List.of(ChessboardInitialSetup.getQueenStartingPosition(ChessPieceColor.WHITE)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteQueenStartingPosition, List.of(ChessboardInitialSetup.getQueenStartingPosition(ChessPieceColor.WHITE)));
     }
 
     public static List<Arguments> blackQueenStartingPositionProvider() {
@@ -201,7 +187,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.D, ChessboardRank.EIGHT)
         );
 
-        return argumentsLoadProvider(expectedBlackQueenStartingPosition, List.of(ChessboardInitialSetup.getQueenStartingPosition(ChessPieceColor.BLACK)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackQueenStartingPosition, List.of(ChessboardInitialSetup.getQueenStartingPosition(ChessPieceColor.BLACK)));
     }
 
     public static List<Arguments> whiteKingStartingPositionProvider() {
@@ -209,7 +195,7 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE)
         );
 
-        return argumentsLoadProvider(expectedWhiteKingStartingPosition, List.of(ChessboardInitialSetup.getKingStartingPosition(ChessPieceColor.WHITE)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteKingStartingPosition, List.of(ChessboardInitialSetup.getKingStartingPosition(ChessPieceColor.WHITE)));
     }
 
     public static List<Arguments> blackKingStartingPositionProvider() {
@@ -217,6 +203,6 @@ public class ChessboardInitialSetupTest {
             new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT)
         );
 
-        return argumentsLoadProvider(expectedBlackKingStartingPosition, List.of(ChessboardInitialSetup.getKingStartingPosition(ChessPieceColor.BLACK)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackKingStartingPosition, List.of(ChessboardInitialSetup.getKingStartingPosition(ChessPieceColor.BLACK)));
     }
 }

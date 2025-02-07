@@ -2,6 +2,7 @@ package com.sdm.units.chessgame.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.ChessboardDirection;
@@ -27,12 +28,12 @@ public class Bishop extends ChessPiece {
     public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition) {
         List<ChessPieceMove> possibleMoves = new ArrayList<>();
         
-        for (ChessboardDirection direction : new ChessboardDirection[]{ ChessboardDirection.UP_RIGHT, ChessboardDirection.UP_LEFT, ChessboardDirection.DOWN_RIGHT, ChessboardDirection.DOWN_LEFT }) {
+        Stream.of(ChessboardDirection.UP_RIGHT, ChessboardDirection.UP_LEFT, ChessboardDirection.DOWN_RIGHT, ChessboardDirection.DOWN_LEFT).forEach(direction -> {
             ChessboardPosition currentPosition = fromPosition;
             while ((currentPosition = currentPosition.nextPosition(direction)).isWithinChessboard()) {
                 possibleMoves.add(new ChessPieceMove(direction, currentPosition));
             }
-        }
+        });
         
         return possibleMoves;
     }

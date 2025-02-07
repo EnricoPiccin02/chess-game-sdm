@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.sdm.units.chessgame.pieces.Bishop;
 import com.sdm.units.chessgame.pieces.ChessPiece;
@@ -21,13 +22,13 @@ public class Chessboard {
     public Chessboard() {
         board = new HashMap<>(ChessboardFile.values().length * ChessboardRank.values().length);
 
-        for (ChessboardFile file : ChessboardFile.values()) {
-            for (ChessboardRank rank : ChessboardRank.values()) {
+        Stream.of(ChessboardFile.values()).forEach(file -> {
+            Stream.of(ChessboardRank.values()).forEach(rank -> {
                 board.put(new ChessboardPosition(file, rank), null);
-            }
-        }
+            });
+        });
 
-        for (ChessPieceColor color : ChessPieceColor.values()) {
+        Stream.of(ChessPieceColor.values()).forEach(color -> {
             board.putAll(ChessboardInitialSetup.getPawnStartingPositions(color).stream()
                 .collect(HashMap::new, (m, p) -> m.put(p, new Pawn(color)), HashMap::putAll)
             );
@@ -42,7 +43,7 @@ public class Chessboard {
             );
             board.put(ChessboardInitialSetup.getQueenStartingPosition(color), new Queen(color));
             board.put(ChessboardInitialSetup.getKingStartingPosition(color), new King(color));
-        }
+        });
     }
 
     public Map<ChessboardPosition, ChessPiece> getBoard() {

@@ -1,15 +1,15 @@
 package test.chessgame.gamelogic;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.Chessboard;
@@ -24,6 +24,8 @@ import com.sdm.units.chessgame.pieces.Pawn;
 import com.sdm.units.chessgame.pieces.Queen;
 import com.sdm.units.chessgame.pieces.Rook;
 
+import test.chessgame.TestChessPiecePositionUtil;
+
 public class ChessboardTest {
     
     @ParameterizedTest
@@ -34,58 +36,26 @@ public class ChessboardTest {
     }
 
     private static List<Arguments> chessboardInitialSetupProvider() {
-        List<Arguments> arguments = new ArrayList<>();
         Map<ChessboardPosition, ChessPiece> actualStartingBoard = new Chessboard().getBoard();
-        Map<ChessboardPosition, ChessPiece> expectedStartingBoard = getExpectedStartingBoard();
+        Map<ChessboardPosition, ChessPiece> expectedStartingBoard = new HashMap<>();
 
-        for (Map.Entry<ChessboardPosition, ChessPiece> entry : actualStartingBoard.entrySet()) {
-            ChessboardPosition position = entry.getKey();
-            
-            if (expectedStartingBoard.containsKey(position)) {
-                ChessPiece expectedPiece = expectedStartingBoard.get(position);
-                arguments.add(arguments(entry, position, expectedPiece));
-            } else {
-                arguments.add(arguments(entry, position, null));
-            }
-        }
+        Stream.of(ChessboardFile.values()).forEach(file -> {
+            Stream.of(ChessboardRank.values()).forEach(rank -> {
+                expectedStartingBoard.put(new ChessboardPosition(file, rank), switch (rank) {
+                    case ONE, EIGHT -> switch (file) {
+                        case A, H -> new Rook(rank == ChessboardRank.ONE ? ChessPieceColor.WHITE : ChessPieceColor.BLACK);
+                        case B, G -> new Knight(rank == ChessboardRank.ONE ? ChessPieceColor.WHITE : ChessPieceColor.BLACK);
+                        case C, F -> new Bishop(rank == ChessboardRank.ONE ? ChessPieceColor.WHITE : ChessPieceColor.BLACK);
+                        case D -> new Queen(rank == ChessboardRank.ONE ? ChessPieceColor.WHITE : ChessPieceColor.BLACK);
+                        case E -> new King(rank == ChessboardRank.ONE ? ChessPieceColor.WHITE : ChessPieceColor.BLACK);
+                        default -> null;
+                    };
+                    case TWO, SEVEN -> new Pawn(rank == ChessboardRank.TWO ? ChessPieceColor.WHITE : ChessPieceColor.BLACK);
+                    default -> null;
+                });
+            });
+        });
 
-        return arguments;
-    }
-
-    private static Map<ChessboardPosition, ChessPiece> getExpectedStartingBoard() {
-        return Map.ofEntries(
-            Map.entry(new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE), new Rook(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.B, ChessboardRank.ONE), new Knight(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.C, ChessboardRank.ONE), new Bishop(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.D, ChessboardRank.ONE), new Queen(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE), new King(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE), new Bishop(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.G, ChessboardRank.ONE), new Knight(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.H, ChessboardRank.ONE), new Rook(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.C, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.D, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.F, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.G, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.H, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE)),
-            Map.entry(new ChessboardPosition(ChessboardFile.A, ChessboardRank.EIGHT), new Rook(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.B, ChessboardRank.EIGHT), new Knight(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.C, ChessboardRank.EIGHT), new Bishop(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.D, ChessboardRank.EIGHT), new Queen(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT), new King(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT), new Bishop(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.G, ChessboardRank.EIGHT), new Knight(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.H, ChessboardRank.EIGHT), new Rook(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.A, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.B, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.C, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.D, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.F, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.G, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK)),
-            Map.entry(new ChessboardPosition(ChessboardFile.H, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK))
-        );
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedStartingBoard, actualStartingBoard);
     }
 }
