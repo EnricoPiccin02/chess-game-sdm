@@ -25,14 +25,14 @@ public class Knight extends ChessPiece {
     @Override
     public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition) {
         return List.of(
-            new ChessPieceMove(ChessboardDirection.UP, fromPosition.nexPosition(ChessboardDirection.UP, ChessboardDirection.UP, ChessboardDirection.LEFT)),
-            new ChessPieceMove(ChessboardDirection.UP, fromPosition.nexPosition(ChessboardDirection.UP, ChessboardDirection.UP, ChessboardDirection.RIGHT)),
-            new ChessPieceMove(ChessboardDirection.DOWN, fromPosition.nexPosition(ChessboardDirection.DOWN, ChessboardDirection.DOWN, ChessboardDirection.LEFT)),
-            new ChessPieceMove(ChessboardDirection.DOWN, fromPosition.nexPosition(ChessboardDirection.DOWN, ChessboardDirection.DOWN, ChessboardDirection.RIGHT)),
-            new ChessPieceMove(ChessboardDirection.LEFT, fromPosition.nexPosition(ChessboardDirection.LEFT, ChessboardDirection.LEFT, ChessboardDirection.UP)),
             new ChessPieceMove(ChessboardDirection.LEFT, fromPosition.nexPosition(ChessboardDirection.LEFT, ChessboardDirection.LEFT, ChessboardDirection.DOWN)),
+            new ChessPieceMove(ChessboardDirection.UP, fromPosition.nexPosition(ChessboardDirection.LEFT, ChessboardDirection.LEFT, ChessboardDirection.UP)),
+            new ChessPieceMove(ChessboardDirection.UP_LEFT, fromPosition.nexPosition(ChessboardDirection.UP, ChessboardDirection.UP, ChessboardDirection.LEFT)),
+            new ChessPieceMove(ChessboardDirection.UP_RIGHT, fromPosition.nexPosition(ChessboardDirection.UP, ChessboardDirection.UP, ChessboardDirection.RIGHT)),
             new ChessPieceMove(ChessboardDirection.RIGHT, fromPosition.nexPosition(ChessboardDirection.RIGHT, ChessboardDirection.RIGHT, ChessboardDirection.UP)),
-            new ChessPieceMove(ChessboardDirection.RIGHT, fromPosition.nexPosition(ChessboardDirection.RIGHT, ChessboardDirection.RIGHT, ChessboardDirection.DOWN))
+            new ChessPieceMove(ChessboardDirection.DOWN, fromPosition.nexPosition(ChessboardDirection.RIGHT, ChessboardDirection.RIGHT, ChessboardDirection.DOWN)),
+            new ChessPieceMove(ChessboardDirection.DOWN_RIGHT, fromPosition.nexPosition(ChessboardDirection.DOWN, ChessboardDirection.DOWN, ChessboardDirection.RIGHT)),
+            new ChessPieceMove(ChessboardDirection.DOWN_LEFT, fromPosition.nexPosition(ChessboardDirection.DOWN, ChessboardDirection.DOWN, ChessboardDirection.LEFT))
         );
     }
 

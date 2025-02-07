@@ -2,6 +2,7 @@ package com.sdm.units.chessgame.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.ChessPieceInfo;
@@ -27,12 +28,12 @@ public class Rook extends ChessPiece {
     public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition) {
         List<ChessPieceMove> possibleMoves = new ArrayList<>();
         
-        for (ChessboardDirection direction : new ChessboardDirection[]{ ChessboardDirection.UP, ChessboardDirection.DOWN, ChessboardDirection.LEFT, ChessboardDirection.RIGHT }) {
+        Stream.of(ChessboardDirection.UP, ChessboardDirection.DOWN, ChessboardDirection.LEFT, ChessboardDirection.RIGHT).forEach(direction -> {
             ChessboardPosition currentPosition = fromPosition;
             while ((currentPosition = currentPosition.nextPosition(direction)).isWithinChessboard()) {
                 possibleMoves.add(new ChessPieceMove(direction, currentPosition));
             }
-        }
+        });
         
         return possibleMoves;
     }

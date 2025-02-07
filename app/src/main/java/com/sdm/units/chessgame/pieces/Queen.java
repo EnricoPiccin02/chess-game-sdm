@@ -2,6 +2,7 @@ package com.sdm.units.chessgame.pieces;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.ChessPieceInfo;
@@ -27,13 +28,13 @@ public class Queen extends ChessPiece {
     public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition) {
         List<ChessPieceMove> possibleMoves = new ArrayList<>();
 
-        for (ChessboardDirection direction : ChessboardDirection.values()) {
+        Stream.of(ChessboardDirection.values()).forEach(direction -> {
             ChessboardPosition nextPosition = fromPosition.nextPosition(direction);
             while (nextPosition != null) {
                 possibleMoves.add(new ChessPieceMove(direction, nextPosition));
                 nextPosition = nextPosition.nextPosition(direction);
             }
-        }
+        });
         
         return possibleMoves;
     }
