@@ -1,0 +1,44 @@
+package com.sdm.units.chessgame.pieces;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.ChessboardDirection;
+import com.sdm.units.chessgame.gamelogic.ChessPieceInfo;
+import com.sdm.units.chessgame.gamelogic.ChessPieceMove;
+import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
+import com.sdm.units.chessgame.gui.ChessPieceDrawFactory;
+import com.sdm.units.chessgame.gui.DrawnChessPiece;
+
+public class Bishop extends ChessPiece {
+    
+    public Bishop(ChessPieceColor color) {
+        super(color);
+        this.info = ChessPieceInfo.BISHOP;
+    }
+
+    @Override
+    public DrawnChessPiece drawChessPiece() {
+        return new DrawnChessPiece(ChessPieceDrawFactory::drawBishop, color);
+    }
+
+    @Override
+    public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition) {
+        List<ChessPieceMove> possibleMoves = new ArrayList<>();
+        
+        for (ChessboardDirection direction : new ChessboardDirection[]{ ChessboardDirection.UP_RIGHT, ChessboardDirection.UP_LEFT, ChessboardDirection.DOWN_RIGHT, ChessboardDirection.DOWN_LEFT }) {
+            ChessboardPosition currentPosition = fromPosition;
+            while ((currentPosition = currentPosition.nextPosition(direction)).isWithinChessboard()) {
+                possibleMoves.add(new ChessPieceMove(direction, currentPosition));
+            }
+        }
+        
+        return possibleMoves;
+    }
+
+    @Override
+    public List<ChessPieceMove> getCaptureMoves(ChessboardPosition fromPosition) {
+        return getPossibleMoves(fromPosition);
+    }   
+}

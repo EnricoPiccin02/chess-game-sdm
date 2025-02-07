@@ -1,23 +1,51 @@
 package com.sdm.units.chessgame.pieces;
 
-import java.util.List;
-
 import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
-import com.sdm.units.chessgame.gamelogic.ChessPieceMovement;
-import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
+import com.sdm.units.chessgame.gamelogic.ChessPieceInfo;
+import com.sdm.units.chessgame.gamelogic.Movable;
 import com.sdm.units.chessgame.gui.DrawnChessPiece;
 
-public abstract class ChessPiece implements ChessPieceMovement {
+public abstract class ChessPiece implements Movable {
     
-    protected ChessboardPosition position;
-    protected ChessPieceColor color;
-
-    ChessPiece(ChessboardPosition position, ChessPieceColor color) {
-        this.position = position;
+    protected boolean hasMoved;
+    protected ChessPieceInfo info;
+    public final ChessPieceColor color;
+    
+    ChessPiece(ChessPieceColor color) {
         this.color = color;
+        this.hasMoved = false;
     }
 
-    public abstract List<ChessboardPosition> getStartingPositions();
-
     public abstract DrawnChessPiece drawChessPiece();
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public ChessPieceInfo pieceInfo() {
+        return info;
+    }
+
+    public ChessPieceColor pieceColor() {
+        return color;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        ChessPiece other = (ChessPiece) obj;
+
+        return color == other.color && info == other.info;
+    }
 }

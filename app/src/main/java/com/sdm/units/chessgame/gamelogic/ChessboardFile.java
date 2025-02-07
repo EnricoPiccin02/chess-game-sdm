@@ -25,7 +25,11 @@ public enum ChessboardFile {
         return String.valueOf(this.fileCharacter);
     }
 
-    public static ChessboardFile valueOf(int value) {
+    public char value() {
+        return this.fileCharacter;
+    }
+
+    public static ChessboardFile valueOf(char value) {
         Optional<ChessboardFile> derivedFile;
 
         derivedFile = Arrays.stream(values())
@@ -33,5 +37,13 @@ public enum ChessboardFile {
             .findFirst();
         
         return derivedFile.isPresent() ? derivedFile.get() : null;
+    }
+    
+    public ChessboardFile nextFile(ChessboardDirection direction) {
+        return valueOf((char)(this.fileCharacter + direction.directionFileDescriptor()));
+    }
+
+    public int distance(ChessboardFile file) {
+        return Math.abs(this.fileCharacter - file.fileCharacter);
     }
 }

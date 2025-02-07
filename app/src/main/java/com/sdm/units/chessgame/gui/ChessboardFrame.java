@@ -24,7 +24,7 @@ import com.sdm.units.chessgame.gamelogic.ChessboardRank;
 import com.sdm.units.chessgame.pieces.ChessPiece;
 import com.sdm.units.chessgame.pieces.Pawn;
 
-public class Chessboard extends JFrame {
+public class ChessboardFrame extends JFrame {
 
     static final String gapList[] = {"0", "10", "15", "20"};
     final static int maxGap = 20;
@@ -33,7 +33,7 @@ public class Chessboard extends JFrame {
     JButton applyButton = new JButton("Click me!");
     GridLayout chessboardGridLayout = new GridLayout(0,8);
      
-    public Chessboard(String name) {
+    public ChessboardFrame(String name) {
         super(name);
         setResizable(false);
     }
@@ -69,8 +69,7 @@ public class Chessboard extends JFrame {
 
         for(int r = 0; r < 8; r++){
             for(int c = 0; c < 8; c++){
-                ChessPiece cp = new Pawn(new ChessboardPosition(ChessboardFile.A, ChessboardRank.EIGHT),
-                (r + c) % 2 == 0 ? ChessPieceColor.BLACK : ChessPieceColor.WHITE);
+                ChessPiece cp = new Pawn((r + c) % 2 == 0 ? ChessPieceColor.BLACK : ChessPieceColor.WHITE);
                 compsToExperiment.add(cp.drawChessPiece());
             }
         }
@@ -114,7 +113,7 @@ public class Chessboard extends JFrame {
      */
     public static void createAndShowGUI() {
         //Create and set up the window.
-        Chessboard frame = new Chessboard("Chessboard");
+        ChessboardFrame frame = new ChessboardFrame("Chessboard");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Set up the content pane.
         frame.addComponentsToPane(frame.getContentPane());

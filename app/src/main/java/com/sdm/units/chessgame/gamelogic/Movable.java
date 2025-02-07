@@ -1,0 +1,10 @@
+package com.sdm.units.chessgame.gamelogic;
+
+import java.util.List;
+
+public interface Movable {
+    
+    public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition);
+
+    public List<ChessPieceMove> getCaptureMoves(ChessboardPosition fromPosition);
+}

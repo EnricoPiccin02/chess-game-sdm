@@ -25,6 +25,10 @@ public enum ChessboardRank {
         return String.valueOf(this.rankNumber);
     }
 
+    public int value() {
+        return this.rankNumber;
+    }
+
     public static ChessboardRank valueOf(int value) {
         Optional<ChessboardRank> derivedRank;
 
@@ -33,5 +37,13 @@ public enum ChessboardRank {
             .findFirst();
         
         return derivedRank.isPresent() ? derivedRank.get() : null;
+    }
+
+    public ChessboardRank nextRank(ChessboardDirection direction) {
+        return valueOf(this.rankNumber + direction.directionRankDescriptor());
+    }
+
+    public int distance(ChessboardRank rank) {
+        return Math.abs(this.rankNumber - rank.rankNumber);
     }
 }
