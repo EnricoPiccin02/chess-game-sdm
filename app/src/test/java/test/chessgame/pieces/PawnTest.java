@@ -12,10 +12,10 @@ import test.chessgame.TestChessPiecePositionUtil;
 
 import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.ChessboardRank;
+import com.sdm.units.chessgame.gamelogic.initialization.PawnPositionInitializer;
 import com.sdm.units.chessgame.pieces.ChessPiece;
 import com.sdm.units.chessgame.pieces.Pawn;
 import com.sdm.units.chessgame.gamelogic.ChessboardFile;
-import com.sdm.units.chessgame.gamelogic.ChessboardInitialSetupBuilder;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -44,7 +44,7 @@ public class PawnTest {
 
         testCases.addAll(TestChessPiecePositionUtil.argumentsLoadProvider(
             getAllWhitePawnPossibleInitialMovements(),
-            TestChessPiecePositionUtil.chessPieceMovementProvider(ChessboardInitialSetupBuilder.getPawnStartingPositions(ChessPieceColor.WHITE))
+            TestChessPiecePositionUtil.chessPieceMovementProvider(new PawnPositionInitializer().initializeFor(ChessPieceColor.WHITE))
         ));
 
         return testCases;
@@ -55,7 +55,7 @@ public class PawnTest {
 
         testCases.addAll(TestChessPiecePositionUtil.argumentsLoadProvider(
             getAllBlackPawnPossibleInitialMovements(),
-            TestChessPiecePositionUtil.chessPieceMovementProvider(ChessboardInitialSetupBuilder.getPawnStartingPositions(ChessPieceColor.BLACK))
+            TestChessPiecePositionUtil.chessPieceMovementProvider(new PawnPositionInitializer().initializeFor(ChessPieceColor.BLACK))
         ));
 
         return testCases;

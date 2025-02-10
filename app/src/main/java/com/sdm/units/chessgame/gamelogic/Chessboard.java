@@ -5,26 +5,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.sdm.units.chessgame.gamelogic.initialization.*;
 
 import com.sdm.units.chessgame.pieces.ChessPiece;
 
 public class Chessboard {
     
     protected Map<ChessboardPosition, ChessPiece> board;
+    protected ChessboardInitialSetupBuilder initialSetupBuilder;
 
     public Chessboard() {
-        board = new HashMap<>(ChessboardInitialSetupBuilder.getChessboardInitialSetup());
+        initialSetupBuilder = new ChessboardInitialSetupBuilder(List.of(
+            new PawnPositionInitializer(),
+            new RookPositionInitializer(),
+            new KnightPositionInitializer(),
+            new BishopPositionInitializer(),
+            new QueenPositionInitializer(),
+            new KingPositionInitializer()
+        ));
 
-        Stream.of(ChessboardFile.values()).forEach(file -> {
-            Stream.of(ChessboardRank.values()).forEach(rank -> {
-                board.putIfAbsent(new ChessboardPosition(file, rank), null);
-            });
-        });
+        board = new HashMap<>(initialSetupBuilder.getChessboardInitialSetup());        
     }
 
     public void resetBoard() {
         board.clear();
+        board.putAll(initialSetupBuilder.getChessboardInitialSetup());
     }
 
     public Map<ChessboardPosition, ChessPiece> getBoard() {
