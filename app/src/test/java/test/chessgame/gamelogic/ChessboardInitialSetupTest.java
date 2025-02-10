@@ -1,6 +1,9 @@
 package test.chessgame.gamelogic;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,9 +13,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.ChessboardFile;
-import com.sdm.units.chessgame.gamelogic.ChessboardInitialSetup;
+import com.sdm.units.chessgame.gamelogic.ChessboardInitialSetupBuilder;
 import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.ChessboardRank;
+import com.sdm.units.chessgame.pieces.Bishop;
+import com.sdm.units.chessgame.pieces.ChessPiece;
+import com.sdm.units.chessgame.pieces.King;
+import com.sdm.units.chessgame.pieces.Knight;
+import com.sdm.units.chessgame.pieces.Pawn;
+import com.sdm.units.chessgame.pieces.Queen;
+import com.sdm.units.chessgame.pieces.Rook;
 
 import test.chessgame.TestChessPiecePositionUtil;
 
@@ -20,189 +30,185 @@ public class ChessboardInitialSetupTest {
 
     @ParameterizedTest
     @MethodSource("whitePawnStartingPositionsProvider")
-    public void isExpectedWhitePawnStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedWhitePawnStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("blackPawnStartingPositionsProvider")
-    public void isExpectedBlackPawnStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedBlackPawnStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("whiteRookStartingPositionsProvider")
-    public void isExpectedWhiteRookStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedWhiteRookStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("blackRookStartingPositionsProvider")
-    public void isExpectedBlackRookStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedBlackRookStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("whiteKnightStartingPositionsProvider")
-    public void isExpectedWhiteKnightStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedWhiteKnightStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("blackKnightStartingPositionsProvider")
-    public void isExpectedBlackKnightStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedBlackKnightStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("whiteBishopStartingPositionsProvider")
-    public void isExpectedWhiteBishopStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedWhiteBishopStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("blackBishopStartingPositionsProvider")
-    public void isExpectedBlackBishopStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedBlackBishopStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("whiteQueenStartingPositionProvider")
-    public void isExpectedWhiteQueenStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedWhiteQueenStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("blackQueenStartingPositionProvider")
-    public void isExpectedBlackQueenStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedBlackQueenStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("whiteKingStartingPositionProvider")
-    public void isExpectedWhiteKingStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedWhiteKingStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     @ParameterizedTest
     @MethodSource("blackKingStartingPositionProvider")
-    public void isExpectedBlackKingStartingPosition(ChessboardPosition position, ChessboardPosition expectedPosition) {
-        assertEquals(expectedPosition, position);
+    public void isExpectedBlackKingStartingPosition(Map.Entry<ChessboardPosition, ChessPiece> chessboardSquare, ChessboardPosition expectedPosition, ChessPiece expectedPiece) {
+        assertEquals(expectedPosition, chessboardSquare.getKey());
+        assertEquals(expectedPiece, chessboardSquare.getValue());
     }
 
     public static List<Arguments> whitePawnStartingPositionsProvider() {
-        List<ChessboardPosition> expectedWhitePawnStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO),
-            new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO),
-            new ChessboardPosition(ChessboardFile.C, ChessboardRank.TWO),
-            new ChessboardPosition(ChessboardFile.D, ChessboardRank.TWO),
-            new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO),
-            new ChessboardPosition(ChessboardFile.F, ChessboardRank.TWO),
-            new ChessboardPosition(ChessboardFile.G, ChessboardRank.TWO),
-            new ChessboardPosition(ChessboardFile.H, ChessboardRank.TWO)
+        Map<ChessboardPosition, ChessPiece> expectedWhitePawnStartingPositions = new HashMap<>();
+
+        Stream.of(ChessboardFile.values()).forEach(
+            file -> expectedWhitePawnStartingPositions.put(new ChessboardPosition(file, ChessboardRank.TWO), new Pawn(ChessPieceColor.WHITE))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhitePawnStartingPositions, ChessboardInitialSetup.getPawnStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhitePawnStartingPositions, ChessboardInitialSetupBuilder.getPawnStartingPositions(ChessPieceColor.WHITE));
     }
 
     public static List<Arguments> blackPawnStartingPositionsProvider() {
-        List<ChessboardPosition> expectedBlackPawnStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.A, ChessboardRank.SEVEN),
-            new ChessboardPosition(ChessboardFile.B, ChessboardRank.SEVEN),
-            new ChessboardPosition(ChessboardFile.C, ChessboardRank.SEVEN),
-            new ChessboardPosition(ChessboardFile.D, ChessboardRank.SEVEN),
-            new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN),
-            new ChessboardPosition(ChessboardFile.F, ChessboardRank.SEVEN),
-            new ChessboardPosition(ChessboardFile.G, ChessboardRank.SEVEN),
-            new ChessboardPosition(ChessboardFile.H, ChessboardRank.SEVEN)
+        Map<ChessboardPosition, ChessPiece> expectedBlackPawnStartingPositions = new HashMap<>();
+        
+        Stream.of(ChessboardFile.values()).forEach(
+            file -> expectedBlackPawnStartingPositions.put(new ChessboardPosition(file, ChessboardRank.SEVEN), new Pawn(ChessPieceColor.BLACK))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackPawnStartingPositions, ChessboardInitialSetup.getPawnStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackPawnStartingPositions, ChessboardInitialSetupBuilder.getPawnStartingPositions(ChessPieceColor.BLACK));
     }
 
     public static List<Arguments> whiteRookStartingPositionsProvider() {
-        List<ChessboardPosition> expectedWhiteRookStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE),
-            new ChessboardPosition(ChessboardFile.H, ChessboardRank.ONE)
+        Map<ChessboardPosition, ChessPiece> expectedWhiteRookStartingPositions = new HashMap<>();
+        
+        Stream.of(ChessboardFile.A, ChessboardFile.H).forEach(
+            file -> expectedWhiteRookStartingPositions.put(new ChessboardPosition(file, ChessboardRank.ONE), new Rook(ChessPieceColor.WHITE))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteRookStartingPositions, ChessboardInitialSetup.getRookStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteRookStartingPositions, ChessboardInitialSetupBuilder.getRookStartingPositions(ChessPieceColor.WHITE));
     }
 
     public static List<Arguments> blackRookStartingPositionsProvider() {
-        List<ChessboardPosition> expectedBlackRookStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.A, ChessboardRank.EIGHT),
-            new ChessboardPosition(ChessboardFile.H, ChessboardRank.EIGHT)
+        Map<ChessboardPosition, ChessPiece> expectedBlackRookStartingPositions = new HashMap<>();
+        
+        Stream.of(ChessboardFile.A, ChessboardFile.H).forEach(
+            file -> expectedBlackRookStartingPositions.put(new ChessboardPosition(file, ChessboardRank.EIGHT), new Rook(ChessPieceColor.BLACK))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackRookStartingPositions, ChessboardInitialSetup.getRookStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackRookStartingPositions, ChessboardInitialSetupBuilder.getRookStartingPositions(ChessPieceColor.BLACK));
     }
-
+    
     public static List<Arguments> whiteKnightStartingPositionsProvider() {
-        List<ChessboardPosition> expectedWhiteKnightStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.B, ChessboardRank.ONE),
-            new ChessboardPosition(ChessboardFile.G, ChessboardRank.ONE)
+        Map<ChessboardPosition, ChessPiece> expectedWhiteKnightStartingPositions = new HashMap<>();
+        
+        Stream.of(ChessboardFile.B, ChessboardFile.G).forEach(
+            file -> expectedWhiteKnightStartingPositions.put(new ChessboardPosition(file, ChessboardRank.ONE), new Knight(ChessPieceColor.WHITE))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteKnightStartingPositions, ChessboardInitialSetup.getKnightStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteKnightStartingPositions, ChessboardInitialSetupBuilder.getKnightStartingPositions(ChessPieceColor.WHITE));
     }
-
+    
     public static List<Arguments> blackKnightStartingPositionsProvider() {
-        List<ChessboardPosition> expectedBlackKnightStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.B, ChessboardRank.EIGHT),
-            new ChessboardPosition(ChessboardFile.G, ChessboardRank.EIGHT)
+        Map<ChessboardPosition, ChessPiece> expectedBlackKnightStartingPositions = new HashMap<>();
+        
+        Stream.of(ChessboardFile.B, ChessboardFile.G).forEach(
+            file -> expectedBlackKnightStartingPositions.put(new ChessboardPosition(file, ChessboardRank.EIGHT), new Knight(ChessPieceColor.BLACK))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackKnightStartingPositions, ChessboardInitialSetup.getKnightStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackKnightStartingPositions, ChessboardInitialSetupBuilder.getKnightStartingPositions(ChessPieceColor.BLACK));
     }
-
+    
     public static List<Arguments> whiteBishopStartingPositionsProvider() {
-        List<ChessboardPosition> expectedWhiteBishopStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.C, ChessboardRank.ONE),
-            new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE)
+        Map<ChessboardPosition, ChessPiece> expectedWhiteBishopStartingPositions = new HashMap<>();
+        
+        Stream.of(ChessboardFile.C, ChessboardFile.F).forEach(
+            file -> expectedWhiteBishopStartingPositions.put(new ChessboardPosition(file, ChessboardRank.ONE), new Bishop(ChessPieceColor.WHITE))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteBishopStartingPositions, ChessboardInitialSetup.getBishopStartingPositions(ChessPieceColor.WHITE));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteBishopStartingPositions, ChessboardInitialSetupBuilder.getBishopStartingPositions(ChessPieceColor.WHITE));
     }
-
+    
     public static List<Arguments> blackBishopStartingPositionsProvider() {
-        List<ChessboardPosition> expectedBlackBishopStartingPositions = List.of(
-            new ChessboardPosition(ChessboardFile.C, ChessboardRank.EIGHT),
-            new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT)
+        Map<ChessboardPosition, ChessPiece> expectedBlackKnightStartingPositions = new HashMap<>();
+        
+        Stream.of(ChessboardFile.C, ChessboardFile.F).forEach(
+            file -> expectedBlackKnightStartingPositions.put(new ChessboardPosition(file, ChessboardRank.EIGHT), new Bishop(ChessPieceColor.BLACK))
         );
 
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackBishopStartingPositions, ChessboardInitialSetup.getBishopStartingPositions(ChessPieceColor.BLACK));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackKnightStartingPositions, ChessboardInitialSetupBuilder.getBishopStartingPositions(ChessPieceColor.BLACK));
     }
-
+    
     public static List<Arguments> whiteQueenStartingPositionProvider() {
-        List<ChessboardPosition> expectedWhiteQueenStartingPosition = List.of(
-            new ChessboardPosition(ChessboardFile.D, ChessboardRank.ONE)
-        );
-
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteQueenStartingPosition, List.of(ChessboardInitialSetup.getQueenStartingPosition(ChessPieceColor.WHITE)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(Map.ofEntries(Map.entry(new ChessboardPosition(ChessboardFile.D, ChessboardRank.ONE), new Queen(ChessPieceColor.WHITE))), 
+            ChessboardInitialSetupBuilder.getQueenStartingPosition(ChessPieceColor.WHITE));
     }
-
+    
     public static List<Arguments> blackQueenStartingPositionProvider() {
-        List<ChessboardPosition> expectedBlackQueenStartingPosition = List.of(
-            new ChessboardPosition(ChessboardFile.D, ChessboardRank.EIGHT)
-        );
-
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackQueenStartingPosition, List.of(ChessboardInitialSetup.getQueenStartingPosition(ChessPieceColor.BLACK)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(Map.ofEntries(Map.entry(new ChessboardPosition(ChessboardFile.D, ChessboardRank.EIGHT), new Queen(ChessPieceColor.BLACK))), 
+            ChessboardInitialSetupBuilder.getQueenStartingPosition(ChessPieceColor.BLACK));
     }
-
+    
     public static List<Arguments> whiteKingStartingPositionProvider() {
-        List<ChessboardPosition> expectedWhiteKingStartingPosition = List.of(
-            new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE)
-        );
-
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedWhiteKingStartingPosition, List.of(ChessboardInitialSetup.getKingStartingPosition(ChessPieceColor.WHITE)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(Map.ofEntries(Map.entry(new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE), new King(ChessPieceColor.WHITE))), 
+            ChessboardInitialSetupBuilder.getKingStartingPosition(ChessPieceColor.WHITE));
     }
-
+    
     public static List<Arguments> blackKingStartingPositionProvider() {
-        List<ChessboardPosition> expectedBlackKingStartingPosition = List.of(
-            new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT)
-        );
-
-        return TestChessPiecePositionUtil.argumentsLoadProvider(expectedBlackKingStartingPosition, List.of(ChessboardInitialSetup.getKingStartingPosition(ChessPieceColor.BLACK)));
+        return TestChessPiecePositionUtil.argumentsLoadProvider(Map.ofEntries(Map.entry(new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT), new King(ChessPieceColor.BLACK))), 
+            ChessboardInitialSetupBuilder.getKingStartingPosition(ChessPieceColor.BLACK));
     }
 }

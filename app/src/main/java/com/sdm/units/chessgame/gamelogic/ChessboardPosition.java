@@ -10,16 +10,7 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) imple
     }
 
     public ChessboardPosition nextPosition(ChessboardDirection direction) {
-        return switch (direction) {
-            case UP -> new ChessboardPosition(file, rank.nextRank(ChessboardDirection.UP));
-            case DOWN -> new ChessboardPosition(file, rank.nextRank(ChessboardDirection.DOWN));
-            case LEFT -> new ChessboardPosition(file.nextFile(ChessboardDirection.LEFT), rank);
-            case RIGHT -> new ChessboardPosition(file.nextFile(ChessboardDirection.RIGHT), rank);
-            case UP_LEFT -> new ChessboardPosition(file.nextFile(ChessboardDirection.LEFT), rank.nextRank(ChessboardDirection.UP));
-            case UP_RIGHT -> new ChessboardPosition(file.nextFile(ChessboardDirection.RIGHT), rank.nextRank(ChessboardDirection.UP));
-            case DOWN_LEFT -> new ChessboardPosition(file.nextFile(ChessboardDirection.LEFT), rank.nextRank(ChessboardDirection.DOWN));
-            case DOWN_RIGHT -> new ChessboardPosition(file.nextFile(ChessboardDirection.RIGHT), rank.nextRank(ChessboardDirection.DOWN));
-        };
+        return new ChessboardPosition(file.nextFile(direction), rank.nextRank(direction));
     }
 
     public ChessboardPosition nexPosition(ChessboardDirection ... directions) {
@@ -30,12 +21,12 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) imple
         return nextPosition;
     }
 
-    public int distance(ChessboardPosition otherPosition) {
+    public Integer distance(ChessboardPosition otherPosition) {
         return this.file.distance(otherPosition.file) + this.rank.distance(otherPosition.rank);
     }
 
     @Override
     public int compareTo(ChessboardPosition otheChessboardPosition) {
-        return this.rank.compareTo(otheChessboardPosition.rank) + this.file.compareTo(otheChessboardPosition.file);
+        return this.distance(otheChessboardPosition);
     }
 }

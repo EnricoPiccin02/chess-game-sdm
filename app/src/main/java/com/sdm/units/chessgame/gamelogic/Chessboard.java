@@ -7,60 +7,41 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.sdm.units.chessgame.pieces.Bishop;
 import com.sdm.units.chessgame.pieces.ChessPiece;
-import com.sdm.units.chessgame.pieces.King;
-import com.sdm.units.chessgame.pieces.Knight;
-import com.sdm.units.chessgame.pieces.Pawn;
-import com.sdm.units.chessgame.pieces.Queen;
-import com.sdm.units.chessgame.pieces.Rook;
 
 public class Chessboard {
     
     protected Map<ChessboardPosition, ChessPiece> board;
 
     public Chessboard() {
-        board = new HashMap<>(ChessboardFile.values().length * ChessboardRank.values().length);
+        board = new HashMap<>(ChessboardInitialSetupBuilder.getChessboardInitialSetup());
 
         Stream.of(ChessboardFile.values()).forEach(file -> {
             Stream.of(ChessboardRank.values()).forEach(rank -> {
-                board.put(new ChessboardPosition(file, rank), null);
+                board.putIfAbsent(new ChessboardPosition(file, rank), null);
             });
         });
+    }
 
-        Stream.of(ChessPieceColor.values()).forEach(color -> {
-            board.putAll(ChessboardInitialSetup.getPawnStartingPositions(color).stream()
-                .collect(HashMap::new, (m, p) -> m.put(p, new Pawn(color)), HashMap::putAll)
-            );
-            board.putAll(ChessboardInitialSetup.getRookStartingPositions(color).stream()
-                .collect(HashMap::new, (m, p) -> m.put(p, new Rook(color)), HashMap::putAll)
-            );
-            board.putAll(ChessboardInitialSetup.getKnightStartingPositions(color).stream()
-                .collect(HashMap::new, (m, p) -> m.put(p, new Knight(color)), HashMap::putAll)
-            );
-            board.putAll(ChessboardInitialSetup.getBishopStartingPositions(color).stream()
-                .collect(HashMap::new, (m, p) -> m.put(p, new Bishop(color)), HashMap::putAll)
-            );
-            board.put(ChessboardInitialSetup.getQueenStartingPosition(color), new Queen(color));
-            board.put(ChessboardInitialSetup.getKingStartingPosition(color), new King(color));
-        });
+    public void resetBoard() {
+        board.clear();
     }
 
     public Map<ChessboardPosition, ChessPiece> getBoard() {
         return board;
     }
 
-    public ChessPiece getPiece(ChessboardPosition position) {
+    public ChessPiece getPieceFromPosition(ChessboardPosition position) {
         return board.get(position);
     }
 
     public boolean isPositionVacant(ChessboardPosition position) {
-        return getPiece(position) == null;
+        return getPieceFromPosition(position) == null;
     }
 
     public int movePiece(ChessboardPosition fromPosition, ChessboardPosition toPosition) {
-        ChessPiece startingPiece = getPiece(fromPosition);
-        ChessPiece endingPiece = getPiece(toPosition);
+        ChessPiece startingPiece = getPieceFromPosition(fromPosition);
+        ChessPiece endingPiece = getPieceFromPosition(toPosition);
         board.put(fromPosition, null);
         board.put(toPosition, startingPiece);
         startingPiece.setHasMoved(true);
@@ -68,12 +49,10 @@ public class Chessboard {
     }
 
     public List<ChessboardPosition> getPieceValidMoves(ChessboardPosition fromPosition) {
-        ChessPiece piece = getPiece(fromPosition);
+        ChessPiece piece = getPieceFromPosition(fromPosition);
         List<ChessboardPosition> validMoves = Collections.emptyList();
-
-        if (piece == null) {
-            return Collections.emptyList();
-        }
+        
+        if (isPositionVacant(fromPosition)) return Collections.emptyList();
 
         Map<ChessboardDirection, Integer> invalidDirectionDistancesMap = piece.getPossibleMoves(fromPosition).stream()
             .sorted()

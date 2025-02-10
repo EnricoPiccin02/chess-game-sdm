@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.params.provider.Arguments;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -12,23 +13,6 @@ import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.pieces.ChessPiece;
 
 public final class TestChessPiecePositionUtil {
-    
-    public static List<Arguments> argumentsLoadProvider(List<ChessboardPosition> expectedPositions, List<ChessboardPosition> actualPositions) throws IllegalArgumentException {
-        List<Arguments> expectedActualPositions = new ArrayList<>();
-
-        if (expectedPositions == null || actualPositions == null || expectedPositions.size() != actualPositions.size()) {
-            throw new IllegalArgumentException("Expected and actual position collections should not be null and should have the same size");
-        }
-
-        Iterator<ChessboardPosition> expectedIterator = expectedPositions.stream().sorted().iterator();
-        Iterator<ChessboardPosition> actualIterator = actualPositions.stream().sorted().iterator();
-
-        while(expectedIterator.hasNext() && actualIterator.hasNext()) {
-            expectedActualPositions.add(arguments(actualIterator.next(), expectedIterator.next()));
-        }
-
-        return expectedActualPositions;
-    }
 
     public static List<Arguments> argumentsLoadProvider(Map<ChessboardPosition, ChessPiece>  expectedPositionsChessPieces, 
         Map<ChessboardPosition, ChessPiece> actualPositionsChessPieces) throws IllegalArgumentException {
@@ -48,5 +32,12 @@ public final class TestChessPiecePositionUtil {
         }
 
         return expectedActualPositions;
+    }
+
+    public static Map<ChessboardPosition, ChessPiece> chessPieceMovementProvider(Map<ChessboardPosition, ChessPiece> initialPositionsChessPieces) {
+        return initialPositionsChessPieces.entrySet().stream()
+            .flatMap(entry -> entry.getValue().getPossibleMoves(entry.getKey()).stream()
+            .map(move -> Map.entry(move.position(), entry.getValue())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

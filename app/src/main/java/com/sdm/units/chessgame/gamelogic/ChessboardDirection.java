@@ -2,30 +2,30 @@ package com.sdm.units.chessgame.gamelogic;
 
 public enum ChessboardDirection {
 
-    LEFT(new int[]{-1, 0}),
-    RIGHT(new int[]{1, 0}),
-    UP(new int[]{0, 1}),
-    DOWN(new int[]{0, -1}),
-    UP_LEFT(new int[]{-1, 1}),
-    UP_RIGHT(new int[]{1, 1}),
-    DOWN_LEFT(new int[]{-1, -1}),
-    DOWN_RIGHT(new int[]{1, -1});
+    LEFT(new Integer[]{-1, 0}),
+    RIGHT(new Integer[]{1, 0}),
+    UP(new Integer[]{0, 1}),
+    DOWN(new Integer[]{0, -1}),
+    UP_LEFT(new Integer[]{-1, 1}),
+    UP_RIGHT(new Integer[]{1, 1}),
+    DOWN_LEFT(new Integer[]{-1, -1}),
+    DOWN_RIGHT(new Integer[]{1, -1});
 
-    private final int[] direction;
+    private final Integer[] direction;
 
-    ChessboardDirection(int[] direction) {
+    ChessboardDirection(Integer[] direction) {
         this.direction = direction;
     }
 
-    public int[] directionDescriptor() {
+    public Integer[] directionDescriptor() {
         return direction;
     }
 
-    public int directionFileDescriptor() {
+    public Integer directionFileDescriptor() {
         return direction[0];
     }
 
-    public int directionRankDescriptor() {
+    public Integer directionRankDescriptor() {
         return direction[1];
     }
 }

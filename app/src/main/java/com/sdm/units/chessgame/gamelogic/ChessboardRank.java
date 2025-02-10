@@ -43,7 +43,7 @@ public enum ChessboardRank {
         return valueOf(this.rankNumber + direction.directionRankDescriptor());
     }
 
-    public int distance(ChessboardRank rank) {
-        return Math.abs(this.rankNumber - rank.rankNumber);
+    public Integer distance(ChessboardRank rank) {
+        return this.rankNumber - rank.rankNumber;
     }
 }
