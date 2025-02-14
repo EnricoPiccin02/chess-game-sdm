@@ -1,7 +1,8 @@
-package com.sdm.units.chessgame.gamelogic;
+package com.sdm.units.chessgame.gamelogic.basics;
 
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.Stream;
 
 public enum ChessboardFile {
     
@@ -29,21 +30,21 @@ public enum ChessboardFile {
         return this.fileCharacter;
     }
 
-    public static ChessboardFile valueOf(Character value) {
-        Optional<ChessboardFile> derivedFile;
-
-        derivedFile = Arrays.stream(values())
+    public static Optional<ChessboardFile> valueOf(Character value) {
+        return Stream.of(values())
             .filter(chessboardFile -> chessboardFile.fileCharacter == value)
             .findFirst();
-        
-        return derivedFile.isPresent() ? derivedFile.get() : null;
     }
     
-    public ChessboardFile nextFile(ChessboardDirection direction) {
+    public Optional<ChessboardFile> nextFile(ChessboardDirection direction) {
+        if (direction == null) return Optional.empty();
+        
         return valueOf((char)(this.fileCharacter + direction.directionFileDescriptor()));
     }
 
-    public Integer distance(ChessboardFile file) {
-        return (this.fileCharacter - file.fileCharacter) * values().length;
+    public OptionalInt distance(ChessboardFile file) {
+        if(file == null) return OptionalInt.empty();
+
+        return OptionalInt.of((this.fileCharacter - file.fileCharacter) * values().length);
     }
 }

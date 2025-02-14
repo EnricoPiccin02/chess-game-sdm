@@ -3,7 +3,7 @@ package com.sdm.units.chessgame.gui;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
-import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
 
 public class ChessPieceDrawFactory {
     

@@ -1,17 +1,22 @@
 package com.sdm.units.chessgame.gamelogic;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.function.Predicate;
+
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceInfo;
+import com.sdm.units.chessgame.gamelogic.basics.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.initialization.*;
 
 import com.sdm.units.chessgame.pieces.ChessPiece;
 
 public class Chessboard {
     
-    protected Map<ChessboardPosition, ChessPiece> board;
+    protected Map<ChessboardPosition, Optional<ChessPiece>> board;
     protected ChessboardInitialSetupBuilder initialSetupBuilder;
 
     public Chessboard() {
@@ -32,63 +37,44 @@ public class Chessboard {
         board.putAll(initialSetupBuilder.getChessboardInitialSetup());
     }
 
-    public Map<ChessboardPosition, ChessPiece> getBoard() {
+    public Map<ChessboardPosition, Optional<ChessPiece>> getBoard() {
         return board;
     }
 
-    public ChessPiece getPieceFromPosition(ChessboardPosition position) {
-        return board.get(position);
+    public List<ChessboardPosition> getNonVacantPositionsOfColor(ChessPieceColor color) {
+        return board.keySet().stream()
+            .filter(Predicate.not(this::isPositionVacant))
+            .filter(key -> getPieceFromPosition(key).get().color.equals(color))
+            .toList();
+    }
+
+    public Optional<ChessPiece> getPieceFromPosition(ChessboardPosition position) {
+        Optional<ChessPiece> piece = board.get(position);
+        return piece == null ? Optional.empty() : piece;
+    }
+
+    public OptionalInt getPieceValueFromPosition(ChessboardPosition position) {
+        Optional<ChessPiece> piece = getPieceFromPosition(position);
+        
+        if (piece.isPresent())
+            return OptionalInt.of(piece.map(ChessPiece::pieceInfo).map(ChessPieceInfo::getPieceValue).get());
+        else
+            return OptionalInt.empty();
+    }
+
+    public void setPositionVacant(ChessboardPosition position) {
+        board.put(position, Optional.empty());
     }
 
     public boolean isPositionVacant(ChessboardPosition position) {
-        return getPieceFromPosition(position) == null;
+        return !getPieceFromPosition(position).isPresent();
     }
 
-    public int movePiece(ChessboardPosition fromPosition, ChessboardPosition toPosition) {
-        ChessPiece startingPiece = getPieceFromPosition(fromPosition);
-        ChessPiece endingPiece = getPieceFromPosition(toPosition);
-        board.put(fromPosition, null);
-        board.put(toPosition, startingPiece);
-        startingPiece.setHasMoved(true);
-        return endingPiece == null ? 0 : endingPiece.pieceInfo().getPieceValue();
-    }
-
-    public List<ChessboardPosition> getPieceValidMoves(ChessboardPosition fromPosition) {
-        ChessPiece piece = getPieceFromPosition(fromPosition);
-        List<ChessboardPosition> validMoves = Collections.emptyList();
-        
-        if (isPositionVacant(fromPosition)) return Collections.emptyList();
-
-        Map<ChessboardDirection, Integer> invalidDirectionDistancesMap = piece.getPossibleMoves(fromPosition).stream()
-            .sorted()
-            .filter(move -> !isPositionVacant(move.position()))
-            .collect(Collectors.toMap(
-                ChessPieceMove::direction,
-                move -> move.position().distance(fromPosition),
-                (d1, d2) -> d1 // In case of duplicates, keep the first one
-        ));
-
-        validMoves.addAll(piece.getPossibleMoves(fromPosition).stream()
-            .filter(move -> {
-                Integer limitDistanceForDirection = invalidDirectionDistancesMap.get(move.direction());
-                return limitDistanceForDirection == null || move.position().distance(fromPosition) >= limitDistanceForDirection;
-            })
-            .map(ChessPieceMove::position)
-            .collect(Collectors.toList())
-        );
-
-        validMoves.addAll(piece.getCaptureMoves(fromPosition).stream()
-            .filter(move -> !isPositionVacant(move.position()))
-            .collect(Collectors.toMap(
-                ChessPieceMove::direction,
-                ChessPieceMove::position,
-                (pos1, pos2) -> pos1 // In case of duplicates, keep the first one
-            ))
-            .values()
-            .stream()
-            .collect(Collectors.toList())
-        );
-
-        return validMoves;
+    public void movePiece(ChessboardPosition fromPosition, ChessboardPosition toPosition) {
+        getPieceFromPosition(fromPosition).ifPresent(piece -> {
+            piece.setHasMoved();
+            board.put(toPosition, Optional.of(piece));
+            setPositionVacant(fromPosition);
+        });
     }
 }

@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic;
+package com.sdm.units.chessgame.gamelogic.basics;
 
 import java.util.List;
 

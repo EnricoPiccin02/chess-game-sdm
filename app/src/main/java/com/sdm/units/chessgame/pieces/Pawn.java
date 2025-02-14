@@ -1,12 +1,18 @@
 package com.sdm.units.chessgame.pieces;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
-import com.sdm.units.chessgame.gamelogic.ChessPieceInfo;
-import com.sdm.units.chessgame.gamelogic.ChessPieceMove;
-import com.sdm.units.chessgame.gamelogic.ChessboardDirection;
-import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
+import javax.swing.plaf.OptionPaneUI;
+
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceInfo;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceMove;
+import com.sdm.units.chessgame.gamelogic.basics.ChessboardDirection;
+import com.sdm.units.chessgame.gamelogic.basics.ChessboardPosition;
 import com.sdm.units.chessgame.gui.ChessPieceDrawFactory;
 import com.sdm.units.chessgame.gui.DrawnChessPiece;
 
@@ -24,19 +30,40 @@ public class Pawn extends ChessPiece {
 
     @Override
     public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition) {
-        ChessboardDirection directionOfMovement = color == ChessPieceColor.WHITE ? ChessboardDirection.UP : ChessboardDirection.DOWN;
-        ChessboardPosition forwardPosition = fromPosition.nextPosition(directionOfMovement);
-        return List.of(
-            new ChessPieceMove(directionOfMovement, forwardPosition),
-            hasMoved ? null : new ChessPieceMove(directionOfMovement, forwardPosition.nextPosition(directionOfMovement))
-        );
+        List<ChessboardDirection> directionsOfMovement = new ArrayList<>();
+        
+        directionsOfMovement.add(switch (color) {
+            case ChessPieceColor.WHITE -> ChessboardDirection.UP;
+            default -> ChessboardDirection.DOWN;
+        });
+
+        if(!hasMoved) directionsOfMovement.add(directionsOfMovement.getFirst());
+        
+        return loadPawnMoves(directionsOfMovement, fromPosition);
     }
 
     @Override
     public List<ChessPieceMove> getCaptureMoves(ChessboardPosition fromPosition) {
-        return List.of(
-            color == ChessPieceColor.WHITE ? new ChessPieceMove(ChessboardDirection.UP_LEFT, fromPosition) : new ChessPieceMove(ChessboardDirection.DOWN_LEFT, fromPosition),
-            color == ChessPieceColor.WHITE ? new ChessPieceMove(ChessboardDirection.UP_RIGHT, fromPosition) : new ChessPieceMove(ChessboardDirection.DOWN_RIGHT, fromPosition)
-        );
+        List<ChessboardDirection> directionsOfMovement = color == ChessPieceColor.WHITE ?
+            List.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT) :
+            List.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT);
+        
+        return loadPawnMoves(directionsOfMovement, fromPosition);
+    }
+
+    private List<ChessPieceMove> loadPawnMoves(List<ChessboardDirection> directionsOfMovement, ChessboardPosition fromPosition) {
+        List<ChessPieceMove> moves = new ArrayList<>();
+        Optional<ChessboardPosition> currentPosition = Optional.of(fromPosition);
+
+        for (ChessboardDirection direction : directionsOfMovement) {
+            Optional<ChessboardPosition> nextPosition = currentPosition.get().nextPosition(direction);
+            
+            if (nextPosition.isPresent()) {
+                moves.add(new ChessPieceMove(direction, nextPosition.get()));
+                currentPosition = nextPosition;
+            }
+        }
+
+        return moves;
     }
 }
