@@ -16,7 +16,6 @@ import org.mockito.ArgumentCaptor;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class ChessControllerTest {
@@ -115,18 +114,13 @@ public class ChessControllerTest {
 
     @Test
     void testValidMoveUpdatesBoard() {
-        ChessboardPosition start = mock(ChessboardPosition.class);
-        ChessboardPosition target = mock(ChessboardPosition.class);
-
         when(gameLogic.isMovable(D2)).thenReturn(true);
         when(gameLogic.getPieceAt(D2)).thenReturn(Optional.of(mockPawn));
         when(gameLogic.isValidMove(new ChessMove(D2, D4, gameLogic.getPieceAt(D2)))).thenReturn(true);
 
-        // Act
         chessController.handleSquareClick(D2);  // Select piece
         chessController.handleSquareClick(D4); // Attempt move
 
-        // Assert
         verify(chessBoardView, times(1)).updateBoard(any(ChessBoardViewModel.class));
     }
 
