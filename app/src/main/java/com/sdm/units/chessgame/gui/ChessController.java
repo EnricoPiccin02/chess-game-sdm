@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.sdm.units.chessgame.gamelogic.ChessPieceInfo.*;
-
 public class ChessController{
     private final ChessBoardView chessBoardView;
     private final GameLogic gameLogic;
@@ -63,7 +61,11 @@ public class ChessController{
     }
 
     private void makeMove(ChessboardPosition targetPosition) {
-        gameLogic.makeMove(selectedPosition, targetPosition);
+        ChessMove move = new ChessMove(
+                selectedPosition,
+                targetPosition,
+                gameLogic.getPieceAt(selectedPosition));
+        gameLogic.makeMove(move);
         updateView();
         deselectPiece();
     }

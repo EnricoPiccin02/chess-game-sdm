@@ -7,7 +7,6 @@ import com.sdm.units.chessgame.gamelogic.GameLogic;
 import com.sdm.units.chessgame.gui.ChessBoardView;
 import com.sdm.units.chessgame.gui.ChessController;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
