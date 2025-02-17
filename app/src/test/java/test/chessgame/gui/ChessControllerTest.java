@@ -1,7 +1,6 @@
 package test.chessgame.gui;
 
 import com.sdm.units.chessgame.gamelogic.ChessboardFile;
-import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.ChessboardRank;
 import com.sdm.units.chessgame.gamelogic.GameLogic;
 import com.sdm.units.chessgame.gui.ChessBoardView;
@@ -59,8 +58,10 @@ public class ChessControllerTest {
         chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
 
         // Verify that the view highlights the square
-        verify(chessBoardView).unhighlightSquare(ChessboardFile.D, ChessboardRank.TWO);
+        verify(chessBoardView).clearHighlights();
     }
+
+
 
 
 

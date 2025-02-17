@@ -37,7 +37,7 @@ public class ChessController {
         }
         else {
             if (selectedPieceFile == File && selectedPieceRank == Rank) {
-                chessBoardView.unhighlightSquare(File,Rank);
+                chessBoardView.clearHighlights();
                 pieceIsSelected = false;
                 selectedPieceFile = null;
                 selectedPieceRank = null;
