@@ -99,6 +99,28 @@ public class ChessControllerTest {
         verify(chessBoardView).clearHighlights();
     }
 
+    @Test
+    public void secondClickValidMoveTest() {
+        // Assume the piece at D2 is movable and the move to D4 is valid
+        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
+        when(gameLogic.isValidMove(ChessboardFile.D, ChessboardRank.TWO, ChessboardFile.D, ChessboardRank.FOUR)).thenReturn(true);
+
+        // First click selects the piece
+        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+
+        // Second click on a valid square (D4)
+        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.FOUR);
+
+        // Verify that the move was processed
+        verify(gameLogic).makeMove(ChessboardFile.D, ChessboardRank.TWO, ChessboardFile.D, ChessboardRank.FOUR);
+
+        // Verify that the board view is updated
+        verify(chessBoardView).updateBoard();
+
+        // Verify that highlights are cleared after the valid move
+        verify(chessBoardView).clearHighlights();
+    }
+
 
 
 

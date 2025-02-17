@@ -11,4 +11,7 @@ public class ChessBoardView {
     public void clearHighlights() {
         ;
     }
+
+    public void updateBoard() {
+    }
 }

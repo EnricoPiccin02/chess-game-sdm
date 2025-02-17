@@ -45,13 +45,14 @@ public class ChessController {
             } else {
                 // Check if the move is valid
                 if (!gameLogic.isValidMove(selectedPieceFile, selectedPieceRank, File, Rank)) {
-                    // Invalid move: Clear highlights only once
                     chessBoardView.clearHighlights();
                     pieceIsSelected = false;
                     selectedPieceFile = null;
                     selectedPieceRank = null;
                 }
                 else{
+                    gameLogic.makeMove(selectedPieceFile, selectedPieceRank, File, Rank);
+                    chessBoardView.updateBoard();
                     chessBoardView.clearHighlights();
                     pieceIsSelected = false;
                     selectedPieceFile = null;
