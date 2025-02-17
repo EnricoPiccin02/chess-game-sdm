@@ -24,7 +24,6 @@ class ChessBoardViewTest {
     void setUp() {
         mockController = mock(ChessController.class);
         view = new ChessBoardView(mockController);
-
     }
 
     @Test
@@ -73,6 +72,20 @@ class ChessBoardViewTest {
 
         // H8 should be dark (rank 7, file 7)
         assertEquals(LIGHT_SQUARE_COLOR, getSquareAt(ChessboardFile.H, ChessboardRank.EIGHT).getBackground());
+    }
+
+    @Test
+    void shouldClearHighlights() {
+        // Highlight a square first
+        ChessboardPosition A1 = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
+        view.highlightSquare(A1);
+
+        // Clear highlights
+        view.clearHighlights();
+
+        // Verify the square returns to its original color (LIGHT_SQUARE_COLOR)
+        JButton button = (JButton) view.getComponents()[56];
+        assertEquals(LIGHT_SQUARE_COLOR, button.getBackground());
     }
 
     private long countButtons(Component[] components) {

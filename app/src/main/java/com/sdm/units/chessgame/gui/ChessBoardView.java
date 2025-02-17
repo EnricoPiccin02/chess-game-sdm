@@ -50,11 +50,13 @@ public class ChessBoardView extends JPanel {
         squares[rank][file].setBackground(HIGHLIGHT_COLOR);
     }
 
-    
     public void clearHighlights() {
-        // To be implemented
+        for (int rank = 0; rank < 8; rank++) {
+            for (int file = 0; file < 8; file++) {
+                squares[rank][file].setBackground(getSquareColor(rank, file));
+            }
+        }
     }
-
     
     public void updateBoard(ChessBoardViewModel viewModel) {
         // To be implemented
