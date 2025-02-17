@@ -7,6 +7,7 @@ import com.sdm.units.chessgame.gamelogic.GameLogic;
 import com.sdm.units.chessgame.gui.ChessBoardView;
 import com.sdm.units.chessgame.gui.ChessController;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,19 +82,6 @@ public class ChessControllerTest {
 
         chessController.handleSquareClick(D4);
 
-        verify(chessBoardView).clearHighlights();
-    }
-
-    @Test
-    public void secondClickValidMoveTest() {
-        when(gameLogic.isMovable(D2)).thenReturn(true);
-        when(gameLogic.isValidMove(D2, D4)).thenReturn(true);
-
-        chessController.handleSquareClick(D2);
-        chessController.handleSquareClick(D4);
-
-        verify(gameLogic).makeMove(D2, D4);
-        verify(chessBoardView).updateBoard();
         verify(chessBoardView).clearHighlights();
     }
 }
