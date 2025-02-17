@@ -7,4 +7,8 @@ public class ChessBoardView {
     public void highlightSquare(ChessboardFile chessboardFile, ChessboardRank chessboardRank) {
         ;
     }
+
+    public void unhighlightSquare(ChessboardFile chessboardFile, ChessboardRank chessboardRank) {
+        ;
+    }
 }

@@ -49,6 +49,19 @@ public class ChessControllerTest {
         verify(chessBoardView).highlightSquare(ChessboardFile.D, ChessboardRank.TWO);
     }
 
+    @Test
+    public void secondClickOnSameSquareUnhighlightSelectionTest() {
+        // Assume the piece at D2 is movable
+        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
+
+
+        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+
+        // Verify that the view highlights the square
+        verify(chessBoardView).unhighlightSquare(ChessboardFile.D, ChessboardRank.TWO);
+    }
+
 
 
 }
