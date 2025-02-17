@@ -2,6 +2,7 @@ package test.chessgame.gui;
 
 import com.sdm.units.chessgame.gamelogic.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.ChessboardRank;
+import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.GameLogic;
 import com.sdm.units.chessgame.gui.ChessBoardView;
 import com.sdm.units.chessgame.gui.ChessController;
@@ -17,14 +18,15 @@ public class ChessControllerTest {
     private ChessBoardView chessBoardView;
     private ChessController chessController;
 
+    // Common positions used in tests
+    private final ChessboardPosition D2 = new ChessboardPosition(ChessboardFile.D, ChessboardRank.TWO);
+    private final ChessboardPosition D4 = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FOUR);
+
     @BeforeEach
     public void setUp() {
-        // Initialize mocks
         gameLogic = mock(GameLogic.class);
         chessBoardView = mock(ChessBoardView.class);
-
-        // Initialize the object under test
-        chessController = new ChessController(gameLogic, chessBoardView);
+        chessController = new ChessController(chessBoardView, gameLogic);
     }
 
     @Test
@@ -39,93 +41,59 @@ public class ChessControllerTest {
 
     @Test
     public void firstClickHighlightsSquareIfMovablePieceTest() {
-        // Assume the piece at D2 is movable
-        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
+        when(gameLogic.isMovable(D2)).thenReturn(true);
 
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+        chessController.handleSquareClick(D2);
 
-        // Verify that the view highlights the square
-        verify(chessBoardView).highlightSquare(ChessboardFile.D, ChessboardRank.TWO);
+        verify(chessBoardView).highlightSquare(D2);
     }
 
     @Test
     public void secondClickOnSameSquareUnhighlightSelectionTest() {
-        // Assume the piece at D2 is movable
-        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
+        when(gameLogic.isMovable(D2)).thenReturn(true);
 
+        chessController.handleSquareClick(D2);
+        chessController.handleSquareClick(D2);
 
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
-
-        // Verify that the view highlights the square
         verify(chessBoardView).clearHighlights();
     }
 
     @Test
     public void secondClickInvalidMoveUnhighlightSelectionTest() {
-        // Assume the piece at D2 is movable
-        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
+        when(gameLogic.isMovable(D2)).thenReturn(true);
 
-        // First click selects a piece
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+        chessController.handleSquareClick(D2);
 
-        // Assume move to D4 is invalid
-        when(gameLogic.isValidMove(ChessboardFile.D, ChessboardRank.TWO, ChessboardFile.D, ChessboardRank.FOUR))
-                .thenReturn(false);
+        when(gameLogic.isValidMove(D2, D4)).thenReturn(false);
 
-        // Second click attempts an invalid move
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.FOUR);
+        chessController.handleSquareClick(D4);
 
-        // Verify that the selection is unhighlighted
         verify(chessBoardView).clearHighlights();
     }
 
     @Test
     public void secondClickValidMoveUnhighlightSelectionTest() {
-        // Assume the piece at D2 is movable
-        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
+        when(gameLogic.isMovable(D2)).thenReturn(true);
 
-        // First click selects a piece
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+        chessController.handleSquareClick(D2);
 
-        // Assume move to D4 is invalid
-        when(gameLogic.isValidMove(ChessboardFile.D, ChessboardRank.TWO, ChessboardFile.D, ChessboardRank.FOUR))
-                .thenReturn(true);
+        when(gameLogic.isValidMove(D2, D4)).thenReturn(true);
 
-        // Second click attempts an invalid move
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.FOUR);
+        chessController.handleSquareClick(D4);
 
-        // Verify that the selection is unhighlighted
         verify(chessBoardView).clearHighlights();
     }
 
     @Test
     public void secondClickValidMoveTest() {
-        // Assume the piece at D2 is movable and the move to D4 is valid
-        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
-        when(gameLogic.isValidMove(ChessboardFile.D, ChessboardRank.TWO, ChessboardFile.D, ChessboardRank.FOUR)).thenReturn(true);
+        when(gameLogic.isMovable(D2)).thenReturn(true);
+        when(gameLogic.isValidMove(D2, D4)).thenReturn(true);
 
-        // First click selects the piece
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+        chessController.handleSquareClick(D2);
+        chessController.handleSquareClick(D4);
 
-        // Second click on a valid square (D4)
-        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.FOUR);
-
-        // Verify that the move was processed
-        verify(gameLogic).makeMove(ChessboardFile.D, ChessboardRank.TWO, ChessboardFile.D, ChessboardRank.FOUR);
-
-        // Verify that the board view is updated
+        verify(gameLogic).makeMove(D2, D4);
         verify(chessBoardView).updateBoard();
-
-        // Verify that highlights are cleared after the valid move
         verify(chessBoardView).clearHighlights();
     }
-
-
-
-
-
-
 }
-
-

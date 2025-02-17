@@ -1,65 +1,64 @@
 package com.sdm.units.chessgame.gui;
 
-
-import com.sdm.units.chessgame.gamelogic.ChessboardFile;
-import com.sdm.units.chessgame.gamelogic.ChessboardRank;
+import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.GameLogic;
+import com.sdm.units.chessgame.gui.ChessBoardView;
 
-public class ChessController {
-
-    private final GameLogic gameLogic;
+public class ChessController{
     private final ChessBoardView chessBoardView;
-    private boolean pieceIsSelected = false;
-    private ChessboardFile selectedPieceFile;
-    private ChessboardRank selectedPieceRank;
-
-    public ChessController(GameLogic gameLogic, ChessBoardView chessBoardView) {
-        this.gameLogic = gameLogic;
+    private final GameLogic gameLogic;
+    private ChessboardPosition selectedPosition;
+    public ChessController(ChessBoardView chessBoardView, GameLogic gameLogic) {
         this.chessBoardView = chessBoardView;
+        this.gameLogic = gameLogic;
     }
 
-    public GameLogic getGameLogic() {
-        return gameLogic;
-    }
-
-    public ChessBoardView getChessBoardView() {
-        return chessBoardView;
-    }
-
-    public void handleSquareClick(ChessboardFile File, ChessboardRank Rank) {
-        if (!pieceIsSelected) {
-            // First click: Select the piece if movable
-            if (gameLogic.isMovable(File, Rank)) {
-                chessBoardView.highlightSquare(File, Rank);
-                pieceIsSelected = true;
-                selectedPieceFile = File;
-                selectedPieceRank = Rank;
-            }
+    public void handleSquareClick(ChessboardPosition position) {
+        if (selectedPosition == null) {
+            handleFirstClick(position);
         } else {
-            if (selectedPieceFile == File && selectedPieceRank == Rank) {
-                // Player clicked the same square (deselect)
-                chessBoardView.clearHighlights();
-                pieceIsSelected = false;
-                selectedPieceFile = null;
-                selectedPieceRank = null;
-            } else {
-                // Check if the move is valid
-                if (!gameLogic.isValidMove(selectedPieceFile, selectedPieceRank, File, Rank)) {
-                    chessBoardView.clearHighlights();
-                    pieceIsSelected = false;
-                    selectedPieceFile = null;
-                    selectedPieceRank = null;
-                }
-                else{
-                    gameLogic.makeMove(selectedPieceFile, selectedPieceRank, File, Rank);
-                    chessBoardView.updateBoard();
-                    chessBoardView.clearHighlights();
-                    pieceIsSelected = false;
-                    selectedPieceFile = null;
-                    selectedPieceRank = null;
-                }
-            }
+            handleSecondClick(position);
         }
     }
 
+    private void handleFirstClick(ChessboardPosition position) {
+        if (gameLogic.isMovable(position)) {
+            selectPiece(position);
+        }
+    }
+
+    private void handleSecondClick(ChessboardPosition position) {
+        if (position.equals(selectedPosition)) {
+            deselectPiece();
+            return;
+        }
+
+        if (gameLogic.isValidMove(selectedPosition, position)) {
+            makeMove(position);
+        } else {
+            deselectPiece();
+        }
+    }
+
+    private void selectPiece(ChessboardPosition position) {
+        chessBoardView.highlightSquare(position);
+        selectedPosition = position;
+    }
+
+    private void deselectPiece() {
+        chessBoardView.clearHighlights();
+        selectedPosition = null;
+    }
+
+    private void makeMove(ChessboardPosition targetPosition) {
+        gameLogic.makeMove(selectedPosition, targetPosition);
+        chessBoardView.updateBoard();
+        deselectPiece();
+    }
+
+    public GameLogic getGameLogic() { return gameLogic;
+    }
+
+    public ChessBoardView getChessBoardView() { return chessBoardView;
+    }
 }

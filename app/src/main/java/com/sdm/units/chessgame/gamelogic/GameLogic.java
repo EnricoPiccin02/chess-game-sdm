@@ -1,16 +1,15 @@
 package com.sdm.units.chessgame.gamelogic;
 
 public class GameLogic {
-    public boolean isMovable(ChessboardFile chessboardFile, ChessboardRank chessboardRank) {
+    public boolean isMovable(ChessboardPosition chessboardPosition) {
         return false;
     }
 
-    public boolean isValidMove(ChessboardFile fromFile, ChessboardRank fromRank,
-                               ChessboardFile toFile, ChessboardRank toRank) {
+    public boolean isValidMove(ChessboardPosition fromPosition, ChessboardPosition toPosition) {
         return false;
     }
 
-    public void makeMove(ChessboardFile fromFile, ChessboardRank fromRank, ChessboardFile toFile, ChessboardRank toRank) {
+    public void makeMove(ChessboardPosition fromPosition, ChessboardPosition toPosition) {
 
     }
 }
