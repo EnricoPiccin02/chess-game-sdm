@@ -11,6 +11,10 @@ public class ChessBoardView extends JPanel {
     private final ChessController controller;
     private final JButton[][] squares;
 
+    private static final Color HIGHLIGHT_COLOR = new Color(255, 255, 0, 128);
+    private static final Color LIGHT_SQUARE_COLOR = new Color(240, 217, 181);
+    private static final Color DARK_SQUARE_COLOR = new Color(181, 136, 99);
+
     public ChessBoardView(ChessController controller) {
         this.controller = controller;
         this.squares = new JButton[8][8];
@@ -33,9 +37,11 @@ public class ChessBoardView extends JPanel {
         }
     }
 
-    
+
     public void highlightSquare(ChessboardPosition position) {
-        // To be implemented
+        int file = position.file().ordinal();
+        int rank = position.rank().ordinal();
+        squares[rank][file].setBackground(HIGHLIGHT_COLOR);
     }
 
     
