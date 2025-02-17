@@ -32,11 +32,17 @@ public class ChessBoardView extends JPanel {
                         ChessboardRank.values()[rank]
                 );
                 square.addActionListener(e -> controller.handleSquareClick(position));
+                square.setBackground(getSquareColor(rank, file));
+                square.setOpaque(true);
+                square.setBorderPainted(false);
                 add(square);
             }
         }
     }
 
+    private Color getSquareColor(int rank, int file) {
+        return (rank + file) % 2 == 0 ? LIGHT_SQUARE_COLOR : DARK_SQUARE_COLOR;
+    }
 
     public void highlightSquare(ChessboardPosition position) {
         int file = position.file().ordinal();
@@ -52,5 +58,10 @@ public class ChessBoardView extends JPanel {
     
     public void updateBoard(ChessBoardViewModel viewModel) {
         // To be implemented
+    }
+
+    // Helper method to get button at position (for testing)
+    public JButton getSquareButton(ChessboardPosition position) {
+        return squares[position.rank().ordinal()][position.file().ordinal()];
     }
 }

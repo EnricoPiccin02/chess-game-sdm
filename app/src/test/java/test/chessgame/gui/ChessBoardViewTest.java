@@ -17,6 +17,8 @@ class ChessBoardViewTest {
     private ChessBoardView view;
     private ChessController mockController;
     private static final Color HIGHLIGHT_COLOR = new Color(255, 255, 0, 128);
+    private static final Color LIGHT_SQUARE_COLOR = new Color(240, 217, 181);
+    private static final Color DARK_SQUARE_COLOR = new Color(181, 136, 99);
 
     @BeforeEach
     void setUp() {
@@ -31,12 +33,6 @@ class ChessBoardViewTest {
         Component[] components = view.getComponents();
         long buttonCount = countButtons(components);
         assertEquals(64, buttonCount);
-    }
-
-    private long countButtons(Component[] components) {
-        return java.util.Arrays.stream(components)
-                .filter(component -> component instanceof JButton)
-                .count();
     }
 
     @Test
@@ -58,5 +54,34 @@ class ChessBoardViewTest {
 
         JButton highlightedButton = (JButton) view.getComponents()[56];
         assertEquals(HIGHLIGHT_COLOR, highlightedButton.getBackground());
+    }
+
+    @Test
+    void shouldHaveCorrectAlternatingSquareColors() {
+        // Test some key positions to verify the alternating pattern
+        // A1 should be light (rank 0, file 0)
+        assertEquals(LIGHT_SQUARE_COLOR, getSquareAt(ChessboardFile.A, ChessboardRank.ONE).getBackground());
+
+        // B1 should be dark (rank 0, file 1)
+        assertEquals(DARK_SQUARE_COLOR, getSquareAt(ChessboardFile.B, ChessboardRank.ONE).getBackground());
+
+        // A2 should be dark (rank 1, file 0)
+        assertEquals(DARK_SQUARE_COLOR, getSquareAt(ChessboardFile.A, ChessboardRank.TWO).getBackground());
+
+        // B2 should be light (rank 1, file 1)
+        assertEquals(LIGHT_SQUARE_COLOR, getSquareAt(ChessboardFile.B, ChessboardRank.TWO).getBackground());
+
+        // H8 should be dark (rank 7, file 7)
+        assertEquals(LIGHT_SQUARE_COLOR, getSquareAt(ChessboardFile.H, ChessboardRank.EIGHT).getBackground());
+    }
+
+    private long countButtons(Component[] components) {
+        return java.util.Arrays.stream(components)
+                .filter(component -> component instanceof JButton)
+                .count();
+    }
+
+    private JButton getSquareAt(ChessboardFile file, ChessboardRank rank) {
+        return view.getSquareButton(new ChessboardPosition(file, rank));
     }
 }
