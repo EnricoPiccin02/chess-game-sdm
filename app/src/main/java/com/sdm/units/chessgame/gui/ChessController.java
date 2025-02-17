@@ -51,6 +51,12 @@ public class ChessController {
                     selectedPieceFile = null;
                     selectedPieceRank = null;
                 }
+                else{
+                    chessBoardView.clearHighlights();
+                    pieceIsSelected = false;
+                    selectedPieceFile = null;
+                    selectedPieceRank = null;
+                }
             }
         }
     }
