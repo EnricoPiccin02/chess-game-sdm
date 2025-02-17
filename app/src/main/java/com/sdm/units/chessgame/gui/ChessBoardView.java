@@ -57,9 +57,27 @@ public class ChessBoardView extends JPanel {
             }
         }
     }
-    
+
     public void updateBoard(ChessBoardViewModel viewModel) {
-        // To be implemented
+        // First clear all squares
+        for (int rank = 0; rank < 8; rank++) {
+            for (int file = 0; file < 8; file++) {
+                JButton square = squares[rank][file];
+                square.setText("");
+                square.setForeground(null);
+            }
+        }
+
+        // Then update squares with pieces
+        for (ChessBoardViewModel.SquareViewModel squareVM : viewModel.squares()) {
+            ChessboardPosition pos = squareVM.position();
+            ChessBoardViewModel.PieceViewModel piece = squareVM.piece();
+            if (piece != null) {
+                JButton square = getSquareButton(pos);
+                square.setText(piece.symbol());
+                square.setForeground(piece.isWhite() ? Color.WHITE : Color.BLACK);
+            }
+        }
     }
 
     // Helper method to get button at position (for testing)

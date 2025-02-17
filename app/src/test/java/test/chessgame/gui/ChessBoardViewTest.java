@@ -4,11 +4,13 @@ import com.sdm.units.chessgame.gamelogic.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.ChessboardRank;
 import com.sdm.units.chessgame.gui.ChessBoardView;
+import com.sdm.units.chessgame.gui.ChessBoardViewModel;
 import com.sdm.units.chessgame.gui.ChessController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import javax.swing.JButton;
 import java.awt.*;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -86,6 +88,33 @@ class ChessBoardViewTest {
         // Verify the square returns to its original color (LIGHT_SQUARE_COLOR)
         JButton button = (JButton) view.getComponents()[56];
         assertEquals(LIGHT_SQUARE_COLOR, button.getBackground());
+    }
+
+    @Test
+    void shouldUpdateBoardWithPieces() {
+        // Create a view model with a white pawn at A2 and a black pawn at A7
+        ChessBoardViewModel viewModel = new ChessBoardViewModel(List.of(
+                new ChessBoardViewModel.SquareViewModel(
+                        new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO),
+                        new ChessBoardViewModel.PieceViewModel("♙", true)
+                ),
+                new ChessBoardViewModel.SquareViewModel(
+                        new ChessboardPosition(ChessboardFile.A, ChessboardRank.SEVEN),
+                        new ChessBoardViewModel.PieceViewModel("♙", false)
+                )
+        ));
+
+        view.updateBoard(viewModel);
+
+        // Check white pawn
+        JButton buttonA2 = view.getSquareButton(new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO));
+        assertEquals("♙", buttonA2.getText());
+        assertEquals(Color.WHITE, buttonA2.getForeground());
+
+        // Check black pawn
+        JButton buttonA7 = view.getSquareButton(new ChessboardPosition(ChessboardFile.A, ChessboardRank.SEVEN));
+        assertEquals("♙", buttonA7.getText());
+        assertEquals(Color.BLACK, buttonA7.getForeground());
     }
 
     private long countButtons(Component[] components) {
