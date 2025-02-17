@@ -42,9 +42,9 @@ public class ChessController{
             deselectPiece();
             return;
         }
-
-        if (gameLogic.isValidMove(selectedPosition, position)) {
-            makeMove(position);
+        ChessMove move = new ChessMove(selectedPosition, position, gameLogic.getPieceAt(selectedPosition));
+        if (gameLogic.isValidMove(move)) {
+            makeMove(move);
         } else {
             deselectPiece();
         }
@@ -60,11 +60,7 @@ public class ChessController{
         selectedPosition = null;
     }
 
-    private void makeMove(ChessboardPosition targetPosition) {
-        ChessMove move = new ChessMove(
-                selectedPosition,
-                targetPosition,
-                gameLogic.getPieceAt(selectedPosition));
+    private void makeMove(ChessMove move) {
         gameLogic.makeMove(move);
         updateView();
         deselectPiece();

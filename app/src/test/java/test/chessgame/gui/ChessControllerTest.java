@@ -81,7 +81,8 @@ public class ChessControllerTest {
 
         chessController.handleSquareClick(D2);
 
-        when(gameLogic.isValidMove(D2, D4)).thenReturn(false);
+
+        when(gameLogic.isValidMove(new ChessMove(D2, D4, gameLogic.getPieceAt(D2)))).thenReturn(false);
 
         chessController.handleSquareClick(D4);
 
@@ -94,7 +95,7 @@ public class ChessControllerTest {
 
         chessController.handleSquareClick(D2);
 
-        when(gameLogic.isValidMove(D2, D4)).thenReturn(true);
+        when(gameLogic.isValidMove(new ChessMove(D2, D4, gameLogic.getPieceAt(D2)))).thenReturn(true);
 
         chessController.handleSquareClick(D4);
 
@@ -108,7 +109,7 @@ public class ChessControllerTest {
 
         when(gameLogic.isMovable(D2)).thenReturn(true);
         when(gameLogic.getPieceAt(D2)).thenReturn(Optional.of(mockPawn));
-        when(gameLogic.isValidMove(D2, D4)).thenReturn(true);
+        when(gameLogic.isValidMove(new ChessMove(D2, D4, gameLogic.getPieceAt(D2)))).thenReturn(true);
 
         // Act
         chessController.handleSquareClick(D2);  // Select piece
@@ -123,10 +124,11 @@ public class ChessControllerTest {
         // Arrange
         ChessboardPosition start = mock(ChessboardPosition.class);
         ChessboardPosition target = mock(ChessboardPosition.class);
+        ChessPiece mockPawn = mock(ChessPiece.class);
 
         when(gameLogic.isMovable(start)).thenReturn(true);
         when(gameLogic.getPieceAt(start)).thenReturn(Optional.of(mockPawn));
-        when(gameLogic.isValidMove(start, target)).thenReturn(true);
+        when(gameLogic.isValidMove(any(ChessMove.class))).thenReturn(true);
 
         // Act
         chessController.handleSquareClick(start);
@@ -138,7 +140,8 @@ public class ChessControllerTest {
 
         // Assert that the move has the correct start and target positions
         ChessMove capturedMove = moveCaptor.getValue();
-        assert capturedMove.getStart().equals(start);
-        assert capturedMove.getTarget().equals(target);
+        assertEquals(start, capturedMove.getStart());
+        assertEquals(target, capturedMove.getTarget());
     }
+
 }
