@@ -57,6 +57,17 @@ public class ChessControllerTest {
     }
 
     @Test
+    public void InvalidFirstClickDoesNotUpdateStateTest() {
+        when(gameLogic.isMovable(D2)).thenReturn(false);
+
+        chessController.handleSquareClick(D2);
+
+        verify(chessBoardView, never()).highlightSquare(any());
+        verify(chessBoardView, never()).clearHighlights();
+        verify(gameLogic, never()).makeMove(any());
+    }
+
+    @Test
     public void firstClickHighlightsSquareIfMovablePieceTest() {
         when(gameLogic.isMovable(D2)).thenReturn(true);
 
@@ -142,6 +153,17 @@ public class ChessControllerTest {
         ChessMove capturedMove = moveCaptor.getValue();
         assertEquals(start, capturedMove.getStart());
         assertEquals(target, capturedMove.getTarget());
+    }
+
+    @Test
+    public void testCreateViewModelGeneratesAllSquares() {
+        // Capture the ChessBoardViewModel passed to updateBoard
+        ArgumentCaptor<ChessBoardViewModel> viewModelCaptor = ArgumentCaptor.forClass(ChessBoardViewModel.class);
+        chessController.updateView();
+        verify(chessBoardView).updateBoard(viewModelCaptor.capture());
+
+        // Should have 64 squares (8x8 board)
+        assertEquals(64, viewModelCaptor.getValue().squares().size());
     }
 
 }
