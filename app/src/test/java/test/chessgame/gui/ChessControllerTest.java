@@ -61,6 +61,26 @@ public class ChessControllerTest {
         verify(chessBoardView).clearHighlights();
     }
 
+    @Test
+    public void secondClickInvalidMoveUnhighlightSelectionTest() {
+        // Assume the piece at D2 is movable
+        when(gameLogic.isMovable(ChessboardFile.D, ChessboardRank.TWO)).thenReturn(true);
+
+        // First click selects a piece
+        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.TWO);
+
+        // Assume move to D4 is invalid
+        when(gameLogic.isValidMove(ChessboardFile.D, ChessboardRank.TWO, ChessboardFile.D, ChessboardRank.FOUR))
+                .thenReturn(false);
+
+        // Second click attempts an invalid move
+        chessController.handleSquareClick(ChessboardFile.D, ChessboardRank.FOUR);
+
+        // Verify that the selection is unhighlighted
+        verify(chessBoardView).clearHighlights();
+    }
+
+
 
 
 

@@ -27,22 +27,32 @@ public class ChessController {
     }
 
     public void handleSquareClick(ChessboardFile File, ChessboardRank Rank) {
-        if (!pieceIsSelected){
-            if(gameLogic.isMovable(File,Rank)){
-                chessBoardView.highlightSquare(File,Rank);
+        if (!pieceIsSelected) {
+            // First click: Select the piece if movable
+            if (gameLogic.isMovable(File, Rank)) {
+                chessBoardView.highlightSquare(File, Rank);
                 pieceIsSelected = true;
                 selectedPieceFile = File;
                 selectedPieceRank = Rank;
             }
-        }
-        else {
+        } else {
             if (selectedPieceFile == File && selectedPieceRank == Rank) {
+                // Player clicked the same square (deselect)
                 chessBoardView.clearHighlights();
                 pieceIsSelected = false;
                 selectedPieceFile = null;
                 selectedPieceRank = null;
+            } else {
+                // Check if the move is valid
+                if (!gameLogic.isValidMove(selectedPieceFile, selectedPieceRank, File, Rank)) {
+                    // Invalid move: Clear highlights only once
+                    chessBoardView.clearHighlights();
+                    pieceIsSelected = false;
+                    selectedPieceFile = null;
+                    selectedPieceRank = null;
+                }
             }
-            }
-
         }
+    }
+
 }
