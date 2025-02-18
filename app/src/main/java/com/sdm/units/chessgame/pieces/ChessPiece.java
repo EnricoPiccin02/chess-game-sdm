@@ -30,10 +30,6 @@ public abstract class ChessPiece implements Movable {
         return info;
     }
 
-    public ChessPieceColor pieceColor() {
-        return color;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.swing.plaf.OptionPaneUI;
 
 import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.basics.ChessPieceInfo;
@@ -31,6 +28,8 @@ public class Pawn extends ChessPiece {
     @Override
     public List<ChessPieceMove> getPossibleMoves(ChessboardPosition fromPosition) {
         List<ChessboardDirection> directionsOfMovement = new ArrayList<>();
+        List<ChessPieceMove> possibleMoves = new ArrayList<>();
+        Optional<ChessboardPosition> currentPosition = Optional.of(fromPosition);
         
         directionsOfMovement.add(switch (color) {
             case ChessPieceColor.WHITE -> ChessboardDirection.UP;
@@ -39,7 +38,15 @@ public class Pawn extends ChessPiece {
 
         if(!hasMoved) directionsOfMovement.add(directionsOfMovement.getFirst());
         
-        return loadPawnMoves(directionsOfMovement, fromPosition);
+        for (ChessboardDirection direction : directionsOfMovement) {
+            Optional<ChessboardPosition> nextPosition = currentPosition.get().nextPosition(direction);
+            if (nextPosition.isPresent()) {
+                possibleMoves.add(new ChessPieceMove(direction, nextPosition.get()));
+                currentPosition = nextPosition;
+            }
+        }
+        
+        return possibleMoves;
     }
 
     @Override
@@ -48,22 +55,10 @@ public class Pawn extends ChessPiece {
             List.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT) :
             List.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT);
         
-        return loadPawnMoves(directionsOfMovement, fromPosition);
-    }
-
-    private List<ChessPieceMove> loadPawnMoves(List<ChessboardDirection> directionsOfMovement, ChessboardPosition fromPosition) {
-        List<ChessPieceMove> moves = new ArrayList<>();
-        Optional<ChessboardPosition> currentPosition = Optional.of(fromPosition);
-
-        for (ChessboardDirection direction : directionsOfMovement) {
-            Optional<ChessboardPosition> nextPosition = currentPosition.get().nextPosition(direction);
-            
-            if (nextPosition.isPresent()) {
-                moves.add(new ChessPieceMove(direction, nextPosition.get()));
-                currentPosition = nextPosition;
-            }
-        }
-
-        return moves;
+        return directionsOfMovement.stream()
+            .map(direction -> fromPosition.nextPosition(direction).map(position -> new ChessPieceMove(direction, position)))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
     }
 }
