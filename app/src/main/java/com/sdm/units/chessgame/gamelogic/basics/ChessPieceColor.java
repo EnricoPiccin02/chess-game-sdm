@@ -23,5 +23,9 @@ public enum ChessPieceColor {
         this.name = name;
     }
 
+    public static ChessPieceColor getOppositeColor(ChessPieceColor current) {
+        return current == WHITE ? BLACK : WHITE;
+    }
+
     public abstract Color getEncodedColor();
 }

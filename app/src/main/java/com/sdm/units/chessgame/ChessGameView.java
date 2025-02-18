@@ -7,7 +7,7 @@ import com.sdm.units.chessgame.gamelogic.basics.ChessboardPosition;
 
 public interface ChessGameView {
     
-    public void show();
+    public void display();
 
     public void setChessboard(Chessboard board);
 
