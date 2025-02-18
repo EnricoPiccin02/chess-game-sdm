@@ -1,6 +1,7 @@
 package com.sdm.units.chessgame;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.sdm.units.chessgame.gamelogic.Chessboard;
 import com.sdm.units.chessgame.gamelogic.ChessboardMovementHandler;
@@ -23,34 +24,26 @@ public class ChessGamePlayer {
     
     public void start() {
         currentPlayer = ChessPieceColor.WHITE;
-        view.show();
+        view.display();
         view.setChessboard(chessboard);
         view.setChoosablePieces(chessboard.getNonVacantPositionsOfColor(currentPlayer));
     }
 
     public void playerChoosesMoves(ChessboardPosition fromPosition) {
         chessboard.getNonVacantPositionsOfColor(currentPlayer).stream()
-            .filter(position -> position.equals(fromPosition))
+            .filter(position -> Objects.equals(position, fromPosition))
             .findFirst()
             .ifPresent(position -> view.setChoosableMoves(handler.getPieceValidMoves(chessboard, position)));
     }
 
-    public void playerMoves(ChessboardPosition fromPosition, ChessboardPosition toPosition) {
-        try {
-            handler.makeMove(chessboard, fromPosition, toPosition).ifPresent(capturedPieceValue -> playerScore.put(currentPlayer, capturedPieceValue));
-            view.setChessboard(chessboard);
-        } catch (IllegalArgumentException e) {
-            playerChoosesMoves(fromPosition);
-        }
+    public void playerMoves(ChessboardPosition fromPosition, ChessboardPosition toPosition) throws IllegalArgumentException {
+        handler.makeMove(chessboard, fromPosition, toPosition).ifPresent(capturedPieceValue -> playerScore.put(currentPlayer, capturedPieceValue));
+        view.setChessboard(chessboard);
 
         if (chessboard.getNonVacantPositionsOfColor(currentPlayer).isEmpty())
             view.displayMessage("Player " + currentPlayer + " won!");
 
-        if (currentPlayer.equals(ChessPieceColor.WHITE))
-            currentPlayer = ChessPieceColor.BLACK;
-        else
-            currentPlayer = ChessPieceColor.WHITE;
-
+        currentPlayer = ChessPieceColor.getOppositeColor(currentPlayer);
         view.setChoosablePieces(chessboard.getNonVacantPositionsOfColor(currentPlayer));
     }
 
