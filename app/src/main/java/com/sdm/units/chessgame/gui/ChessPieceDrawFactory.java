@@ -2,116 +2,72 @@ package com.sdm.units.chessgame.gui;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
-import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
 
 public class ChessPieceDrawFactory {
-    
-    public static void drawPawn(Graphics2D scratch, Dimension size, ChessPieceColor color){
-        scratch.setColor(color.getEncodedColor());
 
-        // Draw the pawn using basic shapes
-        Dimension headSize = new Dimension(size.width / 3, size.height / 3);
-        Dimension bodySize = new Dimension(size.width / 3, size.height / 2);
-        Dimension baseSize = new Dimension(size.width / 4, size.height / 6);
+    private static final int OFFSET = 5;
 
-        // Head (circle)
-        scratch.fillOval(headSize.width, 0, headSize.width, headSize.height);
+    private static void drawChessPieceFromSvg(String chessPieceSvgPath, Graphics2D scratch, Dimension size) {
+        BufferedImage svgImage = SvgImageUtils.renderSvgToImage(chessPieceSvgPath, (float) size.getWidth() - OFFSET, (float) size.getHeight() - OFFSET);
 
-        // Body (rectangle)
-        scratch.fillRect(bodySize.width, headSize.height, headSize.width, bodySize.height);
+        if (svgImage != null)
+            scratch.drawImage(svgImage, OFFSET / 2, OFFSET / 2, null);
+    }
 
-        // Base (rectangle)
-        scratch.fillRect(baseSize.width, headSize.height + bodySize.height, bodySize.height, baseSize.height);
+    public static void drawPawn(Graphics2D scratch, Dimension size, ChessPieceColor color) {
+        String pawnSvgPath = switch (color) {
+            case ChessPieceColor.BLACK -> "images/pieces/black/pawn.svg";
+            case ChessPieceColor.WHITE -> "images/pieces/white/pawn.svg";
+        };
+
+        drawChessPieceFromSvg(pawnSvgPath, scratch, size);
     }
 
     public static void drawRook(Graphics2D scratch, Dimension size, ChessPieceColor color){
-        scratch.setColor(color.getEncodedColor());
+        String rookSvgPath = switch (color) {
+            case ChessPieceColor.BLACK -> "images/pieces/black/rook.svg";
+            case ChessPieceColor.WHITE -> "images/pieces/white/rook.svg";
+        };
 
-        // Draw the rook using basic shapes
-        Dimension headSize = new Dimension(size.width / 3, size.height / 3);
-        Dimension bodySize = new Dimension(size.width / 3, size.height / 2);
-        Dimension baseSize = new Dimension(size.width / 4, size.height / 6);
-
-        // Head (circle)
-        scratch.fillOval(headSize.width, 0, headSize.width, headSize.height);
-
-        // Body (rectangle)
-        scratch.fillRect(bodySize.width, headSize.height, headSize.width, bodySize.height);
-
-        // Base (rectangle)
-        scratch.fillRect(baseSize.width, headSize.height + bodySize.height, bodySize.height, baseSize.height);
+        drawChessPieceFromSvg(rookSvgPath, scratch, size);
     }
 
     public static void drawKnight(Graphics2D scratch, Dimension size, ChessPieceColor color){
-        scratch.setColor(color.getEncodedColor());
+        String knightSvgPath = switch (color) {
+            case ChessPieceColor.BLACK -> "images/pieces/black/knight.svg";
+            case ChessPieceColor.WHITE -> "images/pieces/white/knight.svg";
+        };
 
-        // Draw the knight using basic shapes
-        Dimension headSize = new Dimension(size.width / 3, size.height / 3);
-        Dimension bodySize = new Dimension(size.width / 3, size.height / 2);
-        Dimension baseSize = new Dimension(size.width / 4, size.height / 6);
-
-        // Head (circle)
-        scratch.fillOval(headSize.width, 0, headSize.width, headSize.height);
-
-        // Body (rectangle)
-        scratch.fillRect(bodySize.width, headSize.height, headSize.width, bodySize.height);
-
-        // Base (rectangle)
-        scratch.fillRect(baseSize.width, headSize.height + bodySize.height, bodySize.height, baseSize.height);
+        drawChessPieceFromSvg(knightSvgPath, scratch, size);
     }
 
     public static void drawBishop(Graphics2D scratch, Dimension size, ChessPieceColor color){
-        scratch.setColor(color.getEncodedColor());
+        String bishopSvgPath = switch (color) {
+            case ChessPieceColor.BLACK -> "images/pieces/black/bishop.svg";
+            case ChessPieceColor.WHITE -> "images/pieces/white/bishop.svg";
+        };
 
-        // Draw the bishop using basic shapes
-        Dimension headSize = new Dimension(size.width / 3, size.height / 3);
-        Dimension bodySize = new Dimension(size.width / 3, size.height / 2);
-        Dimension baseSize = new Dimension(size.width / 4, size.height / 6);
-
-        // Head (circle)
-        scratch.fillOval(headSize.width, 0, headSize.width, headSize.height);
-
-        // Body (rectangle)
-        scratch.fillRect(bodySize.width, headSize.height, headSize.width, bodySize.height);
-
-        // Base (rectangle)
-        scratch.fillRect(baseSize.width, headSize.height + bodySize.height, bodySize.height, baseSize.height);
+        drawChessPieceFromSvg(bishopSvgPath, scratch, size);
     }
 
     public static void drawQueen(Graphics2D scratch, Dimension size, ChessPieceColor color){
-        scratch.setColor(color.getEncodedColor());
+        String queenSvgPath = switch (color) {
+            case ChessPieceColor.BLACK -> "images/pieces/black/queen.svg";
+            case ChessPieceColor.WHITE -> "images/pieces/white/queen.svg";
+        };
 
-        // Draw the queen using basic shapes
-        Dimension headSize = new Dimension(size.width / 3, size.height / 3);
-        Dimension bodySize = new Dimension(size.width / 3, size.height / 2);
-        Dimension baseSize = new Dimension(size.width / 4, size.height / 6);
-
-        // Head (circle)
-        scratch.fillOval(headSize.width, 0, headSize.width, headSize.height);
-
-        // Body (rectangle)
-        scratch.fillRect(bodySize.width, headSize.height, headSize.width, bodySize.height);
-
-        // Base (rectangle)
-        scratch.fillRect(baseSize.width, headSize.height + bodySize.height, bodySize.height, baseSize.height);
+        drawChessPieceFromSvg(queenSvgPath, scratch, size);
     }
 
     public static void drawKing(Graphics2D scratch, Dimension size, ChessPieceColor color){
-        scratch.setColor(color.getEncodedColor());
+        String kingSvgPath = switch (color) {
+            case ChessPieceColor.BLACK -> "images/pieces/black/king.svg";
+            case ChessPieceColor.WHITE -> "images/pieces/white/king.svg";
+        };
 
-        // Draw the king using basic shapes
-        Dimension headSize = new Dimension(size.width / 3, size.height / 3);
-        Dimension bodySize = new Dimension(size.width / 3, size.height / 2);
-        Dimension baseSize = new Dimension(size.width / 4, size.height / 6);
-
-        // Head (circle)
-        scratch.fillOval(headSize.width, 0, headSize.width, headSize.height);
-
-        // Body (rectangle)
-        scratch.fillRect(bodySize.width, headSize.height, headSize.width, bodySize.height);
-
-        // Base (rectangle)
-        scratch.fillRect(baseSize.width, headSize.height + bodySize.height, bodySize.height, baseSize.height);
+        drawChessPieceFromSvg(kingSvgPath, scratch, size);
     }
 }

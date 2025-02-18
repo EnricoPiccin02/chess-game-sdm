@@ -16,11 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-
-import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
-import com.sdm.units.chessgame.gamelogic.ChessboardFile;
-import com.sdm.units.chessgame.gamelogic.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.ChessboardRank;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.basics.ChessboardFile;
+import com.sdm.units.chessgame.gamelogic.basics.ChessboardPosition;
+import com.sdm.units.chessgame.gamelogic.basics.ChessboardRank;
 import com.sdm.units.chessgame.pieces.ChessPiece;
 import com.sdm.units.chessgame.pieces.Pawn;
 

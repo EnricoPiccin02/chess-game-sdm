@@ -1,8 +1,8 @@
 package com.sdm.units.chessgame.pieces;
 
-import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
-import com.sdm.units.chessgame.gamelogic.ChessPieceInfo;
-import com.sdm.units.chessgame.gamelogic.Movable;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceInfo;
+import com.sdm.units.chessgame.gamelogic.basics.Movable;
 import com.sdm.units.chessgame.gui.DrawnChessPiece;
 
 public abstract class ChessPiece implements Movable {
@@ -18,8 +18,8 @@ public abstract class ChessPiece implements Movable {
 
     public abstract DrawnChessPiece drawChessPiece();
 
-    public void setHasMoved(boolean hasMoved) {
-        this.hasMoved = hasMoved;
+    public void setHasMoved() {
+        this.hasMoved = true;
     }
 
     public boolean hasMoved() {
@@ -28,10 +28,6 @@ public abstract class ChessPiece implements Movable {
 
     public ChessPieceInfo pieceInfo() {
         return info;
-    }
-
-    public ChessPieceColor pieceColor() {
-        return color;
     }
 
     @Override

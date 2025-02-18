@@ -8,6 +8,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'java'
 }
 
 repositories {
@@ -17,7 +18,11 @@ repositories {
 
 dependencies {
     // Use JUnit Jupiter for testing.
-    testImplementation libs.junit.jupiter
+    testImplementation platform("org.junit:junit-bom:5.10.0")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation 'org.hamcrest:hamcrest:3.0'
+    implementation 'org.apache.xmlgraphics:batik-all:1.16'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 

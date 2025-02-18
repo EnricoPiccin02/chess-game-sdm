@@ -7,7 +7,7 @@ import java.awt.RenderingHints;
 
 import javax.swing.JComponent;
 
-import com.sdm.units.chessgame.gamelogic.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.basics.ChessPieceColor;
 
 public class DrawnChessPiece extends JComponent {
 
