@@ -45,6 +45,6 @@ public enum ChessboardRank {
     public OptionalInt distance(ChessboardRank rank) {
         if(rank == null) return OptionalInt.empty();
 
-        return OptionalInt.of(this.rankNumber - rank.rankNumber);
+        return OptionalInt.of((rank.rankNumber - this.rankNumber));
     }
 }

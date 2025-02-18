@@ -45,6 +45,6 @@ public enum ChessboardFile {
     public OptionalInt distance(ChessboardFile file) {
         if(file == null) return OptionalInt.empty();
 
-        return OptionalInt.of((this.fileCharacter - file.fileCharacter) * values().length);
+        return OptionalInt.of(this.fileCharacter - file.fileCharacter);
     }
 }

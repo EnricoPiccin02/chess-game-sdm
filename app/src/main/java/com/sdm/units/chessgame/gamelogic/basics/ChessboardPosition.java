@@ -27,10 +27,10 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) imple
         return currentPosition;
     }
 
-    public OptionalInt distance(ChessboardPosition otherPosition) {
-        if(otherPosition == null || file == null || rank == null) return OptionalInt.empty();
+    public OptionalInt distance(ChessboardPosition otherChessboardPosition) {
+        if (otherChessboardPosition == null || file == null || rank == null) return OptionalInt.empty();
 
-        return Stream.of(this.file.distance(otherPosition.file),this.rank.distance(otherPosition.rank))
+        return Stream.of(this.file.distance(otherChessboardPosition.file), this.rank.distance(otherChessboardPosition.rank))
             .filter(OptionalInt::isPresent)
             .mapToInt(OptionalInt::getAsInt)
             .reduce(Integer::sum);
@@ -38,10 +38,17 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) imple
 
     @Override
     public int compareTo(ChessboardPosition otherChessboardPosition) {
-        OptionalInt distanceCompare = this.distance(otherChessboardPosition);
-
-        if (distanceCompare.isPresent()) return distanceCompare.getAsInt();
-
-        return 0;
+        final int[] comparedPosition = {0};
+        
+        if (otherChessboardPosition != null && file != null && rank != null) {
+            this.file.distance(otherChessboardPosition.file).ifPresent(
+                fileDistance -> comparedPosition[0] += fileDistance
+            );
+            this.rank.distance(otherChessboardPosition.rank).ifPresent(
+                rankDistance -> comparedPosition[0] += rankDistance * ChessboardRank.values().length
+            );
+        }
+        
+        return comparedPosition[0];
     }
 }
