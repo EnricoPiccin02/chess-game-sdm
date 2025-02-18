@@ -10,7 +10,7 @@ public record ChessPieceMove(ChessboardDirection direction, ChessboardPosition p
         OptionalInt comparedPosition = position.distance(otherChessPieceMove.position());
 
         if(comparedDirection == 0 && comparedPosition.isPresent())
-            return comparedPosition.getAsInt();
+            return Math.abs(comparedPosition.getAsInt());
         else
             return comparedDirection;
     }
