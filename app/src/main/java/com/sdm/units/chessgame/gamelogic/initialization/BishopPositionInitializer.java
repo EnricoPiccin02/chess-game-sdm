@@ -17,7 +17,7 @@ public class BishopPositionInitializer implements ChessPiecePositionInitializer 
     @Override
     public Map<ChessboardPosition, Optional<ChessPiece>> initializeFor(ChessPieceColor color) {
         return chessPieceStartingPositions(
-            new Bishop(color),
+            () -> new Bishop(color),
             Stream.of(ChessboardFile.C, ChessboardFile.F),
             color == ChessPieceColor.WHITE ? ChessboardRank.ONE : ChessboardRank.EIGHT
         );

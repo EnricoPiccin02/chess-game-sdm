@@ -17,7 +17,7 @@ public class RookPositionInitializer implements ChessPiecePositionInitializer {
     @Override
     public Map<ChessboardPosition, Optional<ChessPiece>> initializeFor(ChessPieceColor color) {
         return chessPieceStartingPositions(
-            new Rook(color),
+            () -> new Rook(color),
             Stream.of(ChessboardFile.A, ChessboardFile.H),
             color == ChessPieceColor.WHITE ? ChessboardRank.ONE : ChessboardRank.EIGHT
         );

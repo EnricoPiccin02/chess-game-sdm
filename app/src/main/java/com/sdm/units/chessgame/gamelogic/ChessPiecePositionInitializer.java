@@ -2,6 +2,7 @@ package com.sdm.units.chessgame.gamelogic;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,8 +17,8 @@ public interface ChessPiecePositionInitializer {
     
     public Map<ChessboardPosition, Optional<ChessPiece>> initializeFor(ChessPieceColor color);
 
-    default Map<ChessboardPosition, Optional<ChessPiece>> chessPieceStartingPositions(ChessPiece piece, Stream<ChessboardFile> files, ChessboardRank rank) {
+    default Map<ChessboardPosition, Optional<ChessPiece>> chessPieceStartingPositions(Supplier<? extends ChessPiece> chessPieceSupplier, Stream<ChessboardFile> files, ChessboardRank rank) {
         return files.map(file -> new ChessboardPosition(file, rank))
-            .collect(Collectors.toMap(p -> p, p -> Optional.of(piece)));
+            .collect(Collectors.toMap(p -> p, p -> Optional.of(chessPieceSupplier.get())));
     }
 }

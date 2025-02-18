@@ -17,7 +17,7 @@ public class QueenPositionInitializer implements ChessPiecePositionInitializer {
     @Override
     public Map<ChessboardPosition, Optional<ChessPiece>> initializeFor(ChessPieceColor color) {
         return chessPieceStartingPositions(
-            new Queen(color),
+            () -> new Queen(color),
             Stream.of(ChessboardFile.D),
             color == ChessPieceColor.WHITE ? ChessboardRank.ONE : ChessboardRank.EIGHT
         );

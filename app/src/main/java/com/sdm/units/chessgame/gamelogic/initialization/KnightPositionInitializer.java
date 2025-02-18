@@ -17,7 +17,7 @@ public class KnightPositionInitializer implements ChessPiecePositionInitializer 
     @Override
     public Map<ChessboardPosition, Optional<ChessPiece>> initializeFor(ChessPieceColor color) {
         return chessPieceStartingPositions(
-            new Knight(color),
+            () -> new Knight(color),
             Stream.of(ChessboardFile.B, ChessboardFile.G),
             color == ChessPieceColor.WHITE ? ChessboardRank.ONE : ChessboardRank.EIGHT
         );

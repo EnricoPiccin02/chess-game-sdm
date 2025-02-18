@@ -17,7 +17,7 @@ public class PawnPositionInitializer implements ChessPiecePositionInitializer {
     @Override
     public Map<ChessboardPosition, Optional<ChessPiece>> initializeFor(ChessPieceColor color) {
         return chessPieceStartingPositions(
-            new Pawn(color),
+            () -> new Pawn(color),
             Stream.of(ChessboardFile.values()),
             color == ChessPieceColor.WHITE ? ChessboardRank.TWO : ChessboardRank.SEVEN
         );
