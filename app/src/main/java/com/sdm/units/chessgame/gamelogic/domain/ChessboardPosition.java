@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.basics;
+package com.sdm.units.chessgame.gamelogic.domain;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -16,12 +16,14 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) imple
             return Optional.empty();
     }
 
-    public Optional<ChessboardPosition> nextPosition(ChessboardDirection ... directions) {
+    public Optional<ChessboardPosition> nextPosition(Iterable<ChessboardDirection> directions) {
         Optional<ChessboardPosition> currentPosition = Optional.of(this);
-        
+
         for (ChessboardDirection direction : directions) {
             if (currentPosition.isPresent())
                 currentPosition = currentPosition.get().nextPosition(direction);
+            else
+                break;
         }
 
         return currentPosition;
@@ -33,6 +35,7 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) imple
         return Stream.of(this.file.distance(otherChessboardPosition.file), this.rank.distance(otherChessboardPosition.rank))
             .filter(OptionalInt::isPresent)
             .mapToInt(OptionalInt::getAsInt)
+            .map(Math::abs)
             .reduce(Integer::sum);
     }
 

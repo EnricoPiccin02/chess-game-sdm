@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.basics;
+package com.sdm.units.chessgame.gamelogic.domain;
 
 public enum ChessPieceInfo {
     

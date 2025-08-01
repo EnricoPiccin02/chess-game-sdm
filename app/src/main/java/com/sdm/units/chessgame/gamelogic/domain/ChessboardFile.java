@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.basics;
+package com.sdm.units.chessgame.gamelogic.domain;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -21,9 +21,8 @@ public enum ChessboardFile {
         this.fileCharacter = fileCharacter;
     }
 
-    @Override
-    public String toString(){
-        return String.valueOf(this.fileCharacter);
+    public String id(){
+        return name();
     }
 
     public Character value() {

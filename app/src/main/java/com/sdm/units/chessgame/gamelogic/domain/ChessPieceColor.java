@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.basics;
+package com.sdm.units.chessgame.gamelogic.domain;
 
 import java.awt.Color;
 
@@ -23,8 +23,8 @@ public enum ChessPieceColor {
         this.name = name;
     }
 
-    public static ChessPieceColor getOppositeColor(ChessPieceColor current) {
-        return current == WHITE ? BLACK : WHITE;
+    public ChessPieceColor opponent() {
+        return this == WHITE ? BLACK : WHITE;
     }
 
     public abstract Color getEncodedColor();

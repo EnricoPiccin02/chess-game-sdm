@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.basics;
+package com.sdm.units.chessgame.gamelogic.domain;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -21,9 +21,8 @@ public enum ChessboardRank {
         this.rankNumber = rankNumber;
     }
 
-    @Override
-    public String toString(){
-        return String.valueOf(this.rankNumber);
+    public String id(){
+        return name();
     }
 
     public Integer value() {
@@ -45,6 +44,6 @@ public enum ChessboardRank {
     public OptionalInt distance(ChessboardRank rank) {
         if(rank == null) return OptionalInt.empty();
 
-        return OptionalInt.of((rank.rankNumber - this.rankNumber));
+        return OptionalInt.of(rank.rankNumber - this.rankNumber);
     }
 }
