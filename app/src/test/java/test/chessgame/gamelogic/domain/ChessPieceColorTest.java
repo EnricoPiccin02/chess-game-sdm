@@ -22,7 +22,7 @@ class ChessPieceColorTest {
     @MethodSource("colorNameProvider")
     @DisplayName("should return correct name")
     void shouldReturnCorrectName(ChessPieceColor color, String expectedName) {
-        assertEquals(expectedName, color.name);
+        assertEquals(expectedName, color.toString());
     }
 
     static Stream<Arguments> colorNameProvider() {

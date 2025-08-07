@@ -17,10 +17,15 @@ public enum ChessPieceColor {
         }
     };
     
-    public final String name;
+    private final String name;
 
     ChessPieceColor(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     public ChessPieceColor opponent() {

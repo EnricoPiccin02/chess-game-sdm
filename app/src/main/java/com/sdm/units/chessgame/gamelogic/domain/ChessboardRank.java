@@ -15,7 +15,7 @@ public enum ChessboardRank {
     SEVEN(7),
     EIGHT(8);
 
-    public final Integer rankNumber;
+    private final Integer rankNumber;
 
     ChessboardRank(int rankNumber) {
         this.rankNumber = rankNumber;

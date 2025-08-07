@@ -21,7 +21,7 @@ dependencies {
     testImplementation platform("org.junit:junit-bom:5.10.0")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "org.mockito:mockito-core:3.+"
-    testImplementation 'org.hamcrest:hamcrest:3.0'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
     implementation 'org.apache.xmlgraphics:batik-all:1.16'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -39,7 +39,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.sdm.units.chessgame.Game'
+    mainClass = 'com.sdm.units.chessgame.ChessGameInitializer'
 }
 
 tasks.named('test') {
