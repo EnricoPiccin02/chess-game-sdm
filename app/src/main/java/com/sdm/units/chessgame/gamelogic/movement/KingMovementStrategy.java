@@ -26,7 +26,7 @@ public class KingMovementStrategy implements MovementStrategy {
             if (currentPosition.isPresent()) {
                 ChessboardPosition pos = currentPosition.get();
 
-                if (board.isPositionVacant(pos)) {
+                if (board.isUnoccupiedSquare(pos)) {
                     legalMoves.add(pos);
                 } else {
                     if (board.isOpponentAt(playerColor, pos)) {

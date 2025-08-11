@@ -13,4 +13,9 @@ public class Knight extends ChessPiece {
             new KnightMovementStrategy(CompositeDirectionSet.L_SHAPED::getCompositeDirections)
         );
     }
+
+    @Override
+    public ChessPiece copy() {
+        return new Knight(pieceColor());
+    }
 }

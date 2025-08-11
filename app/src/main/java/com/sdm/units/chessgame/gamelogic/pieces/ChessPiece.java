@@ -9,7 +9,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.movement.MovementStrategy;
 
-public abstract class ChessPiece {
+public abstract class ChessPiece implements CloneableChessPiece {
     
     private boolean hasMoved;
     private final ChessPieceColor color;
@@ -42,7 +42,6 @@ public abstract class ChessPiece {
     public boolean isOpponentOf(ChessPieceColor color) {
         return this.color.opponent() == color;
     }
-
 
     public List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition from) {
         return movementStrategy.getLegalMoves(board, from, color);

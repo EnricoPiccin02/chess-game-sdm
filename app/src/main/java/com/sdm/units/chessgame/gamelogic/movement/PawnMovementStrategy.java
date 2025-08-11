@@ -34,12 +34,12 @@ public class PawnMovementStrategy implements MovementStrategy {
         final boolean hasMoved = board.getPieceAt(fromPosition).map(ChessPiece::hasMoved).orElse(false);
 
         Optional<ChessboardPosition> oneStep = fromPosition.nextPosition(forward);
-        if (oneStep.isPresent() && board.isPositionVacant(oneStep.get())) {
+        if (oneStep.isPresent() && board.isUnoccupiedSquare(oneStep.get())) {
             moves.add(oneStep.get());
 
             if (!hasMoved) {
                 Optional<ChessboardPosition> twoStep = oneStep.get().nextPosition(forward);
-                if (twoStep.isPresent() && board.isPositionVacant(twoStep.get())) {
+                if (twoStep.isPresent() && board.isUnoccupiedSquare(twoStep.get())) {
                     moves.add(twoStep.get());
                 }
             }

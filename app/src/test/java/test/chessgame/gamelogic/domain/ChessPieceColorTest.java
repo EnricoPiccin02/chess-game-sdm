@@ -27,8 +27,8 @@ class ChessPieceColorTest {
 
     static Stream<Arguments> colorNameProvider() {
         return Stream.of(
-            arguments(ChessPieceColor.WHITE, "white"),
-            arguments(ChessPieceColor.BLACK, "black")
+            arguments(ChessPieceColor.WHITE, "White"),
+            arguments(ChessPieceColor.BLACK, "Black")
         );
     }
 

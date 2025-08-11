@@ -11,11 +11,8 @@ import org.mockito.Mockito;
 
 import com.sdm.units.chessgame.gamelogic.board.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
-import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.Bishop;
-import com.sdm.units.chessgame.gamelogic.pieces.Knight;
-import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
 import com.sdm.units.chessgame.gamelogic.pieces.Queen;
 import com.sdm.units.chessgame.gamelogic.pieces.Rook;
 
@@ -38,7 +35,7 @@ class SlidingMovementStrategyTest {
 
         // By default, all positions are vacant (no piece)
         when(board.getPieceAt(any())).thenReturn(Optional.empty());
-        when(board.isPositionVacant(any())).thenReturn(true);
+        when(board.isUnoccupiedSquare(any())).thenReturn(true);
         when(board.isOpponentAt(any(), any())).thenReturn(false);
     }
 

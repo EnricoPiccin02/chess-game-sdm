@@ -13,4 +13,9 @@ public class Rook extends ChessPiece {
             new SlidingMovementStrategy(ChessboardDirectionSet.ORTHOGONAL::getDirections)
         );
     }
+
+    @Override
+    public ChessPiece copy() {
+        return new Rook(pieceColor());
+    }
 }

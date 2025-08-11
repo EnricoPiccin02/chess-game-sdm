@@ -4,8 +4,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPieceSnapshot;
+
+import test.chessgame.gamelogic.ChessPieceStub;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +18,7 @@ class ChessPieceSnapshotTest {
     @Test
     @DisplayName("should store piece and moved state")
     void shouldStorePieceAndMovedState() {
-        ChessPiece piece = new TestChessPiece(ChessPieceColor.WHITE);
+        ChessPiece piece = new ChessPieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KNIGHT);
         piece.markAsMoved();
 
         ChessPieceSnapshot snapshot = new ChessPieceSnapshot(piece, piece.hasMoved());

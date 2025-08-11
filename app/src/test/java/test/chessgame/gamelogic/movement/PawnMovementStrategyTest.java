@@ -46,7 +46,7 @@ class PawnMovementStrategyTest {
         @DisplayName("should move one step forward if square is empty")
         void shouldMoveOneStepForwardIfVacant() {
             ChessboardPosition forwardPosition = new ChessboardPosition(D, THREE);
-            when(board.isPositionVacant(forwardPosition)).thenReturn(true);
+            when(board.isUnoccupiedSquare(forwardPosition)).thenReturn(true);
             when(board.isOpponentAt(any(), any())).thenReturn(false);
             
             List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
@@ -59,8 +59,8 @@ class PawnMovementStrategyTest {
         void shouldMoveTwoStepsForwardIfFirstMove() {
             ChessboardPosition forwardPosition = new ChessboardPosition(D, THREE);
             ChessboardPosition forwardForwardPosition = new ChessboardPosition(D, FOUR);
-            when(board.isPositionVacant(forwardPosition)).thenReturn(true);
-            when(board.isPositionVacant(forwardForwardPosition)).thenReturn(true);
+            when(board.isUnoccupiedSquare(forwardPosition)).thenReturn(true);
+            when(board.isUnoccupiedSquare(forwardForwardPosition)).thenReturn(true);
             when(board.isOpponentAt(any(), any())).thenReturn(false);
 
             List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
@@ -73,7 +73,7 @@ class PawnMovementStrategyTest {
         void shouldCaptureDiagonallyIfOpponentPresent() {
             ChessboardPosition target = new ChessboardPosition(E, THREE);
             when(board.getPieceAt(target)).thenReturn(Optional.of(new Knight(ChessPieceColor.BLACK)));
-            when(board.isPositionVacant(target)).thenReturn(false);
+            when(board.isUnoccupiedSquare(target)).thenReturn(false);
             when(board.isOpponentAt(ChessPieceColor.WHITE, target)).thenReturn(true);
 
             List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
@@ -86,7 +86,7 @@ class PawnMovementStrategyTest {
         void shouldNotCaptureDiagonallyIfEmpty() {
             ChessboardPosition target = new ChessboardPosition(E, THREE);
             when(board.getPieceAt(target)).thenReturn(Optional.empty());
-            when(board.isPositionVacant(target)).thenReturn(true);
+            when(board.isUnoccupiedSquare(target)).thenReturn(true);
 
             List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
 

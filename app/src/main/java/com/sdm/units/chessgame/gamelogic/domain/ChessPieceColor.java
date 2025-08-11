@@ -4,13 +4,13 @@ import java.awt.Color;
 
 public enum ChessPieceColor {
     
-    WHITE("white") {
+    WHITE("White") {
         @Override
         public Color getEncodedColor() {
             return Color.WHITE;
         }
     },
-    BLACK("black") {
+    BLACK("Black") {
         @Override
         public Color getEncodedColor() {
             return Color.BLACK;

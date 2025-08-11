@@ -13,4 +13,9 @@ public class King extends ChessPiece {
             new KingMovementStrategy(ChessboardDirectionSet.ORTHOGONAL_AND_DIAGONAL::getDirections)
         );
     }
+
+    @Override
+    public ChessPiece copy() {
+        return new King(pieceColor());
+    }
 }

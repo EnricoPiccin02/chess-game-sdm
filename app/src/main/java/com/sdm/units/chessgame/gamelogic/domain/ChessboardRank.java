@@ -46,4 +46,9 @@ public enum ChessboardRank {
 
         return OptionalInt.of(rank.rankNumber - this.rankNumber);
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value());
+    }
 }

@@ -24,7 +24,7 @@ public class KnightMovementStrategy implements MovementStrategy {
         for (List<ChessboardDirection> path : directionProvider.getCompositeDirections()) {
             Optional<ChessboardPosition> target = fromPosition.nextPosition(path);
             target.ifPresent(pos -> {
-                if (board.isPositionVacant(pos) || board.isOpponentAt(playerColor, pos)) {
+                if (board.isUnoccupiedSquare(pos) || board.isOpponentAt(playerColor, pos)) {
                     legalMoves.add(pos);
                 }
             });

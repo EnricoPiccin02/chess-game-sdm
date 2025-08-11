@@ -54,4 +54,9 @@ public record ChessboardPosition(ChessboardFile file, ChessboardRank rank) imple
         
         return comparedPosition[0];
     }
+
+    @Override
+    public String toString() {
+        return "(" + file + ", " + rank + ")";
+    }
 }

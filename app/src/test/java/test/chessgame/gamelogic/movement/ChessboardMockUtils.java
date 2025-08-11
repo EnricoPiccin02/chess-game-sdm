@@ -18,19 +18,19 @@ public final class ChessboardMockUtils {
     public static void mockVacantPositions(Chessboard board, List<ChessboardPosition> positions) {
         positions.forEach(pos -> {
             when(board.getPieceAt(pos)).thenReturn(Optional.empty());
-            when(board.isPositionVacant(pos)).thenReturn(true);
+            when(board.isUnoccupiedSquare(pos)).thenReturn(true);
         });
     }
 
     public static void mockFriendlyPieceAt(Chessboard board, ChessboardPosition position, ChessPieceColor color) {
         when(board.getPieceAt(position)).thenReturn(Optional.of(new Pawn(color, ChessboardOrientation.WHITE_BOTTOM)));
-        when(board.isPositionVacant(position)).thenReturn(false);
+        when(board.isUnoccupiedSquare(position)).thenReturn(false);
         when(board.isOpponentAt(color, position)).thenReturn(false);
     }
 
     public static void mockOpponentPieceAt(Chessboard board, ChessboardPosition position, ChessPieceColor friendColor, ChessPieceColor opponentColor) {
         when(board.getPieceAt(position)).thenReturn(Optional.of(new Knight(opponentColor)));
-        when(board.isPositionVacant(position)).thenReturn(false);
+        when(board.isUnoccupiedSquare(position)).thenReturn(false);
         when(board.isOpponentAt(friendColor, position)).thenReturn(true);
     }
 }
