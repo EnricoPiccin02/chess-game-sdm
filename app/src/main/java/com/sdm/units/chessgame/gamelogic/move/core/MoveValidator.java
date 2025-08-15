@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.move.api;
+package com.sdm.units.chessgame.gamelogic.move.core;
 
 import java.util.Optional;
 

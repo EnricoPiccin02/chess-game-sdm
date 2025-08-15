@@ -6,8 +6,9 @@ import java.util.Optional;
 import com.sdm.units.chessgame.gamelogic.board.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.move.api.ComposedMoveRule;
-import com.sdm.units.chessgame.gamelogic.move.api.ReversibleMove;
+import com.sdm.units.chessgame.gamelogic.move.core.ComposedMoveRule;
+import com.sdm.units.chessgame.gamelogic.move.core.MoveRulePriority;
+import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 
 public class StandardMoveRule implements ComposedMoveRule {
 
@@ -30,6 +31,6 @@ public class StandardMoveRule implements ComposedMoveRule {
 
     @Override
     public int getPriority() {
-        return 2;
+        return MoveRulePriority.LOW_PRIORITY.getPriority();
     }
 }

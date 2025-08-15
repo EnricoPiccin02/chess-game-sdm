@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.move.api;
+package com.sdm.units.chessgame.gamelogic.move.core;
 
 public interface PrioritizedMoveValidator extends MoveValidator {
     

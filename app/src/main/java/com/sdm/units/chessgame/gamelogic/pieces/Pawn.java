@@ -5,7 +5,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.movement.PawnMovementStrategy;
 
-public class Pawn extends ChessPiece {
+public class Pawn extends BoardPiece {
 
     private ChessboardOrientation orientation;
 

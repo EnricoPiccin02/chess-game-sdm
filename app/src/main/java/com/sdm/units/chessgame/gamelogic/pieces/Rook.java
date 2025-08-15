@@ -5,7 +5,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirectionSet;
 import com.sdm.units.chessgame.gamelogic.movement.SlidingMovementStrategy;
 
-public class Rook extends ChessPiece {
+public class Rook extends BoardPiece {
 
     public Rook(ChessPieceColor color) {
         super(color,

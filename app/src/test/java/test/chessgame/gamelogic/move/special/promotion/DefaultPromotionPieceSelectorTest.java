@@ -1,4 +1,4 @@
-package test.chessgame.gamelogic.move.special;
+package test.chessgame.gamelogic.move.special.promotion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

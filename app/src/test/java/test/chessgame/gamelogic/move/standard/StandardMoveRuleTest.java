@@ -15,12 +15,14 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.api.ReversibleMove;
+import com.sdm.units.chessgame.gamelogic.move.core.MoveRulePriority;
+import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMove;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMoveRule;
+import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import test.chessgame.gamelogic.ChessPieceStub;
-import test.chessgame.gamelogic.move.ChessboardFake;
+import test.chessgame.gamelogic.testdoubles.PieceStub;
+import test.chessgame.gamelogic.testdoubles.ChessboardFake;
 
 @DisplayName("StandardMoveRule")
 class StandardMoveRuleTest {
@@ -28,7 +30,7 @@ class StandardMoveRuleTest {
     private ChessboardFake board;
     private ChessboardOrientation orientation;
     private ChessboardPosition piecePosition;
-    private ChessPieceStub piece;
+    private ChessPiece pieceStub;
     private StandardMoveRule rule;
 
     @BeforeEach
@@ -36,24 +38,25 @@ class StandardMoveRuleTest {
         board = new ChessboardFake();
         orientation = ChessboardOrientation.WHITE_BOTTOM;
         piecePosition = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
-        piece = new ChessPieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK);
-        board.putPieceAt(piecePosition, piece);
         rule = new StandardMoveRule();
     }
 
     @Test
     @DisplayName("should generate moves based on piece's legal moves")
     void shouldGenerateMovesFromPieceStrategy() {
-        ChessboardPosition legalMove1 = new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO);
-        ChessboardPosition legalMove2 = new ChessboardPosition(ChessboardFile.A, ChessboardRank.THREE);
-        piece.setLegalMoves(List.of(legalMove1, legalMove2));
-
+        List<ChessboardPosition> legalMoves = List.of(
+            new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO),
+            new ChessboardPosition(ChessboardFile.A, ChessboardRank.THREE)
+        );
+        pieceStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, legalMoves);
+        board.putPieceAt(piecePosition, pieceStub);
+        
         List<ReversibleMove> moves = rule.generateMovesFrom(board, piecePosition, orientation);
 
         assertThat(moves).hasSize(2);
         assertThat(moves).allSatisfy(move -> assertThat(move).isInstanceOf(StandardMove.class));
-        assertThat(moves.stream().map(m -> ((StandardMove) m).getMoveComponents().get(0).to()))
-                .containsExactlyInAnyOrder(legalMove1, legalMove2);
+        assertThat(moves.stream().map(m -> ((StandardMove) m).getPrimaryMoveComponent().to()))
+                .containsExactlyInAnyOrderElementsOf(legalMoves);
     }
 
     @Test
@@ -70,7 +73,8 @@ class StandardMoveRuleTest {
     @DisplayName("should create valid move when target is legal")
     void shouldValidateAndCreateWhenLegal() {
         ChessboardPosition legalMove = new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO);
-        piece.setLegalMoves(List.of(legalMove));
+        pieceStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, List.of(legalMove));
+        board.putPieceAt(piecePosition, pieceStub);
 
         Optional<ReversibleMove> optMove = rule.validateAndCreate(board, piecePosition, legalMove, orientation);
 
@@ -79,16 +83,15 @@ class StandardMoveRuleTest {
         assertThat(move).isInstanceOf(StandardMove.class);
 
         StandardMove standardMove = (StandardMove) move;
-        assertThat(standardMove.getMoveComponents()).hasSize(1);
-        assertThat(standardMove.getMoveComponents().get(0).from()).isEqualTo(piecePosition);
-        assertThat(standardMove.getMoveComponents().get(0).to()).isEqualTo(legalMove);
+        assertThat(standardMove.getPrimaryMoveComponent().from()).isEqualTo(piecePosition);
+        assertThat(standardMove.getPrimaryMoveComponent().to()).isEqualTo(legalMove);
     }
 
     @Test
     @DisplayName("should return empty when move is illegal")
     void shouldReturnEmptyWhenIllegal() {
         ChessboardPosition illegalMove = new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO);
-        piece.setLegalMoves(List.of()); // no legal moves
+        pieceStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, List.of());
 
         Optional<ReversibleMove> optMove = rule.validateAndCreate(board, piecePosition, illegalMove, orientation);
 
@@ -96,8 +99,8 @@ class StandardMoveRuleTest {
     }
 
     @Test
-    @DisplayName("should return priority 2")
-    void shouldReturnCorrectPriority() {
-        assertThat(rule.getPriority()).isEqualTo(2);
+    @DisplayName("should have low priority")
+    void shouldHaveLowPriority() {
+        assertThat(rule.getPriority()).isEqualTo(MoveRulePriority.LOW_PRIORITY.getPriority());
     }
 }

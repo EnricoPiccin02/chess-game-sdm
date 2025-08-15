@@ -5,7 +5,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirectionSet;
 import com.sdm.units.chessgame.gamelogic.movement.SlidingMovementStrategy;
 
-public class Queen extends ChessPiece {
+public class Queen extends BoardPiece {
 
     public Queen(ChessPieceColor color) {
         super(color,

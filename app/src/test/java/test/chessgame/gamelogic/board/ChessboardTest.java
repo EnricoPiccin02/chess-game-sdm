@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.sdm.units.chessgame.gamelogic.board.BoardStateManager;
 import com.sdm.units.chessgame.gamelogic.board.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
@@ -41,7 +42,7 @@ class ChessboardTest {
         Map<ChessboardPosition, ChessPiece> emptyBoard = new HashMap<>();
         when(setup.generate(orientation)).thenReturn(emptyBoard);
 
-        board = new Chessboard(orientation, setup);
+        board = new BoardStateManager(orientation, setup);
 
         whitePawn = new Pawn(ChessPieceColor.WHITE, orientation);
         blackQueen = new Queen(ChessPieceColor.BLACK);
@@ -57,8 +58,7 @@ class ChessboardTest {
         @Test
         @DisplayName("should return empty list when no pieces of that color are on the board")
         void shouldReturnEmptyWhenNoPiecesOfColor() {
-            assertThat(board.getOccupiedSquaresOf(ChessPieceColor.WHITE))
-                .isEmpty();
+            assertThat(board.getOccupiedSquaresOf(ChessPieceColor.WHITE)).isEmpty();
         }
 
         @Test
@@ -135,24 +135,6 @@ class ChessboardTest {
     }
 
     @Nested
-    @DisplayName("getPieceValueAt(position)")
-    class GetPieceValueAt {
-
-        @Test
-        @DisplayName("should return empty OptionalInt for empty square")
-        void shouldReturnEmptyWhenNoPiece() {
-            assertThat(board.getPieceValueAt(a1)).isEmpty();
-        }
-
-        @Test
-        @DisplayName("should return piece value when square is occupied")
-        void shouldReturnValueWhenOccupied() {
-            board.putPieceAt(a1, whitePawn);
-            assertThat(board.getPieceValueAt(a1)).hasValue(whitePawn.pieceInfo().getPieceValue());
-        }
-    }
-
-    @Nested
     @DisplayName("mutations")
     class BoardMutations {
 
@@ -186,7 +168,7 @@ class ChessboardTest {
             ChessboardSetup setup = Mockito.mock(ChessboardSetup.class);
             when(setup.generate(ChessboardOrientation.WHITE_BOTTOM)).thenReturn(initialSetup);
 
-            Chessboard customBoard = new Chessboard(ChessboardOrientation.WHITE_BOTTOM, setup);
+            Chessboard customBoard = new BoardStateManager(ChessboardOrientation.WHITE_BOTTOM, setup);
 
             customBoard.removePieceAt(a1);
 

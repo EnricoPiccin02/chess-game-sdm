@@ -1,8 +1,8 @@
-package com.sdm.units.chessgame.gamelogic.move.api;
+package com.sdm.units.chessgame.gamelogic.move.core;
 
 import com.sdm.units.chessgame.gamelogic.board.Chessboard;
 
 public interface ReversibleMove extends ChessMove {
     
-    void undoOn(Chessboard board);
+    CaptureResult undoOn(Chessboard board);
 }

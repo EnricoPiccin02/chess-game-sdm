@@ -5,7 +5,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirectionSet;
 import com.sdm.units.chessgame.gamelogic.movement.KingMovementStrategy;
 
-public class King extends ChessPiece {
+public class King extends BoardPiece {
     
     public King(ChessPieceColor color) {
         super(color,

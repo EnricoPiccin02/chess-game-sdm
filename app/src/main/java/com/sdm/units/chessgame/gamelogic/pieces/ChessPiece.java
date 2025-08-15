@@ -1,73 +1,27 @@
 package com.sdm.units.chessgame.gamelogic.pieces;
 
 import java.util.List;
-import java.util.Objects;
 
 import com.sdm.units.chessgame.gamelogic.board.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.movement.MovementStrategy;
 
-public abstract class ChessPiece implements CloneableChessPiece {
+public interface ChessPiece extends CloneableChessPiece {
     
-    private boolean hasMoved;
-    private final ChessPieceColor color;
-    private final ChessPieceInfo info;
-    private final MovementStrategy movementStrategy;
-    
-    protected ChessPiece(ChessPieceColor color, ChessPieceInfo info, MovementStrategy movementStrategy) {
-        this.hasMoved = false;
-        this.movementStrategy = movementStrategy;
-        this.info = info;
-        this.color = color;
-    }
+    void markAsMoved();
 
-    public void markAsMoved() {
-        this.hasMoved = true;
-    }
+    boolean hasMoved();
 
-    public boolean hasMoved() {
-        return hasMoved;
-    }
+    ChessPieceInfo pieceInfo();
 
-    public ChessPieceInfo pieceInfo() {
-        return info;
-    }
+    ChessPieceColor pieceColor();
 
-    public ChessPieceColor pieceColor() {
-        return color;
-    }
+    boolean isOpponentOf(ChessPieceColor color);
 
-    public boolean isOpponentOf(ChessPieceColor color) {
-        return this.color.opponent() == color;
-    }
+    List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition from);
 
-    public List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition from) {
-        return movementStrategy.getLegalMoves(board, from, color);
-    }
+    ChessPieceSnapshot createSnapshot();
 
-    public ChessPieceSnapshot createSnapshot() {
-        return new ChessPieceSnapshot(this, hasMoved);
-    }
-
-    public void restoreSnapshot(ChessPieceSnapshot snapshot) {
-        if (snapshot.getPiece() == this) {
-            this.hasMoved = snapshot.wasMoved();
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        ChessPiece other = (ChessPiece) obj;
-        return color == other.color && info.equals(other.info);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(color, info);
-    }
+    void restoreSnapshot(ChessPieceSnapshot snapshot);
 }

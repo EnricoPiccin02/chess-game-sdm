@@ -1,12 +1,15 @@
 package test.chessgame.gamelogic.pieces;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
-import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.pieces.Bishop;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
@@ -17,12 +20,6 @@ import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
 import com.sdm.units.chessgame.gamelogic.pieces.Queen;
 import com.sdm.units.chessgame.gamelogic.pieces.Rook;
 
-import test.chessgame.gamelogic.ChessPieceStub;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
 @DisplayName("ChessPiece")
 class ChessPieceTest {
 
@@ -31,8 +28,8 @@ class ChessPieceTest {
 
     @BeforeEach
     void setUp() {
-        whitePiece = new ChessPieceStub(ChessPieceColor.WHITE, ChessPieceInfo.QUEEN);
-        blackPiece = new ChessPieceStub(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
+        whitePiece = new Pawn(ChessPieceColor.WHITE, ChessboardOrientation.WHITE_BOTTOM);
+        blackPiece = new Rook(ChessPieceColor.BLACK);
     }
 
     @Nested
@@ -80,7 +77,6 @@ class ChessPieceTest {
             whitePiece.markAsMoved();
             ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
 
-            // Restoring on the *same* piece should give back identical state
             whitePiece.restoreSnapshot(snapshot);
 
             assertThat(snapshot.getPiece()).isSameAs(whitePiece);
@@ -93,12 +89,10 @@ class ChessPieceTest {
         void shouldRestoreMovedStateOnSameInstance() {
             ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
             
-            // Mutate after snapshot
             whitePiece.markAsMoved();
 
             assertThat(whitePiece.hasMoved()).isTrue();
 
-            // Now restore
             whitePiece.restoreSnapshot(snapshot);
             assertThat(whitePiece.hasMoved()).isFalse();
         }
@@ -109,10 +103,9 @@ class ChessPieceTest {
             whitePiece.markAsMoved();
             ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
 
-            ChessPiece another = new ChessPieceStub(ChessPieceColor.WHITE, ChessPieceInfo.BISHOP);
+            ChessPiece another = new Bishop(ChessPieceColor.WHITE);
             another.restoreSnapshot(snapshot);
 
-            // No change expected because snapshot belongs to different instance
             assertThat(another.hasMoved()).isFalse();
             assertThat(whitePiece.hasMoved()).isTrue();
         }

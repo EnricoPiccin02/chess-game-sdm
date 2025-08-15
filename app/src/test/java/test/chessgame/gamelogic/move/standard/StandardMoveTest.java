@@ -15,11 +15,14 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.api.MoveComponent;
+import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
+import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMove;
+import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import test.chessgame.gamelogic.ChessPieceStub;
-import test.chessgame.gamelogic.move.ChessboardSpy;
+import test.chessgame.gamelogic.testdoubles.ChessboardSpy;
+import test.chessgame.gamelogic.testdoubles.PieceDummy;
+import test.chessgame.gamelogic.testdoubles.PieceStub;
 
 @DisplayName("StandardMove")
 class StandardMoveTest {
@@ -27,8 +30,8 @@ class StandardMoveTest {
     private ChessboardSpy boardSpy;
     private ChessboardPosition from;
     private ChessboardPosition to;
-    private ChessPieceStub movedPiece;
-    private ChessPieceStub capturedPiece;
+    private PieceStub movingPieceStub;
+    private ChessPiece capturedPieceDummy;
     private StandardMove move;
 
     @BeforeEach
@@ -36,13 +39,13 @@ class StandardMoveTest {
         boardSpy = new ChessboardSpy();
         from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO);
         to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FOUR);
-        movedPiece = new ChessPieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
-        capturedPiece = new ChessPieceStub(ChessPieceColor.BLACK, ChessPieceInfo.KNIGHT);
+        movingPieceStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of());
+        capturedPieceDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KNIGHT);
 
-        boardSpy.putPieceAt(from, movedPiece);
-        boardSpy.putPieceAt(to, capturedPiece);
+        boardSpy.putPieceAt(from, movingPieceStub);
+        boardSpy.putPieceAt(to, capturedPieceDummy);
 
-        move = new StandardMove(from, to, movedPiece, Optional.of(capturedPiece));
+        move = new StandardMove(from, to, movingPieceStub, Optional.of(capturedPieceDummy));
     }
 
     @Test
@@ -50,12 +53,21 @@ class StandardMoveTest {
     void shouldMovePieceAndMarkAsMoved() {
         move.executeOn(boardSpy);
 
-        assertTrue(movedPiece.hasMoved());
-        assertEquals(movedPiece, boardSpy.getPieceAt(to).orElseThrow());
+        assertTrue(movingPieceStub.hasMoved());
+        assertEquals(movingPieceStub, boardSpy.getPieceAt(to).orElseThrow());
         assertTrue(boardSpy.getPieceAt(from).isEmpty());
 
-        assertTrue(boardSpy.wasPutCalledWith(to, movedPiece));
+        assertTrue(boardSpy.wasPutCalledWith(to, movingPieceStub));
         assertTrue(boardSpy.wasRemoveCalledWith(from));
+    }
+
+    @Test
+    @DisplayName("should capture provided piece")
+    void shouldCaptureProvidedPiece() {
+        CaptureResult result = move.executeOn(boardSpy);
+
+        assertTrue(result.pieceValue().isPresent());
+        assertEquals(capturedPieceDummy.pieceInfo().getPieceValue(), result.pieceValue().getAsInt());
     }
 
     @Test
@@ -64,17 +76,21 @@ class StandardMoveTest {
         move.executeOn(boardSpy);
         move.undoOn(boardSpy);
 
-        assertEquals(movedPiece, boardSpy.getPieceAt(from).orElseThrow());
-        assertEquals(capturedPiece, boardSpy.getPieceAt(to).orElseThrow());
-        assertTrue(movedPiece.isSnapshotRestored());
+        assertEquals(movingPieceStub, boardSpy.getPieceAt(from).orElseThrow());
+        assertEquals(capturedPieceDummy, boardSpy.getPieceAt(to).orElseThrow());
+
+        assertTrue(boardSpy.wasPutCalledWith(to, capturedPieceDummy));
+        assertTrue(boardSpy.wasPutCalledWith(from, movingPieceStub));
+        assertTrue(boardSpy.wasRemoveCalledWith(from));
     }
 
     @Test
     @DisplayName("should return starting and landing positions")
     void shouldReturnFromAndTo() {
-        List<MoveComponent> components = move.getMoveComponents();
-        assertEquals(1, components.size());
-        assertEquals(from, components.get(0).from());
-        assertEquals(to, components.get(0).to());
+        MoveComponent components = move.getPrimaryMoveComponent();
+        assertEquals(from, components.from());
+        assertEquals(to, components.to());
+        assertEquals(from, move.from());
+        assertEquals(to, move.to());
     }
 }

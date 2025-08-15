@@ -1,55 +1,43 @@
 package com.sdm.units.chessgame.gamelogic.move.standard;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.sdm.units.chessgame.gamelogic.board.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.move.api.MoveComponent;
-import com.sdm.units.chessgame.gamelogic.move.api.ReversibleMove;
+import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
+import com.sdm.units.chessgame.gamelogic.move.core.SingleMove;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPieceSnapshot;
 
-public class StandardMove implements ReversibleMove {
+public class StandardMove extends SingleMove {
 
-    private final ChessboardPosition from;
-    private final ChessboardPosition to;
-    private final ChessPiece movedPiece;
+    private final ChessPiece movingPiece;
     private final Optional<ChessPiece> capturedPiece;
     private final ChessPieceSnapshot movedSnapshot;
 
-    public StandardMove(ChessboardPosition from, ChessboardPosition to, ChessPiece movedPiece, Optional<ChessPiece> capturedPiece) {
-        this.from = from;
-        this.to = to;
-        this.movedPiece = movedPiece;
+    public StandardMove(ChessboardPosition from, ChessboardPosition to, ChessPiece movingPiece, Optional<ChessPiece> capturedPiece) {
+        super(from, to);
+        this.movingPiece = movingPiece;
         this.capturedPiece = capturedPiece;
-        this.movedSnapshot = movedPiece.createSnapshot();
+        this.movedSnapshot = movingPiece.createSnapshot();
     }
 
     @Override
-    public void executeOn(Chessboard board) {
-        movedPiece.markAsMoved();
-        board.putPieceAt(to, movedPiece);
-        board.removePieceAt(from);
+    public CaptureResult executeOn(Chessboard board) {
+        movingPiece.markAsMoved();
+        board.removePieceAt(from());
+        board.putPieceAt(to(), movingPiece);
+        return new CaptureResult(capturedPiece);
     }
 
     @Override
-    public void undoOn(Chessboard board) {
-        board.putPieceAt(from, movedPiece);
+    public CaptureResult undoOn(Chessboard board) {
         capturedPiece.ifPresentOrElse(
-            captured -> board.putPieceAt(to, captured),
-            () -> board.removePieceAt(to)
+            captured -> board.putPieceAt(to(), captured),
+            () -> board.removePieceAt(to())
         );
-        movedPiece.restoreSnapshot(movedSnapshot);
-    }
-
-    @Override
-    public List<MoveComponent> getMoveComponents() {
-        return List.of(new MoveComponent(from, to));
-    }
-
-    @Override
-    public String toString() {
-        return from + " → " + to;
+        board.putPieceAt(from(), movingPiece);
+        movingPiece.restoreSnapshot(movedSnapshot);
+        return new CaptureResult(capturedPiece);
     }
 }

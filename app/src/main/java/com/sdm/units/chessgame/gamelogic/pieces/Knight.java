@@ -5,7 +5,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.CompositeDirectionSet;
 import com.sdm.units.chessgame.gamelogic.movement.KnightMovementStrategy;
 
-public class Knight extends ChessPiece {
+public class Knight extends BoardPiece {
     
     public Knight(ChessPieceColor color) {
         super(color,
