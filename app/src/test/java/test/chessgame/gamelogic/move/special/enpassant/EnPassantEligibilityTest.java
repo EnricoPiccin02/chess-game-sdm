@@ -2,15 +2,15 @@ package test.chessgame.gamelogic.move.special.enpassant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.sdm.units.chessgame.gamelogic.board.MoveRecorder;
+import com.sdm.units.chessgame.gamelogic.board.state.MoveRecorder;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
@@ -48,8 +48,8 @@ class EnPassantEligibilityTest {
 
         board = new ChessboardFake();
 
-        whitePawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of());
-        blackPawnStub = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.PAWN, List.of());
+        whitePawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of());
+        blackPawnStub = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.PAWN, Set.of());
 
         from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FIVE);
         to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SIX);
@@ -79,7 +79,7 @@ class EnPassantEligibilityTest {
         @Test
         @DisplayName("should deny when target is not a pawn")
         void shouldDenyWhenTargetIsNotPawn() {
-            ChessPiece nonPawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.ROOK, List.of());
+            ChessPiece nonPawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.ROOK, Set.of());
             board.putPieceAt(capturingPos, nonPawn);
 
             moveRecorderStub.setLastMove(dummyLastMove(nonPawn));
@@ -94,7 +94,7 @@ class EnPassantEligibilityTest {
         @Test
         @DisplayName("should deny when pawns are same color")
         void shouldDenyWhenPawnsAreSameColor() {
-            ChessPiece sameColorPawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.ROOK, List.of());
+            ChessPiece sameColorPawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.ROOK, Set.of());
             board.putPieceAt(capturingPos, sameColorPawn);
 
             moveRecorderStub.setLastMove(dummyLastMove(sameColorPawn));
@@ -159,6 +159,11 @@ class EnPassantEligibilityTest {
         @Override
         public Optional<ReversibleMove> popMove() {
             throw new UnsupportedOperationException("popMove not tested here");
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException("clear not tested here");
         }
     }
 

@@ -3,8 +3,8 @@ package test.chessgame.gamelogic.move.standard;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +15,8 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
+import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMove;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
@@ -39,7 +39,7 @@ class StandardMoveTest {
         boardSpy = new ChessboardSpy();
         from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO);
         to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FOUR);
-        movingPieceStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of());
+        movingPieceStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of());
         capturedPieceDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KNIGHT);
 
         boardSpy.putPieceAt(from, movingPieceStub);

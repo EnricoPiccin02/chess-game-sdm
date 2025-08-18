@@ -1,9 +1,9 @@
 package test.chessgame.gamelogic.movement;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -15,7 +15,7 @@ public final class ChessboardMockUtils {
 
     private ChessboardMockUtils() {}
 
-    public static void mockVacantPositions(Chessboard board, List<ChessboardPosition> positions) {
+    public static void mockVacantPositions(Chessboard board, Set<ChessboardPosition> positions) {
         positions.forEach(pos -> {
             when(board.getPieceAt(pos)).thenReturn(Optional.empty());
             when(board.isUnoccupiedSquare(pos)).thenReturn(true);

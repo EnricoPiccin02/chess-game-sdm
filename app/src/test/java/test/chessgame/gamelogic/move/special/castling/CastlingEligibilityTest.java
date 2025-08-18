@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,18 +11,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.sdm.units.chessgame.gamelogic.board.CheckEvaluator;
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.evaluation.AttackDetector;
+import com.sdm.units.chessgame.gamelogic.board.evaluation.PathSafetySimulator;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
-import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
-import com.sdm.units.chessgame.gamelogic.move.core.MoveValidator;
-import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingCandidate;
 import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingEligibility;
 import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingPattern;
@@ -37,8 +33,8 @@ import test.chessgame.gamelogic.testdoubles.PieceStub;
 class CastlingEligibilityTest {
 
     private CastlingEligibility eligibility;
-    private MoveValidatorStub moveValidatorStub;
-    private CheckEvaluatorStub checkEvaluatorStub;
+    private PathSafetySimulatorStub pathSafetySimulatorStub;
+    private AttackDetectorStub attackDetectorStub;
     private CastlingPatternStub patternStub;
 
     private ChessboardFake board;
@@ -52,16 +48,16 @@ class CastlingEligibilityTest {
 
     @BeforeEach
     void setUp() {
-        moveValidatorStub = new MoveValidatorStub();
-        checkEvaluatorStub = new CheckEvaluatorStub();
+        pathSafetySimulatorStub = new PathSafetySimulatorStub();
+        attackDetectorStub = new AttackDetectorStub();
         patternStub = new CastlingPatternStub();
 
-        eligibility = new CastlingEligibility(moveValidatorStub, checkEvaluatorStub, patternStub);
+        eligibility = new CastlingEligibility(pathSafetySimulatorStub, attackDetectorStub, patternStub);
 
         board = new ChessboardFake();
 
-        whiteKing = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, List.of());
-        whiteRook = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, List.of());
+        whiteKing = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, Set.of());
+        whiteRook = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, Set.of());
 
         kingFrom = new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE);
         kingTo = new ChessboardPosition(ChessboardFile.G, ChessboardRank.ONE);
@@ -86,12 +82,9 @@ class CastlingEligibilityTest {
         @Test
         @DisplayName("should return true for valid castling")
         void shouldReturnTrueForValidCastling() {
-            moveValidatorStub.succeedOn(kingTo);
-            moveValidatorStub.succeedOn(rookTo);
             boolean result = eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM);
 
             assertThat(result).isTrue();
-            assertThat(moveValidatorStub.succeedPositions).containsExactlyInAnyOrder(kingTo, rookTo);
         }
     }
 
@@ -129,7 +122,7 @@ class CastlingEligibilityTest {
         @Test
         @DisplayName("should return false if either piece has moved")
         void shouldReturnFalseIfEitherPieceHasMoved() {
-            ChessPiece movedKing = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, List.of());
+            ChessPiece movedKing = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, Set.of());
             movedKing.markAsMoved();
             candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo, movedKing, whiteRook);
 
@@ -139,8 +132,7 @@ class CastlingEligibilityTest {
         @Test
         @DisplayName("should return false if king is in check")
         void shouldReturnFalseIfKingIsInCheck() {
-            checkEvaluatorStub.kingAt(kingFrom);
-            checkEvaluatorStub.underAttackOn(kingFrom);
+            attackDetectorStub.setUnderAttack(true);
 
             assertThat(eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM)).isFalse();
         }
@@ -158,69 +150,42 @@ class CastlingEligibilityTest {
         void shouldReturnFalseIfIntermediateSquareIsUnsafe() {
             assertThat(eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM)).isTrue();
 
-            checkEvaluatorStub.kingAt(new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE));
-            checkEvaluatorStub.underAttackOn(new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE));
+            pathSafetySimulatorStub.failOn(new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE));
 
             assertThat(eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM)).isFalse();
         }
     }
 
-    private static class MoveValidatorStub implements MoveValidator {
+    private static class PathSafetySimulatorStub implements PathSafetySimulator {
 
-        private final Set<ChessboardPosition> succeedPositions = new HashSet<>();
+        private final Set<ChessboardPosition> failPositions = new HashSet<>();
 
-        void succeedOn(ChessboardPosition pos) {
-            succeedPositions.add(pos);
+        void failOn(ChessboardPosition pos) {
+            failPositions.add(pos);
         }
 
         @Override
-        public Optional<ReversibleMove> validateAndCreate(Chessboard board, ChessboardPosition from, ChessboardPosition to, ChessboardOrientation orientation) {
-
-            if (!succeedPositions.contains(to)) {
-                return Optional.empty();
+        public boolean isPathSafe(Chessboard board, ChessboardPosition from, List<ChessboardPosition> path, ChessPieceColor color) {
+            for (ChessboardPosition pos : path) {
+                if (failPositions.contains(pos)) {
+                    return false;
+                }
             }
-
-            return Optional.of(new ReversibleMove() {
-                
-                @Override
-                public CaptureResult executeOn(Chessboard b) {
-                    return CaptureResult.none();
-                }
-
-                @Override
-                public CaptureResult undoOn(Chessboard b) {
-                    return CaptureResult.none();
-                }
-                
-                @Override
-                public MoveComponent getPrimaryMoveComponent() {
-                    throw new UnsupportedOperationException("getPrimaryMoveComponent not tested here");
-                }
-            });
+            return true;
         }
     }
 
-    private static class CheckEvaluatorStub implements CheckEvaluator {
+    private static class AttackDetectorStub implements AttackDetector {
         
-        private ChessboardPosition kingPosition;
-        private final Set<ChessboardPosition> kingUnderAttackPositions = new HashSet<>();
+        private boolean underAttack;
 
-        void kingAt(ChessboardPosition pos) {
-            kingPosition = pos;
-        }
-
-        void underAttackOn(ChessboardPosition pos) {
-            kingUnderAttackPositions.add(pos);
+        void setUnderAttack(boolean underAttack) {
+            this.underAttack = underAttack;
         }
 
         @Override
         public boolean isUnderAttack(Chessboard board, ChessPieceColor color) {
-            return kingUnderAttackPositions.contains(kingPosition);
-        }
-
-        @Override
-        public boolean isCheckmate(Chessboard board, ChessPieceColor defenderColor) {
-            throw new UnsupportedOperationException("isCheckmate is not tested here");
+            return underAttack;
         }
     }
 

@@ -1,8 +1,9 @@
 package com.sdm.units.chessgame.gamelogic.movement;
 
 import java.util.List;
+import java.util.Set;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -10,5 +11,5 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 @FunctionalInterface
 public interface SlidingMovementResolver {
     
-    List<ChessboardPosition> getSlidingMoves(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor, List<ChessboardDirection> directions);
+    Set<ChessboardPosition> getSlidingDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor, List<ChessboardDirection> directions);
 }

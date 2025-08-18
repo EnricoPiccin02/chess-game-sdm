@@ -2,8 +2,8 @@ package test.chessgame.gamelogic.move.special.promotion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ class PromotionEligibilityTest {
         void shouldReturnTrueForValidPromotionMove() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
-            ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of(to));
+            ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
             PromotionCandidate candidate = new PromotionCandidate(from, to, pawn, Optional.empty());
 
             boolean result = eligibility.canExecute(board, candidate, orientation);
@@ -69,12 +69,13 @@ class PromotionEligibilityTest {
         }
 
         @Test
-        @DisplayName("should return false when pawn does not move exactly one step forward")
-        void shouldReturnFalseWhenNotSingleStepForward() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FOUR);
-            ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of(to));
-            PromotionCandidate candidate = new PromotionCandidate(from, to, pawn, Optional.empty());
+        @DisplayName("should return false not a legal pawn move")
+        void shouldReturnFalseWhenNotLegalPawnMove() {
+            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SIX);
+            ChessboardPosition legalTo = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            ChessboardPosition illegalTo = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
+            ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(legalTo));
+            PromotionCandidate candidate = new PromotionCandidate(from, illegalTo, pawn, Optional.empty());
 
             boolean result = eligibility.canExecute(board, candidate, orientation);
 
@@ -86,7 +87,7 @@ class PromotionEligibilityTest {
         void shouldReturnFalseWhenNotPromotionRank() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SIX);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of(to));
+            ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
             PromotionCandidate candidate = new PromotionCandidate(from, to, pawn, Optional.empty());
 
             boolean result = eligibility.canExecute(board, candidate, orientation);
@@ -99,7 +100,7 @@ class PromotionEligibilityTest {
         void shouldHandleBlackPawnDirection() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE);
-            ChessPiece pawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.PAWN, List.of(to));
+            ChessPiece pawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.PAWN, Set.of(to));
             PromotionCandidate candidate = new PromotionCandidate(from, to, pawn, Optional.empty());
 
             boolean result = eligibility.canExecute(board, candidate, orientation);

@@ -2,7 +2,8 @@ package com.sdm.units.chessgame.gamelogic.move.core;
 
 import java.util.List;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
+import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 
 public abstract class CompositeMove implements ReversibleMove {
     

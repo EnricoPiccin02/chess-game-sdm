@@ -1,11 +1,11 @@
-package test.chessgame.gamelogic.board;
+package test.chessgame.gamelogic.board.state;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.sdm.units.chessgame.gamelogic.board.BoardStateManager;
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.BoardStateManager;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
@@ -26,7 +26,7 @@ import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
 import com.sdm.units.chessgame.gamelogic.pieces.Queen;
 
 @DisplayName("Chessboard")
-class ChessboardTest {
+class BoardStateManagerTest {
 
     private Chessboard board;
     private ChessPiece whitePawn;
@@ -67,7 +67,7 @@ class ChessboardTest {
             board.putPieceAt(a1, whitePawn);
             board.putPieceAt(h8, blackQueen);
 
-            List<ChessboardPosition> whiteSquares = board.getOccupiedSquaresOf(ChessPieceColor.WHITE);
+            Set<ChessboardPosition> whiteSquares = board.getOccupiedSquaresOf(ChessPieceColor.WHITE);
 
             assertThat(whiteSquares).containsExactly(a1);
         }
@@ -176,23 +176,6 @@ class ChessboardTest {
 
             assertThat(customBoard.getPieceAt(a1)).contains(whitePawn);
             assertThat(customBoard.getPieceAt(h8)).contains(blackQueen);
-        }
-    }
-
-    @Nested
-    @DisplayName("deepCopy()")
-    class DeepCopy {
-
-        @Test
-        @DisplayName("should create a copy with identical pieces but independent objects")
-        void shouldCreateIndependentCopy() {
-            board.putPieceAt(a1, whitePawn);
-
-            Chessboard copy = board.deepCopy();
-
-            assertThat(copy.getPieceAt(a1)).contains(whitePawn);
-            assertThat(copy).isNotSameAs(board);
-            assertThat(copy.getPieceAt(a1).get()).isNotSameAs(board.getPieceAt(a1).get());
         }
     }
 }

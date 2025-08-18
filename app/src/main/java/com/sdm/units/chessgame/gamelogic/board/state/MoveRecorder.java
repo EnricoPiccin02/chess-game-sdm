@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gamelogic.board;
+package com.sdm.units.chessgame.gamelogic.board.state;
 
 import java.util.Optional;
 
@@ -11,4 +11,6 @@ public interface MoveRecorder<T extends ChessMove> {
     Optional<T> popMove();
 
     Optional<T> getLastMove();
+
+    void clear();
 }

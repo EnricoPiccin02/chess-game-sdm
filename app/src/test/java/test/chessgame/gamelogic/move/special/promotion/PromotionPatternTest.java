@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +47,7 @@ class PromotionPatternTest {
         void shouldFindPromotionCandidateWhenPawnHasLegalMoveToPromotionRank() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of(to));
+            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
 
             board.putPieceAt(from, pawnStub);
 
@@ -75,7 +76,7 @@ class PromotionPatternTest {
         void shouldIncludeCapturedPieceWhenPromotionCapturesEnemy() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of(to));
+            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
             ChessPiece capturedDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
 
             board.putPieceAt(from, pawnStub);
@@ -98,7 +99,7 @@ class PromotionPatternTest {
         void shouldBuildPromotionCandidateWhenPieceExistsAtFrom() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of(to));
+            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
 
             board.putPieceAt(from, pawnStub);
 

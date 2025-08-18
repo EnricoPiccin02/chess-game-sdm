@@ -1,8 +1,8 @@
 package test.chessgame.gamelogic.testdoubles;
 
-import java.util.List;
+import java.util.Set;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -14,30 +14,23 @@ public class PieceStub implements ChessPiece {
     private boolean moved;
     private final ChessPieceColor color;
     private final ChessPieceInfo info;
-    private ChessPiece copy;
     private ChessPieceSnapshot snapshot;
-    private final List<ChessboardPosition> legalMoves;
+    private final Set<ChessboardPosition> legalDestinations;
 
-    public PieceStub(ChessPieceColor color, ChessPieceInfo info, List<ChessboardPosition> legalMoves) {
+    public PieceStub(ChessPieceColor color, ChessPieceInfo info, Set<ChessboardPosition> legalDestinations) {
         this.color = color;
         this.info = info;
-        this.legalMoves = legalMoves;
+        this.legalDestinations = legalDestinations;
     }
 
-    public PieceStub(ChessPieceColor color, ChessPieceInfo info, List<ChessboardPosition> legalMoves, ChessPiece copy, ChessPieceSnapshot snapshot) {
-        this(color, info, legalMoves);
-        this.copy = copy;
+    public PieceStub(ChessPieceColor color, ChessPieceInfo info, Set<ChessboardPosition> legalDestinations, ChessPieceSnapshot snapshot) {
+        this(color, info, legalDestinations);
         this.snapshot = snapshot;
     }
 
     @Override
-    public ChessPiece copy() {
-        return copy;
-    }
-
-    @Override
-    public List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition fromPosition) {
-        return legalMoves;
+    public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition fromPosition) {
+        return legalDestinations;
     }
 
     @Override

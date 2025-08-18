@@ -2,7 +2,7 @@ package test.chessgame.gamelogic.move.special.enpassant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ class EnPassantMoveFactoryTest {
 
     @BeforeEach
     void setUp() {
-        movingPawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of());
+        movingPawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of());
         capturedPawnDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.PAWN);
 
         factory = new EnPassantMoveFactory();

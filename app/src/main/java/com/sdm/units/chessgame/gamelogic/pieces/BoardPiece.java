@@ -1,9 +1,9 @@
 package com.sdm.units.chessgame.gamelogic.pieces;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -43,8 +43,8 @@ public abstract class BoardPiece implements ChessPiece {
         return this.color.opponent() == color;
     }
 
-    public List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition from) {
-        return movementStrategy.getLegalMoves(board, from, color);
+    public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition from) {
+        return movementStrategy.getLegalDestinations(board, from, color);
     }
 
     public ChessPieceSnapshot createSnapshot() {

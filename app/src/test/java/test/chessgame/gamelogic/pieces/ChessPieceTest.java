@@ -2,8 +2,6 @@ package test.chessgame.gamelogic.pieces;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,10 +12,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.pieces.Bishop;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPieceSnapshot;
-import com.sdm.units.chessgame.gamelogic.pieces.King;
-import com.sdm.units.chessgame.gamelogic.pieces.Knight;
 import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
-import com.sdm.units.chessgame.gamelogic.pieces.Queen;
 import com.sdm.units.chessgame.gamelogic.pieces.Rook;
 
 @DisplayName("ChessPiece")
@@ -108,26 +103,6 @@ class ChessPieceTest {
 
             assertThat(another.hasMoved()).isFalse();
             assertThat(whitePiece.hasMoved()).isTrue();
-        }
-    }
-
-    @Nested
-    @DisplayName("copy")
-    class Copy {
-
-        @Test
-        @DisplayName("should perform a deep copy")
-        void testCopyForAllPieces() {
-            for (ChessPieceColor color : ChessPieceColor.values()) {
-                ChessPieceCopyTestHelper.assertDeepCopyBehaviorForAllPieces(List.of(
-                () -> new Pawn(color, ChessboardOrientation.WHITE_BOTTOM),
-                () -> new Rook(color),
-                () -> new Knight(color),
-                () -> new Bishop(color),
-                () -> new Queen(color),
-                () -> new King(color)
-            ));
-            }
         }
     }
 }

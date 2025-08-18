@@ -9,9 +9,7 @@ import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 public class ChessboardSpy extends ChessboardFake {
     
     private record PutCall(ChessboardPosition pos, ChessPiece piece) {}
-    
     private record RemoveCall(ChessboardPosition pos) {}
-
     private final List<Object> calls = new ArrayList<>();
 
     @Override

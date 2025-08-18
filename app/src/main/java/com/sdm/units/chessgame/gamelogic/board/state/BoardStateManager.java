@@ -1,9 +1,9 @@
-package com.sdm.units.chessgame.gamelogic.board;
+package com.sdm.units.chessgame.gamelogic.board.state;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
@@ -23,21 +23,6 @@ public class BoardStateManager implements Chessboard {
         this.setup = setup;
         this.board = new HashMap<>(setup.generate(orientation));
     }
-
-    private BoardStateManager(BoardStateManager other) {
-        this.orientation = other.orientation;
-        this.setup = other.setup;
-        this.board = other.board.entrySet().stream()
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> e.getValue().copy()
-            ));
-    }
-
-    @Override
-    public Chessboard deepCopy() {
-        return new BoardStateManager(this);
-    }
     
     @Override
     public void resetBoard() {
@@ -51,11 +36,11 @@ public class BoardStateManager implements Chessboard {
     }
 
     @Override
-    public List<ChessboardPosition> getOccupiedSquaresOf(ChessPieceColor color) {
+    public Set<ChessboardPosition> getOccupiedSquaresOf(ChessPieceColor color) {
         return board.entrySet().stream()
             .filter(e -> e.getValue() != null && e.getValue().pieceColor().equals(color))
             .map(Map.Entry::getKey)
-            .toList();
+            .collect(Collectors.toSet());
     }
 
     @Override

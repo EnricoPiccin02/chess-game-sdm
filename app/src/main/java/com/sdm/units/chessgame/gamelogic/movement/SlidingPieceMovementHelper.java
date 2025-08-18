@@ -1,18 +1,19 @@
 package com.sdm.units.chessgame.gamelogic.movement;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 
 public class SlidingPieceMovementHelper implements SlidingMovementResolver {
 
-    public List<ChessboardPosition> getSlidingMoves(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor, List<ChessboardDirection> directions) {
-        List<ChessboardPosition> legalMoves = new ArrayList<>();
+    public Set<ChessboardPosition> getSlidingDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor, List<ChessboardDirection> directions) {
+        Set<ChessboardPosition> legalDestinations = new HashSet<>();
 
         directions.forEach(direction -> {
             Optional<ChessboardPosition> currentPosition = fromPosition.nextPosition(direction);
@@ -21,10 +22,10 @@ public class SlidingPieceMovementHelper implements SlidingMovementResolver {
                 ChessboardPosition pos = currentPosition.get();
 
                 if (board.isUnoccupiedSquare(pos)) {
-                    legalMoves.add(pos);
+                    legalDestinations.add(pos);
                 } else {
                     if (board.isOpponentAt(playerColor, pos)) {
-                        legalMoves.add(pos); // Capture
+                        legalDestinations.add(pos); // Capture
                     }
                     break; // Exit after hitting a piece
                 }
@@ -33,6 +34,6 @@ public class SlidingPieceMovementHelper implements SlidingMovementResolver {
             }
         });
 
-        return legalMoves;
+        return legalDestinations;
     }
 }

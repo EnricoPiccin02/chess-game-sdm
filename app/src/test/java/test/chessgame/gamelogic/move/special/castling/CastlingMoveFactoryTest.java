@@ -2,7 +2,7 @@ package test.chessgame.gamelogic.move.special.castling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +14,9 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
+import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingCandidate;
 import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingMoveFactory;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
@@ -46,8 +46,8 @@ class CastlingMoveFactoryTest {
         rookFrom = new ChessboardPosition(ChessboardFile.H, ChessboardRank.ONE);
         rookTo = new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE);
 
-        king = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, List.of());
-        rook = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, List.of());
+        king = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, Set.of());
+        rook = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, Set.of());
 
         board.putPieceAt(kingFrom, king);
         board.putPieceAt(rookFrom, rook);

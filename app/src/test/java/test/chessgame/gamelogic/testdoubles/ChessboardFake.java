@@ -1,13 +1,13 @@
 package test.chessgame.gamelogic.testdoubles;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.mockito.Mockito;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -20,11 +20,6 @@ public class ChessboardFake implements Chessboard {
     public ChessboardFake() {}
 
     @Override
-    public Chessboard deepCopy() {
-        return Mockito.mock(Chessboard.class);
-    }
-
-    @Override
     public void resetBoard() {
         pieces.clear();
     }
@@ -35,8 +30,8 @@ public class ChessboardFake implements Chessboard {
     }
 
     @Override
-    public List<ChessboardPosition> getOccupiedSquaresOf(ChessPieceColor color) {
-        return List.of();
+    public Set<ChessboardPosition> getOccupiedSquaresOf(ChessPieceColor color) {
+        return Set.of();
     }
 
     @Override

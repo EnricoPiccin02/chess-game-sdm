@@ -2,10 +2,10 @@ package com.sdm.units.chessgame.gamelogic.move.standard;
 
 import java.util.Optional;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.core.SingleMove;
+import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPieceSnapshot;
 

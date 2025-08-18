@@ -1,7 +1,16 @@
 package test.chessgame.gamelogic.movement;
 
-import java.util.List;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.C;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.D;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.E;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.FIVE;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.FOUR;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.THREE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,15 +18,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.King;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.*;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.*;
 
 @DisplayName("King Movement")
 class KingMovementStrategyTest {
@@ -42,7 +46,7 @@ class KingMovementStrategyTest {
         @Test
         @DisplayName("should move one square in all directions if square is empty")
         void shouldMoveOneSquareInAllDirectionsIfVacant() {
-            List<ChessboardPosition> landingPositions = List.of(
+            Set<ChessboardPosition> landingPositions = Set.of(
                 new ChessboardPosition(C, THREE),
                 new ChessboardPosition(C, FOUR),
                 new ChessboardPosition(C, FIVE),
@@ -55,9 +59,9 @@ class KingMovementStrategyTest {
 
             ChessboardMockUtils.mockVacantPositions(board, landingPositions);
 
-            List<ChessboardPosition> legalMoves = king.getLegalMoves(board, kingPosition);
+            Set<ChessboardPosition> legalDestinations = king.getLegalDestinations(board, kingPosition);
 
-            assertThat(legalMoves).containsExactlyInAnyOrderElementsOf(landingPositions);
+            assertThat(legalDestinations).containsExactlyInAnyOrderElementsOf(landingPositions);
         }
 
         @Test
@@ -66,9 +70,9 @@ class KingMovementStrategyTest {
             ChessboardPosition friendPos = new ChessboardPosition(C, THREE);
             ChessboardMockUtils.mockFriendlyPieceAt(board, friendPos, ChessPieceColor.WHITE);
 
-            List<ChessboardPosition> legalMoves = king.getLegalMoves(board, kingPosition);
+            Set<ChessboardPosition> legalDestinations = king.getLegalDestinations(board, kingPosition);
 
-            assertThat(legalMoves).doesNotContain(friendPos);
+            assertThat(legalDestinations).doesNotContain(friendPos);
         }
 
         @Test
@@ -77,9 +81,9 @@ class KingMovementStrategyTest {
             ChessboardPosition enemyPos = new ChessboardPosition(E, FOUR);
             ChessboardMockUtils.mockOpponentPieceAt(board, enemyPos, ChessPieceColor.WHITE, ChessPieceColor.BLACK);
             
-            List<ChessboardPosition> legalMoves = king.getLegalMoves(board, kingPosition);
+            Set<ChessboardPosition> legalDestinations = king.getLegalDestinations(board, kingPosition);
 
-            assertThat(legalMoves).contains(enemyPos);
+            assertThat(legalDestinations).contains(enemyPos);
         }
     }
 }

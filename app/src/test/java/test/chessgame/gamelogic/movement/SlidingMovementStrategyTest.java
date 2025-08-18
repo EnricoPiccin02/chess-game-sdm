@@ -1,6 +1,6 @@
 package test.chessgame.gamelogic.movement;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.Bishop;
@@ -46,7 +46,7 @@ class SlidingMovementStrategyTest {
         @Test
         @DisplayName("should slide in direction until blocked")
         void shouldSlideUntilBlocked() {
-            List<ChessboardPosition> subsetOfLandingPositions = List.of(
+            Set<ChessboardPosition> subsetOfLandingPositions = Set.of(
                 new ChessboardPosition(D, FIVE),
                 new ChessboardPosition(D, SIX),
                 new ChessboardPosition(D, SEVEN),
@@ -60,9 +60,9 @@ class SlidingMovementStrategyTest {
             Queen queen = new Queen(ChessPieceColor.WHITE);
             when(board.getPieceAt(start)).thenReturn(Optional.of(queen));
 
-            List<ChessboardPosition> legalMoves = queen.getLegalMoves(board, start);
+            Set<ChessboardPosition> legalDestinations = queen.getLegalDestinations(board, start);
 
-            assertThat(legalMoves).containsAll(subsetOfLandingPositions);
+            assertThat(legalDestinations).containsAll(subsetOfLandingPositions);
         }
 
         @Test
@@ -75,10 +75,10 @@ class SlidingMovementStrategyTest {
             ChessboardPosition blocker = new ChessboardPosition(D, SIX);
             ChessboardMockUtils.mockFriendlyPieceAt(board, blocker, ChessPieceColor.WHITE);
 
-            List<ChessboardPosition> legalMoves = rook.getLegalMoves(board, start);
+            Set<ChessboardPosition> legalDestinations = rook.getLegalDestinations(board, start);
 
-            assertThat(legalMoves).doesNotContain(blocker);
-            assertThat(legalMoves).contains(beforeBlocker);
+            assertThat(legalDestinations).doesNotContain(blocker);
+            assertThat(legalDestinations).contains(beforeBlocker);
         }
 
         @Test
@@ -91,10 +91,10 @@ class SlidingMovementStrategyTest {
             ChessboardPosition afterEnemy = new ChessboardPosition(G, SEVEN);
             ChessboardMockUtils.mockOpponentPieceAt(board, enemy, ChessPieceColor.WHITE, ChessPieceColor.BLACK);
             
-            List<ChessboardPosition> legalMoves = bishop.getLegalMoves(board, start);
+            Set<ChessboardPosition> legalDestinations = bishop.getLegalDestinations(board, start);
 
-            assertThat(legalMoves).contains(enemy);
-            assertThat(legalMoves).doesNotContain(afterEnemy);
+            assertThat(legalDestinations).contains(enemy);
+            assertThat(legalDestinations).doesNotContain(afterEnemy);
         }
     }
 }

@@ -13,9 +13,4 @@ public class Bishop extends BoardPiece {
             new SlidingMovementStrategy(ChessboardDirectionSet.DIAGONAL::getDirections)
         );
     }
-
-    @Override
-    public ChessPiece copy() {
-        return new Bishop(pieceColor());
-    }
 }

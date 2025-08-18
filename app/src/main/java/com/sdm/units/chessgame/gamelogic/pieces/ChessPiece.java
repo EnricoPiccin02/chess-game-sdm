@@ -1,13 +1,13 @@
 package com.sdm.units.chessgame.gamelogic.pieces;
 
-import java.util.List;
+import java.util.Set;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 
-public interface ChessPiece extends CloneableChessPiece {
+public interface ChessPiece {
     
     void markAsMoved();
 
@@ -19,7 +19,7 @@ public interface ChessPiece extends CloneableChessPiece {
 
     boolean isOpponentOf(ChessPieceColor color);
 
-    List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition from);
+    Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition from);
 
     ChessPieceSnapshot createSnapshot();
 

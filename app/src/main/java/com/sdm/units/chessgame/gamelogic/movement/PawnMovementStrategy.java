@@ -1,10 +1,12 @@
 package com.sdm.units.chessgame.gamelogic.movement;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
@@ -20,17 +22,17 @@ public class PawnMovementStrategy implements MovementStrategy {
     }
 
     @Override
-    public List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor) {
-        List<ChessboardPosition> legalMoves = new ArrayList<>();
+    public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor) {
+        Set<ChessboardPosition> legalDestinations = new HashSet<>();
 
-        legalMoves.addAll(getForwardMoves(board, fromPosition, orientation.pawnForwardDirection(playerColor)));
-        legalMoves.addAll(getCaptureMoves(board, playerColor, fromPosition, orientation.pawnCaptureDirections(playerColor)));
+        legalDestinations.addAll(getForwardMoves(board, fromPosition, orientation.pawnForwardDirection(playerColor)));
+        legalDestinations.addAll(getCaptureMoves(board, playerColor, fromPosition, orientation.pawnCaptureDirections(playerColor)));
 
-        return legalMoves;
+        return legalDestinations;
     }
 
-    private List<ChessboardPosition> getForwardMoves(Chessboard board, ChessboardPosition fromPosition, ChessboardDirection forward) {
-        List<ChessboardPosition> moves = new ArrayList<>();
+    private Set<ChessboardPosition> getForwardMoves(Chessboard board, ChessboardPosition fromPosition, ChessboardDirection forward) {
+        Set<ChessboardPosition> moves = new HashSet<>();
         final boolean hasMoved = board.getPieceAt(fromPosition).map(ChessPiece::hasMoved).orElse(false);
 
         Optional<ChessboardPosition> oneStep = fromPosition.nextPosition(forward);
@@ -48,12 +50,12 @@ public class PawnMovementStrategy implements MovementStrategy {
         return moves;
     }
 
-    private List<ChessboardPosition> getCaptureMoves(Chessboard board, ChessPieceColor player, ChessboardPosition fromPosition, List<ChessboardDirection> captureDirs) {
+    private Set<ChessboardPosition> getCaptureMoves(Chessboard board, ChessPieceColor player, ChessboardPosition fromPosition, List<ChessboardDirection> captureDirs) {
         return captureDirs.stream()
             .map(fromPosition::nextPosition)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .filter(pos -> board.isOpponentAt(player, pos))
-            .toList();
+            .collect(Collectors.toSet());
     }
 }

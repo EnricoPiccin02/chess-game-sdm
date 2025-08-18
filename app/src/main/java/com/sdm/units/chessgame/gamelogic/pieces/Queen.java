@@ -13,9 +13,4 @@ public class Queen extends BoardPiece {
             new SlidingMovementStrategy(ChessboardDirectionSet.ORTHOGONAL_AND_DIAGONAL::getDirections)
         );
     }
-
-    @Override
-    public ChessPiece copy() {
-        return new Queen(pieceColor());
-    }
 }

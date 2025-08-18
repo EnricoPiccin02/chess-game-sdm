@@ -1,6 +1,6 @@
 package test.chessgame.gamelogic.movement;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -49,9 +49,9 @@ class PawnMovementStrategyTest {
             when(board.isUnoccupiedSquare(forwardPosition)).thenReturn(true);
             when(board.isOpponentAt(any(), any())).thenReturn(false);
             
-            List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
+            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalMoves).contains(forwardPosition);
+            assertThat(legalDestinations).contains(forwardPosition);
         }
 
         @Test
@@ -63,9 +63,9 @@ class PawnMovementStrategyTest {
             when(board.isUnoccupiedSquare(forwardForwardPosition)).thenReturn(true);
             when(board.isOpponentAt(any(), any())).thenReturn(false);
 
-            List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
+            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalMoves).contains(forwardForwardPosition);
+            assertThat(legalDestinations).contains(forwardForwardPosition);
         }
 
         @Test
@@ -76,9 +76,9 @@ class PawnMovementStrategyTest {
             when(board.isUnoccupiedSquare(target)).thenReturn(false);
             when(board.isOpponentAt(ChessPieceColor.WHITE, target)).thenReturn(true);
 
-            List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
+            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalMoves).contains(target);
+            assertThat(legalDestinations).contains(target);
         }
 
         @Test
@@ -88,9 +88,9 @@ class PawnMovementStrategyTest {
             when(board.getPieceAt(target)).thenReturn(Optional.empty());
             when(board.isUnoccupiedSquare(target)).thenReturn(true);
 
-            List<ChessboardPosition> legalMoves = pawn.getLegalMoves(board, pawnPosition);
+            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalMoves).doesNotContain(target);
+            assertThat(legalDestinations).doesNotContain(target);
         }
     }
 }

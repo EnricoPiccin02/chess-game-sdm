@@ -1,10 +1,10 @@
 package com.sdm.units.chessgame.gamelogic.move.special.promotion;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
+import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
 public class PieceReplacementMove implements ReversibleMove {

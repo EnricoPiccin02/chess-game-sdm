@@ -1,8 +1,8 @@
 package test.chessgame.gamelogic.testdoubles;
 
-import java.util.List;
+import java.util.Set;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -17,11 +17,6 @@ public class PieceDummy implements ChessPiece {
     public PieceDummy(ChessPieceColor color, ChessPieceInfo info) {
         this.color = color;
         this.info = info;
-    }
-
-    @Override
-    public ChessPiece copy() {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for copy");
     }
 
     @Override
@@ -50,8 +45,8 @@ public class PieceDummy implements ChessPiece {
     }
 
     @Override
-    public List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition from) {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for moves");
+    public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition from) {
+        throw new UnsupportedOperationException("Dummy piece should not be asked for destinations");
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.sdm.units.chessgame.gamelogic.move.special.promotion;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
@@ -14,11 +14,10 @@ public class PromotionEligibility implements SpecialMoveEligibility<PromotionCan
         return piece.pieceInfo() == ChessPieceInfo.PAWN;
     }
 
-    private boolean isForwardOneStep(ChessboardPosition from, ChessboardPosition to, ChessPieceColor color, ChessboardOrientation orientation) {
-        return from.rank()
-            .nextRank(orientation.pawnForwardDirection(color))
-            .filter(next -> next.equals(to.rank()))
-            .isPresent();
+    private boolean isLegalPawnMove(Chessboard board, ChessPiece pawn, ChessboardPosition from, ChessboardPosition to) {
+        return pawn.getLegalDestinations(board, from)
+            .stream()
+            .anyMatch(destination -> destination.equals(to));
     }
 
     private boolean isAtPromotionRank(ChessboardPosition to, ChessPieceColor color, ChessboardOrientation orientation) {
@@ -32,7 +31,7 @@ public class PromotionEligibility implements SpecialMoveEligibility<PromotionCan
         ChessPiece pawn = candidate.movingPawn();
         
         return isPawn(pawn) &&
-            isForwardOneStep(from, to, pawn.pieceColor(), orientation) &&
+            isLegalPawnMove(board, pawn, from, to) &&
             isAtPromotionRank(to, pawn.pieceColor(), orientation);
     }
 }

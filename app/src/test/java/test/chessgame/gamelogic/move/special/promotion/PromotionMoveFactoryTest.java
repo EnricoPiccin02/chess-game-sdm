@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,9 +17,9 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.core.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
+import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionCandidate;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionMoveFactory;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionPieceSelector;
@@ -46,7 +46,7 @@ class PromotionMoveFactoryTest {
 
     @BeforeEach
     void setUp() {
-        pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, List.of());
+        pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of());
         promotedPieceDummy = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.QUEEN);
         capturedPieceDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
 

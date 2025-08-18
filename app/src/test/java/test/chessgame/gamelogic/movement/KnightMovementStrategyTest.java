@@ -1,6 +1,6 @@
 package test.chessgame.gamelogic.movement;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.Knight;
@@ -41,7 +41,7 @@ public class KnightMovementStrategyTest {
         @Test
         @DisplayName("should return all 8 L-shaped moves when board is empty")
         void shouldReturnAllLShapedMoves() {
-            List<ChessboardPosition> landingPositions = List.of(
+            Set<ChessboardPosition> landingPositions = Set.of(
                 new ChessboardPosition(B, THREE),
                 new ChessboardPosition(B, FIVE),
                 new ChessboardPosition(C, TWO),
@@ -54,9 +54,9 @@ public class KnightMovementStrategyTest {
 
             ChessboardMockUtils.mockVacantPositions(board, landingPositions);
 
-            List<ChessboardPosition> legalMoves = knight.getLegalMoves(board, knightPosition);
+            Set<ChessboardPosition> legalDestinations = knight.getLegalDestinations(board, knightPosition);
 
-            assertThat(legalMoves).containsExactlyInAnyOrderElementsOf(landingPositions);
+            assertThat(legalDestinations).containsExactlyInAnyOrderElementsOf(landingPositions);
         }
 
         @Test
@@ -65,9 +65,9 @@ public class KnightMovementStrategyTest {
             ChessboardPosition friendPos = new ChessboardPosition(B, THREE);
             ChessboardMockUtils.mockFriendlyPieceAt(board, friendPos, ChessPieceColor.WHITE);
 
-            List<ChessboardPosition> legalMoves = knight.getLegalMoves(board, knightPosition);
+            Set<ChessboardPosition> legalDestinations = knight.getLegalDestinations(board, knightPosition);
 
-            assertThat(legalMoves).doesNotContain(friendPos);
+            assertThat(legalDestinations).doesNotContain(friendPos);
         }
 
         @Test
@@ -76,9 +76,9 @@ public class KnightMovementStrategyTest {
             ChessboardPosition enemyPos = new ChessboardPosition(F, FIVE);
             ChessboardMockUtils.mockOpponentPieceAt(board, enemyPos, ChessPieceColor.WHITE, ChessPieceColor.BLACK);
 
-            List<ChessboardPosition> legalMoves = knight.getLegalMoves(board, knightPosition);
+            Set<ChessboardPosition> legalDestinations = knight.getLegalDestinations(board, knightPosition);
 
-            assertThat(legalMoves).contains(enemyPos);
+            assertThat(legalDestinations).contains(enemyPos);
         }
     }
 }

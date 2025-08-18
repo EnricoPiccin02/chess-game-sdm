@@ -1,10 +1,11 @@
 package com.sdm.units.chessgame.gamelogic.movement;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import com.sdm.units.chessgame.gamelogic.board.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -18,18 +19,18 @@ public class KnightMovementStrategy implements MovementStrategy {
     }
 
     @Override
-    public List<ChessboardPosition> getLegalMoves(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor) {
-        List<ChessboardPosition> legalMoves = new ArrayList<>();
+    public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor) {
+        Set<ChessboardPosition> legalDestinations = new HashSet<>();
 
         for (List<ChessboardDirection> path : directionProvider.getCompositeDirections()) {
             Optional<ChessboardPosition> target = fromPosition.nextPosition(path);
             target.ifPresent(pos -> {
                 if (board.isUnoccupiedSquare(pos) || board.isOpponentAt(playerColor, pos)) {
-                    legalMoves.add(pos);
+                    legalDestinations.add(pos);
                 }
             });
         }
 
-        return legalMoves;
+        return legalDestinations;
     }
 }
