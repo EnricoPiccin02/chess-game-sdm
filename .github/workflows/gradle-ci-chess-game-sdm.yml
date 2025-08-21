@@ -33,11 +33,11 @@ jobs:
 
     # Run headless unit tests
     - name: Run unit tests
-      run: ./gradlew test
+      run: ./gradlew :app:test
 
     # Run GUI tests with xvfb (fake display)
     - name: Run GUI tests
-      run: xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' ./gradlew guiTest
+      run: xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' ./gradlew :app:guiTest
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
