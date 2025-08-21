@@ -17,16 +17,16 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit Jupiter for testing.
+    // JUnit & testing
     testImplementation platform("org.junit:junit-bom:5.10.0")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "org.mockito:mockito-core:3.+"
-    testImplementation 'org.hamcrest:hamcrest:3.0'
-    implementation 'org.apache.xmlgraphics:batik-all:1.16'
+    testImplementation "org.assertj:assertj-core:3.25.3"
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // This dependency is used by the application.
+    // Main dependencies
+    implementation 'org.apache.xmlgraphics:batik-all:1.16'
     implementation libs.guava
 }
 
@@ -39,10 +39,23 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.sdm.units.chessgame.Game'
+    mainClass = 'com.sdm.units.chessgame.controller.ChessGameInitializer'
 }
 
+// --- HEADLESS UNIT TESTS ---
 tasks.named('test') {
-    // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+    include '**/unitTest/**'
+    systemProperty "java.awt.headless", "true"
+}
+
+// --- GUI TESTS ---
+tasks.register('guiTest', Test) {
+    description = "Runs GUI tests (Swing/AWT)."
+    group = "verification"
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+    include '**/guiTest/**'
+    systemProperty "java.awt.headless", "false"
 }
