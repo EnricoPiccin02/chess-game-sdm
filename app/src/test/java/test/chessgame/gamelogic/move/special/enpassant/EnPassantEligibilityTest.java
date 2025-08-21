@@ -3,7 +3,6 @@ package test.chessgame.gamelogic.move.special.enpassant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +24,7 @@ import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
 import test.chessgame.gamelogic.testdoubles.ChessboardFake;
 import test.chessgame.gamelogic.testdoubles.PieceDummy;
-import test.chessgame.gamelogic.testdoubles.PieceStub;
+import test.chessgame.gamelogic.testdoubles.PieceFake;
 
 @DisplayName("EnPassantEligibility")
 class EnPassantEligibilityTest {
@@ -34,8 +33,8 @@ class EnPassantEligibilityTest {
     private MoveRecorderStub moveRecorderStub;
     private ChessboardFake board;
 
-    private ChessPiece whitePawnStub;
-    private ChessPiece blackPawnStub;
+    private ChessPiece whitePawnFake;
+    private ChessPiece blackPawnFake;
 
     private ChessboardPosition from;
     private ChessboardPosition to;
@@ -48,8 +47,8 @@ class EnPassantEligibilityTest {
 
         board = new ChessboardFake();
 
-        whitePawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of());
-        blackPawnStub = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.PAWN, Set.of());
+        whitePawnFake = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
+        blackPawnFake = new PieceFake(ChessPieceColor.BLACK, ChessPieceInfo.PAWN);
 
         from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FIVE);
         to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SIX);
@@ -63,13 +62,13 @@ class EnPassantEligibilityTest {
         @Test
         @DisplayName("should allow when target is opponent pawn, landing square empty, and last move is valid two-square pawn advance")
         void shouldAllowWhenConditionsAreMet() {
-            board.putPieceAt(capturingPos, blackPawnStub);
+            board.putPieceAt(capturingPos, blackPawnFake);
 
             ChessboardPosition lastFrom = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SEVEN);
             ChessboardPosition lastTo = new ChessboardPosition(ChessboardFile.F, ChessboardRank.FIVE);
-            moveRecorderStub.setLastMove(new StandardMove(lastFrom, lastTo, blackPawnStub, Optional.empty()));
+            moveRecorderStub.setLastMove(new StandardMove(lastFrom, lastTo, blackPawnFake, Optional.empty()));
 
-            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnStub, blackPawnStub);
+            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, blackPawnFake);
 
             boolean result = eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM);
 
@@ -79,12 +78,12 @@ class EnPassantEligibilityTest {
         @Test
         @DisplayName("should deny when target is not a pawn")
         void shouldDenyWhenTargetIsNotPawn() {
-            ChessPiece nonPawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.ROOK, Set.of());
+            ChessPiece nonPawn = new PieceFake(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
             board.putPieceAt(capturingPos, nonPawn);
 
             moveRecorderStub.setLastMove(dummyLastMove(nonPawn));
 
-            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnStub, nonPawn);
+            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, nonPawn);
 
             boolean result = eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM);
 
@@ -94,12 +93,12 @@ class EnPassantEligibilityTest {
         @Test
         @DisplayName("should deny when pawns are same color")
         void shouldDenyWhenPawnsAreSameColor() {
-            ChessPiece sameColorPawn = new PieceStub(ChessPieceColor.BLACK, ChessPieceInfo.ROOK, Set.of());
+            ChessPiece sameColorPawn = new PieceFake(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
             board.putPieceAt(capturingPos, sameColorPawn);
 
             moveRecorderStub.setLastMove(dummyLastMove(sameColorPawn));
 
-            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnStub, sameColorPawn);
+            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, sameColorPawn);
 
             boolean result = eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM);
 
@@ -109,12 +108,12 @@ class EnPassantEligibilityTest {
         @Test
         @DisplayName("should deny when landing position is occupied")
         void shouldDenyWhenLandingPositionIsOccupied() {
-            board.putPieceAt(capturingPos, blackPawnStub);
+            board.putPieceAt(capturingPos, blackPawnFake);
             board.putPieceAt(to, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KNIGHT));
 
-            moveRecorderStub.setLastMove(validTwoSquarePawnMove(blackPawnStub));
+            moveRecorderStub.setLastMove(validTwoSquarePawnMove(blackPawnFake));
 
-            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnStub, blackPawnStub);
+            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, blackPawnFake);
 
             boolean result = eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM);
 
@@ -124,13 +123,13 @@ class EnPassantEligibilityTest {
         @Test
         @DisplayName("should deny when last move is not two-square pawn move")
         void shouldDenyWhenLastMoveIsNotTwoSquarePawnMove() {
-            board.putPieceAt(capturingPos, blackPawnStub);
+            board.putPieceAt(capturingPos, blackPawnFake);
 
             ChessboardPosition lastFrom = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SIX);
             ChessboardPosition lastTo = new ChessboardPosition(ChessboardFile.F, ChessboardRank.FIVE);
-            moveRecorderStub.setLastMove(new StandardMove(lastFrom, lastTo, blackPawnStub, Optional.empty()));
+            moveRecorderStub.setLastMove(new StandardMove(lastFrom, lastTo, blackPawnFake, Optional.empty()));
 
-            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnStub, blackPawnStub);
+            EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, blackPawnFake);
 
             boolean result = eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM);
 

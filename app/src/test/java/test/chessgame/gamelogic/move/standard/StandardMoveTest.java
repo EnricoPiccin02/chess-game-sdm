@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,7 @@ import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
 import test.chessgame.gamelogic.testdoubles.ChessboardSpy;
 import test.chessgame.gamelogic.testdoubles.PieceDummy;
-import test.chessgame.gamelogic.testdoubles.PieceStub;
+import test.chessgame.gamelogic.testdoubles.PieceFake;
 
 @DisplayName("StandardMove")
 class StandardMoveTest {
@@ -30,7 +29,7 @@ class StandardMoveTest {
     private ChessboardSpy boardSpy;
     private ChessboardPosition from;
     private ChessboardPosition to;
-    private PieceStub movingPieceStub;
+    private PieceFake movingPieceFake;
     private ChessPiece capturedPieceDummy;
     private StandardMove move;
 
@@ -39,13 +38,13 @@ class StandardMoveTest {
         boardSpy = new ChessboardSpy();
         from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO);
         to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FOUR);
-        movingPieceStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of());
+        movingPieceFake = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
         capturedPieceDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KNIGHT);
 
-        boardSpy.putPieceAt(from, movingPieceStub);
+        boardSpy.putPieceAt(from, movingPieceFake);
         boardSpy.putPieceAt(to, capturedPieceDummy);
 
-        move = new StandardMove(from, to, movingPieceStub, Optional.of(capturedPieceDummy));
+        move = new StandardMove(from, to, movingPieceFake, Optional.of(capturedPieceDummy));
     }
 
     @Test
@@ -53,11 +52,11 @@ class StandardMoveTest {
     void shouldMovePieceAndMarkAsMoved() {
         move.executeOn(boardSpy);
 
-        assertTrue(movingPieceStub.hasMoved());
-        assertEquals(movingPieceStub, boardSpy.getPieceAt(to).orElseThrow());
+        assertTrue(movingPieceFake.hasMoved());
+        assertEquals(movingPieceFake, boardSpy.getPieceAt(to).orElseThrow());
         assertTrue(boardSpy.getPieceAt(from).isEmpty());
 
-        assertTrue(boardSpy.wasPutCalledWith(to, movingPieceStub));
+        assertTrue(boardSpy.wasPutCalledWith(to, movingPieceFake));
         assertTrue(boardSpy.wasRemoveCalledWith(from));
     }
 
@@ -76,11 +75,11 @@ class StandardMoveTest {
         move.executeOn(boardSpy);
         move.undoOn(boardSpy);
 
-        assertEquals(movingPieceStub, boardSpy.getPieceAt(from).orElseThrow());
+        assertEquals(movingPieceFake, boardSpy.getPieceAt(from).orElseThrow());
         assertEquals(capturedPieceDummy, boardSpy.getPieceAt(to).orElseThrow());
 
         assertTrue(boardSpy.wasPutCalledWith(to, capturedPieceDummy));
-        assertTrue(boardSpy.wasPutCalledWith(from, movingPieceStub));
+        assertTrue(boardSpy.wasPutCalledWith(from, movingPieceFake));
         assertTrue(boardSpy.wasRemoveCalledWith(from));
     }
 

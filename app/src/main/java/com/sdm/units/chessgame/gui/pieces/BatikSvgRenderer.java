@@ -1,4 +1,4 @@
-package com.sdm.units.chessgame.gui;
+package com.sdm.units.chessgame.gui.pieces;
 
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -6,20 +6,19 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.util.Optional;
 
-public class SvgImageUtils {
+public class BatikSvgRenderer implements SvgRenderer {
 
-    public static BufferedImage renderSvgToImage(String svgFilePath, float width, float height) {
-        final BufferedImage[] imageHolder = new BufferedImage[1]; // To hold the resulting image
+    @Override
+    public Optional<BufferedImage> render(String svgFilePath, float width, float height) {
+        final BufferedImage[] imageHolder = new BufferedImage[1];
 
-        try {
-            // Load the SVG file as an InputStream
-            InputStream svgStream = SvgImageUtils.class.getClassLoader().getResourceAsStream(svgFilePath);
+        try (InputStream svgStream = BatikSvgRenderer.class.getClassLoader().getResourceAsStream(svgFilePath)) {
             if (svgStream == null) {
-                throw new RuntimeException("SVG file not found: " + svgFilePath);
+                throw new IllegalArgumentException("SVG file not found: " + svgFilePath);
             }
 
-            // Transcode the SVG to a BufferedImage
             TranscoderInput input = new TranscoderInput(svgStream);
             ImageTranscoder transcoder = new ImageTranscoder() {
                 @Override
@@ -29,21 +28,18 @@ public class SvgImageUtils {
 
                 @Override
                 public void writeImage(BufferedImage image, TranscoderOutput output) {
-                    imageHolder[0] = image; // Store the transcoded image
+                    imageHolder[0] = image;
                 }
             };
 
-            // Set transcoding hints (optional: adjust width/height as needed)
             transcoder.addTranscodingHint(ImageTranscoder.KEY_WIDTH, width);
             transcoder.addTranscodingHint(ImageTranscoder.KEY_HEIGHT, height);
-
-            // Perform the transcoding
             transcoder.transcode(input, null);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            return Optional.empty();
         }
 
-        return imageHolder[0]; // Return the resulting BufferedImage
+        return Optional.ofNullable(imageHolder[0]);
     }
 }

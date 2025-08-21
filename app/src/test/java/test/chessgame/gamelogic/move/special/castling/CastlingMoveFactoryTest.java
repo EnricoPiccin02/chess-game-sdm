@@ -2,8 +2,6 @@ package test.chessgame.gamelogic.move.special.castling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +20,7 @@ import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingMoveFacto
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
 import test.chessgame.gamelogic.testdoubles.ChessboardSpy;
-import test.chessgame.gamelogic.testdoubles.PieceStub;
+import test.chessgame.gamelogic.testdoubles.PieceFake;
 
 @DisplayName("CastlingMoveFactory")
 class CastlingMoveFactoryTest {
@@ -46,8 +44,8 @@ class CastlingMoveFactoryTest {
         rookFrom = new ChessboardPosition(ChessboardFile.H, ChessboardRank.ONE);
         rookTo = new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE);
 
-        king = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, Set.of());
-        rook = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, Set.of());
+        king = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.KING);
+        rook = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.ROOK);
 
         board.putPieceAt(kingFrom, king);
         board.putPieceAt(rookFrom, rook);

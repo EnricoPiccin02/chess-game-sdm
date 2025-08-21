@@ -2,8 +2,6 @@ package test.chessgame.gamelogic.move.special.enpassant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,14 +21,14 @@ import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
 import test.chessgame.gamelogic.testdoubles.ChessboardSpy;
 import test.chessgame.gamelogic.testdoubles.PieceDummy;
-import test.chessgame.gamelogic.testdoubles.PieceStub;
+import test.chessgame.gamelogic.testdoubles.PieceFake;
 
 @DisplayName("EnPassantMoveFactory")
 class EnPassantMoveFactoryTest {
 
     private EnPassantMoveFactory factory;
 
-    private ChessPiece movingPawnStub;
+    private ChessPiece movingPawnFake;
     private ChessPiece capturedPawnDummy;
 
     private ChessboardPosition from;
@@ -41,7 +39,7 @@ class EnPassantMoveFactoryTest {
 
     @BeforeEach
     void setUp() {
-        movingPawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of());
+        movingPawnFake = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
         capturedPawnDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.PAWN);
 
         factory = new EnPassantMoveFactory();
@@ -51,7 +49,7 @@ class EnPassantMoveFactoryTest {
         to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SIX);
 
         candidate = new EnPassantCandidate(
-            from, to, capturingPosition, movingPawnStub, capturedPawnDummy
+            from, to, capturingPosition, movingPawnFake, capturedPawnDummy
         );
     }
 
@@ -67,14 +65,14 @@ class EnPassantMoveFactoryTest {
             assertThat(move).isInstanceOf(EnPassantMove.class);
 
             ChessboardSpy board = new ChessboardSpy();
-            board.putPieceAt(from, movingPawnStub);
+            board.putPieceAt(from, movingPawnFake);
             board.putPieceAt(capturingPosition, capturedPawnDummy);
 
             move.executeOn(board);
 
             assertThat(board.wasRemoveCalledWith(from)).isTrue();
             assertThat(board.wasRemoveCalledWith(capturingPosition)).isTrue();
-            assertThat(board.wasPutCalledWith(to, movingPawnStub)).isTrue();
+            assertThat(board.wasPutCalledWith(to, movingPawnFake)).isTrue();
         }
 
         @Test
@@ -83,13 +81,13 @@ class EnPassantMoveFactoryTest {
             ReversibleMove move = factory.create(candidate);
 
             ChessboardSpy board = new ChessboardSpy();
-            board.putPieceAt(from, movingPawnStub);
+            board.putPieceAt(from, movingPawnFake);
             board.putPieceAt(capturingPosition, capturedPawnDummy);
 
             move.executeOn(board);
             move.undoOn(board);
 
-            assertThat(board.wasPutCalledWith(from, movingPawnStub)).isTrue();
+            assertThat(board.wasPutCalledWith(from, movingPawnFake)).isTrue();
             assertThat(board.wasPutCalledWith(capturingPosition, capturedPawnDummy)).isTrue();
             assertThat(board.wasRemoveCalledWith(to)).isTrue();
         }

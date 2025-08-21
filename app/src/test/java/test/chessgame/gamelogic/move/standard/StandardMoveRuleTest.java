@@ -22,8 +22,8 @@ import com.sdm.units.chessgame.gamelogic.move.standard.StandardMove;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMoveRule;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import test.chessgame.gamelogic.testdoubles.PieceStub;
 import test.chessgame.gamelogic.testdoubles.ChessboardFake;
+import test.chessgame.gamelogic.testdoubles.PieceStub;
 
 @DisplayName("StandardMoveRule")
 class StandardMoveRuleTest {

@@ -27,7 +27,7 @@ import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
 import test.chessgame.gamelogic.testdoubles.ChessboardFake;
 import test.chessgame.gamelogic.testdoubles.PieceDummy;
-import test.chessgame.gamelogic.testdoubles.PieceStub;
+import test.chessgame.gamelogic.testdoubles.PieceFake;
 
 @DisplayName("CastlingEligibility")
 class CastlingEligibilityTest {
@@ -56,8 +56,8 @@ class CastlingEligibilityTest {
 
         board = new ChessboardFake();
 
-        whiteKing = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, Set.of());
-        whiteRook = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.ROOK, Set.of());
+        whiteKing = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.KING);
+        whiteRook = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.ROOK);
 
         kingFrom = new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE);
         kingTo = new ChessboardPosition(ChessboardFile.G, ChessboardRank.ONE);
@@ -122,7 +122,7 @@ class CastlingEligibilityTest {
         @Test
         @DisplayName("should return false if either piece has moved")
         void shouldReturnFalseIfEitherPieceHasMoved() {
-            ChessPiece movedKing = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.KING, Set.of());
+            ChessPiece movedKing = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.KING);
             movedKing.markAsMoved();
             candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo, movedKing, whiteRook);
 
