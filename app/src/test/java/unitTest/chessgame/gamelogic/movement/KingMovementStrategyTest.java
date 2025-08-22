@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.movement;
+package unittest.chessgame.gamelogic.movement;
 
 import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.C;
 import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.D;

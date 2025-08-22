@@ -3,17 +3,20 @@ package com.sdm.units.chessgame.gui.controller.interaction;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.sdm.units.chessgame.gamecontrol.model.domain.ChessGameController;
+import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
+import com.sdm.units.chessgame.gamecontrol.state.MoveQuery;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 
 public class WaitingForSelectionState implements InteractionState {
 
-    private final ChessGameController player;
+    private final MoveQuery moveQuery;
+    private final GameStateController controller;
     private final Consumer<InteractionState> stateTransition;
     private final ChessboardInteractionStrategy interactionStrategy;
 
-    public WaitingForSelectionState(ChessGameController player, Consumer<InteractionState> stateTransition, ChessboardInteractionStrategy interactionStrategy) {
-        this.player = player;
+    public WaitingForSelectionState(MoveQuery moveQuery, GameStateController controller, Consumer<InteractionState> stateTransition, ChessboardInteractionStrategy interactionStrategy) {
+        this.moveQuery = moveQuery;
+        this.controller = controller;
         this.stateTransition = stateTransition;
         this.interactionStrategy = interactionStrategy;
     }
@@ -21,14 +24,14 @@ public class WaitingForSelectionState implements InteractionState {
     @Override
     public void onEnter() {
         interactionStrategy.clear();
-        interactionStrategy.enableSelectablePieces(player.getSelectablePositions());
+        interactionStrategy.enableSelectablePieces(moveQuery.selectable());
     }
 
     @Override
     public void onSquareClicked(ChessboardPosition clickedPosition) {
-        Set<ChessboardPosition> legalDestinations = player.getLegalDestinationsFrom(clickedPosition);
+        Set<ChessboardPosition> legalDestinations = moveQuery.legalDestinations(clickedPosition);
         if (!legalDestinations.isEmpty()) {
-            stateTransition.accept(new WaitingForDestinationState(player, clickedPosition, stateTransition, interactionStrategy));
+            stateTransition.accept(new WaitingForDestinationState(moveQuery, controller, clickedPosition, stateTransition, interactionStrategy));
         }
     }
 }

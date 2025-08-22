@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.board.evaluation;
+package unittest.chessgame.gamelogic.board.evaluation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,8 +23,8 @@ import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveGenerator;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardStub;
-import unitTest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardStub;
+import unittest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
 
 @DisplayName("CheckmateService")
 class CheckmateServiceTest {

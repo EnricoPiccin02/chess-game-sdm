@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.board.state;
+package unittest.chessgame.gamelogic.board.state;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -18,8 +18,8 @@ import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.result.MoveResult;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardFake;
-import unitTest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
 
 @DisplayName("MoveExecutorService")
 class MoveExecutorServiceTest {

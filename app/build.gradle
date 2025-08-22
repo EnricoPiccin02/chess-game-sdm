@@ -45,7 +45,7 @@ application {
 // --- HEADLESS UNIT TESTS ---
 tasks.named('test') {
     useJUnitPlatform()
-    include '**/unitTest/**'
+    include '**/unittest/**'
     systemProperty "java.awt.headless", "true"
 }
 
@@ -56,6 +56,6 @@ tasks.register('guiTest', Test) {
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
     useJUnitPlatform()
-    include '**/guiTest/**'
+    include '**/guitest/**'
     systemProperty "java.awt.headless", "false"
 }

@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.move.special.castling;
+package unittest.chessgame.gamelogic.move.special.castling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

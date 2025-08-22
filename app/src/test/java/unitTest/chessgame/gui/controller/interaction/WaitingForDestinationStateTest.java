@@ -1,4 +1,4 @@
-package unitTest.chessgame.gui.controller;
+package unittest.chessgame.gui.controller.interaction;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -14,7 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.sdm.units.chessgame.gamecontrol.model.domain.ChessGameController;
+import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
+import com.sdm.units.chessgame.gamecontrol.state.MoveQuery;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
@@ -26,7 +27,8 @@ import com.sdm.units.chessgame.gui.controller.interaction.WaitingForSelectionSta
 @DisplayName("WaitingForDestinationState")
 class WaitingForDestinationStateTest {
 
-    private ChessGameController player;
+    private MoveQuery moveQuery;
+    private GameStateController controller;
     private ChessboardInteractionStrategy boardUI;
     private Consumer<InteractionState> transition;
     private WaitingForDestinationState state;
@@ -35,11 +37,12 @@ class WaitingForDestinationStateTest {
     @SuppressWarnings("unchecked")
     @BeforeEach
     void setUp() {
-        player = mock(ChessGameController.class);
+        moveQuery = mock(MoveQuery.class);
+        controller = mock(GameStateController.class);
         boardUI = mock(ChessboardInteractionStrategy.class);
         transition = mock(Consumer.class);
         from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
-        state = new WaitingForDestinationState(player, from, transition, boardUI);
+        state = new WaitingForDestinationState(moveQuery, controller, from, transition, boardUI);
     }
 
     @Test
@@ -48,7 +51,7 @@ class WaitingForDestinationStateTest {
         Set<ChessboardPosition> moves = Set.of(
             new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO)
         );
-        when(player.getLegalDestinationsFrom(from)).thenReturn(moves);
+        when(moveQuery.legalDestinations(from)).thenReturn(moves);
 
         state.onEnter();
 
@@ -66,7 +69,8 @@ class WaitingForDestinationStateTest {
             state.onSquareClicked(from);
 
             verify(transition).accept(any(WaitingForSelectionState.class));
-            verifyNoInteractions(player);
+            verifyNoInteractions(moveQuery);
+            verifyNoInteractions(controller);
         }
 
         @Test
@@ -76,7 +80,7 @@ class WaitingForDestinationStateTest {
 
             state.onSquareClicked(to);
 
-            verify(player).makeMove(from, to);
+            verify(controller).makeMove(from, to);
             verify(transition).accept(any(WaitingForSelectionState.class));
         }
     }

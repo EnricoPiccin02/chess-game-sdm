@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.board.state;
+package unittest.chessgame.gamelogic.board.state;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,8 +23,8 @@ import com.sdm.units.chessgame.gamelogic.move.core.MoveGenerator;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveValidator;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardFake;
-import unitTest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
 
 @DisplayName("LegalMoveFinder")
 class LegalMoveFinderTest {

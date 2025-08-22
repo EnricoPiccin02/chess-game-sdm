@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.move.special.enpassant;
+package unittest.chessgame.gamelogic.move.special.enpassant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,9 +19,9 @@ import com.sdm.units.chessgame.gamelogic.move.special.enpassant.EnPassantMove;
 import com.sdm.units.chessgame.gamelogic.move.special.enpassant.EnPassantMoveFactory;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardSpy;
-import unitTest.chessgame.gamelogic.testdoubles.PieceDummy;
-import unitTest.chessgame.gamelogic.testdoubles.PieceFake;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardSpy;
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
+import unittest.chessgame.gamelogic.testdoubles.PieceFake;
 
 @DisplayName("EnPassantMoveFactory")
 class EnPassantMoveFactoryTest {

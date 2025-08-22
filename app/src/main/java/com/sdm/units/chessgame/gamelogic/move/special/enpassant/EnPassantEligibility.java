@@ -33,13 +33,13 @@ public class EnPassantEligibility implements SpecialMoveEligibility<EnPassantCan
         return board.getPieceAt(candidate.to()).isEmpty();
     }
 
-    public boolean isValidPawnLastMove(Chessboard board, ChessPiece targetPawn, ChessboardOrientation orientation) {
+    public boolean isValidPawnLastMove(ChessboardPosition capturingPosition, ChessPiece targetPawn, ChessboardOrientation orientation) {
         Optional<ReversibleMove> lastMove = moveRecorder.getLastMove();
         if (lastMove.isEmpty()) return false;
                 
         MoveComponent component = lastMove.get().getPrimaryMoveComponent();
-        if (!targetPawn.equals(board.getPieceAt(component.to()).orElse(null))) return false;
-        
+        if (!capturingPosition.equals(component.to())) return false;
+
         return isTwoSquarePawnMove(component.from(), component.to(), targetPawn.pieceColor(), orientation);
     }
 
@@ -62,6 +62,6 @@ public class EnPassantEligibility implements SpecialMoveEligibility<EnPassantCan
         return isPawn(targetPawn) &&
             areOpponentPawns(movingPawn, targetPawn) &&
             isLandingPosClear(board, candidate) &&
-            isValidPawnLastMove(board, targetPawn, orientation);
+            isValidPawnLastMove(candidate.capturingPosition(), targetPawn, orientation);
     }
 }

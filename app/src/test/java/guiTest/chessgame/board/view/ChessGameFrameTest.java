@@ -1,4 +1,4 @@
-package guiTest.chessgame.board.view;
+package guitest.chessgame.board.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,10 +18,10 @@ import com.sdm.units.chessgame.gui.board.clock.ChessClockPanel;
 import com.sdm.units.chessgame.gui.board.view.ChessGameFrame;
 import com.sdm.units.chessgame.gui.controller.events.ChessGameEvent;
 
-import guiTest.chessgame.testdoubles.ChessClockPanelSpy;
-import guiTest.chessgame.testdoubles.ChessGameToolbarDummy;
-import guiTest.chessgame.testdoubles.ChessboardViewSpy;
-import guiTest.chessgame.testdoubles.MoveHistoryAreaFake;
+import guitest.chessgame.testdoubles.ChessClockPanelSpy;
+import guitest.chessgame.testdoubles.ChessGameToolbarDummy;
+import guitest.chessgame.testdoubles.ChessboardViewSpy;
+import guitest.chessgame.testdoubles.MoveHistoryAreaFake;
 
 @DisplayName("ChessGameFrame")
 class ChessGameFrameTest {

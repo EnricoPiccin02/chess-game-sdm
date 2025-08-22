@@ -1,4 +1,4 @@
-package guiTest.chessgame.pieces;
+package guitest.chessgame.pieces;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -22,7 +22,7 @@ import com.sdm.units.chessgame.gui.pieces.PieceResourceResolver;
 import com.sdm.units.chessgame.gui.pieces.SvgImagePanel;
 import com.sdm.units.chessgame.gui.pieces.SvgRenderer;
 
-import unitTest.chessgame.gamelogic.testdoubles.PieceDummy;
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 
 @DisplayName("ChessPieceViewRegistry")
 class ChessPieceViewRegistryTest {

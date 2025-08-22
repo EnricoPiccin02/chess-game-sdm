@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.board.state;
+package unittest.chessgame.gamelogic.board.state;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

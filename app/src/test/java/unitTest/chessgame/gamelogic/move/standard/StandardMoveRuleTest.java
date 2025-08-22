@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.move.standard;
+package unittest.chessgame.gamelogic.move.standard;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,8 +22,8 @@ import com.sdm.units.chessgame.gamelogic.move.standard.StandardMove;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMoveRule;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardFake;
-import unitTest.chessgame.gamelogic.testdoubles.PieceStub;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.PieceStub;
 
 @DisplayName("StandardMoveRule")
 class StandardMoveRuleTest {

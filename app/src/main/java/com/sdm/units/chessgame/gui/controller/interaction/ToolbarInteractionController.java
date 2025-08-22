@@ -1,22 +1,29 @@
 package com.sdm.units.chessgame.gui.controller.interaction;
 
+import com.sdm.units.chessgame.gui.controller.command.CommandFactory;
+import com.sdm.units.chessgame.gui.controller.command.GameCommand;
+
 public class ToolbarInteractionController {
 
-    private final InteractionContext interactionContext;
+    private final CommandFactory commandFactory;
 
-    public ToolbarInteractionController(InteractionContext interactionContext) {
-        this.interactionContext = interactionContext;
+    public ToolbarInteractionController(CommandFactory commandFactory) {
+        this.commandFactory = commandFactory;
     }
 
     public void undoLastMove() {
-        interactionContext.executeCommand(interactionContext.createUndoCommand());
+        executeCommand(commandFactory.createUndoCommand());
     }
 
     public void restart() {
-        interactionContext.executeCommand(interactionContext.createRestartCommand());
+        executeCommand(commandFactory.createRestartCommand());
     }
 
     public void close() {
-        interactionContext.executeCommand(interactionContext.createEndGameCommand());
+        executeCommand(commandFactory.createEndGameCommand());
+    }
+
+    private void executeCommand(GameCommand command) {
+        command.execute();
     }
 }

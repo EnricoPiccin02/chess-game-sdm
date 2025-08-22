@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.board.state;
+package unittest.chessgame.gamelogic.board.state;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,8 +17,8 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardStub;
-import unitTest.chessgame.gamelogic.testdoubles.PieceDummy;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardStub;
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 
 @DisplayName("KingLocator")
 class KingLocatorTest {

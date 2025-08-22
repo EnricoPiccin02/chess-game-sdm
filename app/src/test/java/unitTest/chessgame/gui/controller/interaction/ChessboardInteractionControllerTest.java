@@ -1,4 +1,4 @@
-package unitTest.chessgame.gui.controller;
+package unittest.chessgame.gui.controller.interaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +16,7 @@ import com.sdm.units.chessgame.gui.board.square.HighlightColor;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
 import com.sdm.units.chessgame.gui.controller.interaction.ChessboardInteractionController;
 
-import guiTest.chessgame.testdoubles.ChessboardViewSpy;
+import guitest.chessgame.testdoubles.ChessboardViewSpy;
 
 @DisplayName("ChessboardInteractionController")
 class ChessboardInteractionControllerTest {

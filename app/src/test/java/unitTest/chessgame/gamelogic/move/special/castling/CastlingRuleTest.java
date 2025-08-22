@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.move.special.castling;
+package unittest.chessgame.gamelogic.move.special.castling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,8 +30,8 @@ import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingPattern;
 import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingRule;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardFake;
-import unitTest.chessgame.gamelogic.testdoubles.PieceDummy;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 
 @DisplayName("CastlingRule")
 class CastlingRuleTest {

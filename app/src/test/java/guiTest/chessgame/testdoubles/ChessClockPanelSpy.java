@@ -1,4 +1,4 @@
-package guiTest.chessgame.testdoubles;
+package guitest.chessgame.testdoubles;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gui.board.clock.ChessClock;

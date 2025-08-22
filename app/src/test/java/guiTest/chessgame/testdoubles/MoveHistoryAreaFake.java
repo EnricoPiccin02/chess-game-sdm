@@ -1,4 +1,4 @@
-package guiTest.chessgame.testdoubles;
+package guitest.chessgame.testdoubles;
 
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
