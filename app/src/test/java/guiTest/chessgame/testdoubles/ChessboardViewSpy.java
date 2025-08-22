@@ -1,4 +1,4 @@
-package guiTest.chessgame.testdoubles;
+package guitest.chessgame.testdoubles;
 
 import java.util.HashSet;
 import java.util.Set;

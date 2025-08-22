@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.movement;
+package unittest.chessgame.gamelogic.movement;
 
 import java.util.Set;
 import java.util.Optional;

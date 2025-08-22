@@ -6,7 +6,6 @@ import java.util.EnumMap;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
@@ -25,7 +24,7 @@ public class ChessGameFrame extends JFrame implements ChessGameView, ChessGameEv
 
     public ChessGameFrame(String name, ChessboardView chessboardView, EnumMap<ChessPieceColor, ChessClockPanel> clocks, MoveHistoryView moveHistoryArea, JToolBar toolBar) {
         super(name);
-        getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
         this.chessboardView = chessboardView;
@@ -33,8 +32,6 @@ public class ChessGameFrame extends JFrame implements ChessGameView, ChessGameEv
         this.moveHistoryArea = moveHistoryArea;
 
         setContentPane(buildMainPanel(toolBar));
-        pack();
-        setLocationRelativeTo(null);
     }
 
     private JPanel buildMainPanel(JToolBar toolBar) {

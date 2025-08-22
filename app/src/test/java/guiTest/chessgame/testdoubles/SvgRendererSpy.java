@@ -1,4 +1,4 @@
-package guiTest.chessgame.testdoubles;
+package guitest.chessgame.testdoubles;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

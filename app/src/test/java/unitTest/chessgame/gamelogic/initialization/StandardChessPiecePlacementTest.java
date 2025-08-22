@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.initialization;
+package unittest.chessgame.gamelogic.initialization;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.move.special.promotion;
+package unittest.chessgame.gamelogic.move.special.promotion;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,9 +22,9 @@ import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionCandida
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionPattern;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardFake;
-import unitTest.chessgame.gamelogic.testdoubles.PieceDummy;
-import unitTest.chessgame.gamelogic.testdoubles.PieceStub;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
+import unittest.chessgame.gamelogic.testdoubles.PieceStub;
 
 @DisplayName("PromotionPattern")
 class PromotionPatternTest {

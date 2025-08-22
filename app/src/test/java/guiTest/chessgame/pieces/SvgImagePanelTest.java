@@ -1,4 +1,4 @@
-package guiTest.chessgame.pieces;
+package guitest.chessgame.pieces;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gui.pieces.SvgImagePanel;
 
-import guiTest.chessgame.testdoubles.SvgRendererSpy;
+import guitest.chessgame.testdoubles.SvgRendererSpy;
 
 @DisplayName("SvgImagePanel")
 class SvgImagePanelTest {

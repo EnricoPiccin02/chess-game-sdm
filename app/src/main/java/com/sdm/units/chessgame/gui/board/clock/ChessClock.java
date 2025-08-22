@@ -7,4 +7,6 @@ public interface ChessClock {
     void stop();
     
     void reset();
+
+    void setListener(ChessClockListener listener);
 }

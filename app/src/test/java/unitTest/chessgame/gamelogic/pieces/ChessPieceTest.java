@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.pieces;
+package unittest.chessgame.gamelogic.pieces;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

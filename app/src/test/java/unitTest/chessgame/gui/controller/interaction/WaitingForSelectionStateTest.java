@@ -1,4 +1,4 @@
-package unitTest.chessgame.gui.controller;
+package unittest.chessgame.gui.controller.interaction;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -14,7 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.sdm.units.chessgame.gamecontrol.model.domain.ChessGameController;
+import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
+import com.sdm.units.chessgame.gamecontrol.state.MoveQuery;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
@@ -26,7 +27,8 @@ import com.sdm.units.chessgame.gui.controller.interaction.WaitingForSelectionSta
 @DisplayName("WaitingForSelectionState")
 class WaitingForSelectionStateTest {
 
-    private ChessGameController player;
+    private MoveQuery moveQuery;
+    private GameStateController controller;
     private ChessboardInteractionStrategy boardUI;
     private Consumer<InteractionState> transition;
     private WaitingForSelectionState state;
@@ -34,10 +36,11 @@ class WaitingForSelectionStateTest {
     @SuppressWarnings("unchecked")
     @BeforeEach
     void setUp() {
-        player = mock(ChessGameController.class);
+        moveQuery = mock(MoveQuery.class);
+        controller = mock(GameStateController.class);
         boardUI = mock(ChessboardInteractionStrategy.class);
         transition = mock(Consumer.class);
-        state = new WaitingForSelectionState(player, transition, boardUI);
+        state = new WaitingForSelectionState(moveQuery, controller, transition, boardUI);
     }
 
     @Test
@@ -46,7 +49,7 @@ class WaitingForSelectionStateTest {
         Set<ChessboardPosition> positions = Set.of(
             new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE)
         );
-        when(player.getSelectablePositions()).thenReturn(positions);
+        when(moveQuery.selectable()).thenReturn(positions);
 
         state.onEnter();
 
@@ -62,7 +65,7 @@ class WaitingForSelectionStateTest {
         @DisplayName("should transition to WaitingForDestinationState if legal moves exist")
         void shouldTransitionIfLegalMovesExist() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
-            when(player.getLegalDestinationsFrom(from))
+            when(moveQuery.legalDestinations(from))
                 .thenReturn(Set.of(
                     new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO)
                 ));
@@ -76,7 +79,7 @@ class WaitingForSelectionStateTest {
         @DisplayName("should stay in current state if no legal moves")
         void shouldStayIfNoLegalMoves() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
-            when(player.getLegalDestinationsFrom(from)).thenReturn(Set.of());
+            when(moveQuery.legalDestinations(from)).thenReturn(Set.of());
 
             state.onSquareClicked(from);
 

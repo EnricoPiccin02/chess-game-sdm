@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.board.evaluation;
+package unittest.chessgame.gamelogic.board.evaluation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -24,7 +24,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveValidator;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
 
 @DisplayName("MoveSimulationService")
 class MoveSimulationServiceTest {

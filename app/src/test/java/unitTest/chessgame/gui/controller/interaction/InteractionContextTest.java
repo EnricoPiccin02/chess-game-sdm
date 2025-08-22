@@ -1,4 +1,4 @@
-package unitTest.chessgame.gui.controller;
+package unittest.chessgame.gui.controller.interaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -9,14 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.sdm.units.chessgame.gamecontrol.model.domain.ChessGameController;
+import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
+import com.sdm.units.chessgame.gamecontrol.state.MoveQuery;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gui.controller.command.EndGameCommand;
-import com.sdm.units.chessgame.gui.controller.command.GameCommand;
-import com.sdm.units.chessgame.gui.controller.command.RestartCommand;
-import com.sdm.units.chessgame.gui.controller.command.UndoCommand;
 import com.sdm.units.chessgame.gui.controller.interaction.ChessboardInteractionStrategy;
 import com.sdm.units.chessgame.gui.controller.interaction.InteractionContext;
 import com.sdm.units.chessgame.gui.controller.interaction.InteractionState;
@@ -25,15 +22,17 @@ import com.sdm.units.chessgame.gui.controller.interaction.WaitingForSelectionSta
 @DisplayName("InteractionContext")
 class InteractionContextTest {
 
-    private ChessGameController player;
+    private MoveQuery moveQuery;
+    private GameStateController controller;
     private ChessboardInteractionStrategy boardUI;
     private InteractionContext context;
 
     @BeforeEach
     void setUp() {
-        player = mock(ChessGameController.class);
+        moveQuery = mock(MoveQuery.class);
+        controller = mock(GameStateController.class);
         boardUI = mock(ChessboardInteractionStrategy.class);
-        context = new InteractionContext(player, boardUI);
+        context = new InteractionContext(moveQuery, controller, boardUI);
     }
 
     @Nested
@@ -60,29 +59,6 @@ class InteractionContextTest {
             assertThat(context)
                 .extracting("currentState")
                 .isInstanceOf(WaitingForSelectionState.class);
-        }
-    }
-
-    @Nested
-    @DisplayName("command execution")
-    class CommandExecution {
-
-        @Test
-        @DisplayName("should execute undo command")
-        void shouldExecuteUndoCommand() {
-            GameCommand cmd = mock(GameCommand.class);
-
-            context.executeCommand(cmd);
-
-            verify(cmd).execute();
-        }
-
-        @Test
-        @DisplayName("should create proper commands")
-        void shouldCreateProperCommands() {
-            assertThat(context.createUndoCommand()).isInstanceOf(UndoCommand.class);
-            assertThat(context.createRestartCommand()).isInstanceOf(RestartCommand.class);
-            assertThat(context.createEndGameCommand()).isInstanceOf(EndGameCommand.class);
         }
     }
 }

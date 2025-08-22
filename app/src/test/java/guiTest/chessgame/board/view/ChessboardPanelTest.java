@@ -1,4 +1,4 @@
-package guiTest.chessgame.board.view;
+package guitest.chessgame.board.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,7 +28,7 @@ import com.sdm.units.chessgame.gui.board.square.ChessboardSquareComponent;
 import com.sdm.units.chessgame.gui.board.view.ChessboardPanel;
 import com.sdm.units.chessgame.gui.pieces.ChessPieceViewRegistry;
 
-import guiTest.chessgame.testdoubles.ChessboardSquareComponentSpy;
+import guitest.chessgame.testdoubles.ChessboardSquareComponentSpy;
 
 @DisplayName("ChessboardPanel")
 class ChessboardPanelTest {

@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.initialization;
+package unittest.chessgame.gamelogic.initialization;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

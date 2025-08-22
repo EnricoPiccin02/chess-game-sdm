@@ -19,4 +19,8 @@ public class CompositeChessGameEvent extends ChessGameEvent {
             event.handleOn(view);
         }
     }
+
+    public List<ChessGameEvent> events() {
+        return events;
+    }
 }

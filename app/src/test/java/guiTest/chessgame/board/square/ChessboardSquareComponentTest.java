@@ -1,4 +1,4 @@
-package guiTest.chessgame.board.square;
+package guitest.chessgame.board.square;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,9 +28,9 @@ import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
 import com.sdm.units.chessgame.gui.board.square.SquareColor;
 
-import guiTest.chessgame.testdoubles.ChessPieceViewRegistryStub;
-import guiTest.chessgame.testdoubles.HighlightRendererSpy;
-import unitTest.chessgame.gamelogic.testdoubles.PieceDummy;
+import guitest.chessgame.testdoubles.ChessPieceViewRegistryStub;
+import guitest.chessgame.testdoubles.HighlightRendererSpy;
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 
 @DisplayName("ChessboardSquareComponent")
 class ChessboardSquareComponentTest {

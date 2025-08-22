@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.testdoubles;
+package unittest.chessgame.gamelogic.testdoubles;
 
 import java.util.ArrayList;
 import java.util.List;

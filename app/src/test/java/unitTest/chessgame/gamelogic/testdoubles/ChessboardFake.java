@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.testdoubles;
+package unittest.chessgame.gamelogic.testdoubles;
 
 import java.util.HashMap;
 import java.util.Map;

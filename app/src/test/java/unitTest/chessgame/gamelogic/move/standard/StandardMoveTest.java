@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.move.standard;
+package unittest.chessgame.gamelogic.move.standard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,9 +19,9 @@ import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMove;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-import unitTest.chessgame.gamelogic.testdoubles.ChessboardSpy;
-import unitTest.chessgame.gamelogic.testdoubles.PieceDummy;
-import unitTest.chessgame.gamelogic.testdoubles.PieceFake;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardSpy;
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
+import unittest.chessgame.gamelogic.testdoubles.PieceFake;
 
 @DisplayName("StandardMove")
 class StandardMoveTest {

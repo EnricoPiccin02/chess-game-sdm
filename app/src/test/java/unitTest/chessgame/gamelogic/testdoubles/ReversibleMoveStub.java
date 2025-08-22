@@ -1,4 +1,4 @@
-package unitTest.chessgame.gamelogic.testdoubles;
+package unittest.chessgame.gamelogic.testdoubles;
 
 import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
