@@ -1,5 +1,6 @@
 package com.sdm.units.chessgame.gamecontrol.flow;
 
+import com.sdm.units.chessgame.gamecontrol.state.GameReason;
 import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.move.result.MoveResult;
@@ -41,8 +42,11 @@ public class ChessGameEventFactory implements EventFactory {
     }
 
     @Override
-    public ChessGameEvent moveRejected(String reason) {
-        return new GameMessageEvent("Move rejected: " + reason);
+    public ChessGameEvent moveRejected(GameReason reason) {
+        return new CompositeChessGameEvent(
+            new UpdateChessboardEvent(board),
+            new GameMessageEvent("Move rejected: " + reason.getDescription())
+        );
     }
 
     @Override
@@ -56,20 +60,12 @@ public class ChessGameEventFactory implements EventFactory {
     }
 
     @Override
-    public ChessGameEvent playerInCheck(ChessPieceColor player) {
-        return new CompositeChessGameEvent(
-            new UpdateChessboardEvent(board),
-            new GameMessageEvent(player + " is in check!")
-        );
-    }
-
-    @Override
-    public ChessGameEvent playerWon(TurnManager turns) {
+    public ChessGameEvent playerWon(TurnManager turns, ChessPieceColor winner, GameReason reason) {
         return new CompositeChessGameEvent(
             new UpdateChessboardEvent(board),
             new ClockStopEvent(turns.current()),
-            new ClockStartEvent(turns.opponent()),
-            new GameMessageEvent(turns.current() + " wins the game!")
+            new ClockStopEvent(turns.opponent()),
+            new GameMessageEvent(reason.getDescription() + " " + winner + " wins the game!")
         );
     }
 

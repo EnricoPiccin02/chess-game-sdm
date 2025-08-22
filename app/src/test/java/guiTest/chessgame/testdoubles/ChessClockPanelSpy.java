@@ -2,6 +2,7 @@ package guitest.chessgame.testdoubles;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gui.board.clock.ChessClock;
+import com.sdm.units.chessgame.gui.board.clock.ChessClockListener;
 import com.sdm.units.chessgame.gui.board.clock.ChessClockPanel;
 
 public class ChessClockPanelSpy extends ChessClockPanel {
@@ -23,7 +24,7 @@ public class ChessClockPanelSpy extends ChessClockPanel {
     }
 
     public ChessClockPanelSpy(ChessPieceColor color) {
-        super(color);
+        super(color, null);
     }
 
     @Override
@@ -46,6 +47,11 @@ public class ChessClockPanelSpy extends ChessClockPanel {
 
             @Override
             public void reset() {
+                
+            }
+
+            @Override
+            public void setListener(ChessClockListener listener) {
                 
             }
         };

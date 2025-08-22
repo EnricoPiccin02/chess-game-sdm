@@ -16,6 +16,7 @@ import com.sdm.units.chessgame.gamecontrol.flow.EventFactory;
 import com.sdm.units.chessgame.gamecontrol.flow.GameFlowService;
 import com.sdm.units.chessgame.gamecontrol.flow.ScoreKeeper;
 import com.sdm.units.chessgame.gamecontrol.flow.TurnManager;
+import com.sdm.units.chessgame.gamecontrol.state.GameReason;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
@@ -129,9 +130,9 @@ class GameFlowServiceTest {
         @DisplayName("should fire moveRejected event without touching scores or turns")
         void shouldFireRejectedEvent() {
             ChessGameEvent event = mock(ChessGameEvent.class);
-            when(factory.moveRejected("illegal")).thenReturn(event);
+            when(factory.moveRejected(GameReason.ILLEGAL_MOVE)).thenReturn(event);
 
-            service.onMoveRejected("illegal");
+            service.onMoveRejected(GameReason.ILLEGAL_MOVE);
 
             verify(spyListener).onChessGameEvent(event);
             verifyNoInteractions(spyScores);
@@ -147,9 +148,9 @@ class GameFlowServiceTest {
         @DisplayName("should fire playerWon event without resetting scores/turns")
         void shouldFireWinEventWithoutResetting() {
             ChessGameEvent event = mock(ChessGameEvent.class);
-            when(factory.playerWon(spyTurns)).thenReturn(event);
+            when(factory.playerWon(spyTurns, ChessPieceColor.WHITE, GameReason.CHECKMATE)).thenReturn(event);
 
-            service.onPlayerWon();
+            service.onPlayerWon(ChessPieceColor.WHITE, GameReason.CHECKMATE);
 
             verify(spyListener).onChessGameEvent(event);
             verifyNoInteractions(spyScores);

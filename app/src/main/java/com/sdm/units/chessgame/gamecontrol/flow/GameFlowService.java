@@ -3,6 +3,8 @@ package com.sdm.units.chessgame.gamecontrol.flow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sdm.units.chessgame.gamecontrol.state.GameReason;
+import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.move.result.MoveResult;
 import com.sdm.units.chessgame.gui.controller.events.ChessGameEvent;
 import com.sdm.units.chessgame.gui.controller.events.ChessGameEventListener;
@@ -60,13 +62,13 @@ public class GameFlowService implements GameFlowController, ChessGameEventPublis
     }
 
     @Override
-    public void onMoveRejected(String reason) {
+    public void onMoveRejected(GameReason reason) {
         fireEvent(notifier.moveRejected(reason));
     }
     
     @Override
-    public void onPlayerWon() {
-        fireEvent(notifier.playerWon(turns));
+    public void onPlayerWon(ChessPieceColor winner, GameReason reason) {
+        fireEvent(notifier.playerWon(turns, winner, reason));
     }
 
     public void onGameEnd() {

@@ -4,48 +4,47 @@ import javax.swing.Timer;
 
 public class DefaultChessClock implements ChessClock {
     
-    private long totalMillis;
+    private final long totalMillis;
     private long remainingMillis;
     private Timer timer;
-    private ClockFormatter clockFormatter;
+    private ChessClockListener listener;
 
-    public DefaultChessClock(ClockFormatter clockFormatter, long totalMillis) {
-        this.clockFormatter = clockFormatter;
+    public DefaultChessClock(long totalMillis) {
         this.totalMillis = this.remainingMillis = totalMillis;
     }
 
     @Override
     public void start() {
-        if (timer != null) {
-            timer.stop();
-        } 
+        if (timer != null) timer.stop();
 
-        timer = new Timer(1000, e -> {
-            setTime(remainingMillis -= 1000);
-            
-            if (remainingMillis <= 0) {
-                stop();
-            }
-        });
-
+        timer = new Timer(1000, e -> tick());
         timer.start();
+    }
+
+    public void tick() {
+        remainingMillis -= 1000;
+        if (listener != null) listener.onTimeUpdated(remainingMillis);
+
+        if (remainingMillis <= 0) {
+            stop();
+            if (listener != null) listener.onTimeExpired();
+        }
     }
 
     @Override
     public void stop() {
-        if (timer != null) {
-            timer.stop();
-        }
+        if (timer != null) timer.stop();
     }
 
     @Override
     public void reset() {
         stop();
-        setTime(totalMillis);
+        remainingMillis = totalMillis;
+        if (listener != null) listener.onTimeUpdated(remainingMillis);
     }
 
-    private void setTime(long millis) {
-        this.remainingMillis = millis;
-        clockFormatter.updateDisplay(millis);
+    @Override
+    public void setListener(ChessClockListener listener) {
+        this.listener = listener;
     }
 }

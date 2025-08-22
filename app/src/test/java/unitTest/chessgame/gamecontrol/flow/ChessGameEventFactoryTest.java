@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.sdm.units.chessgame.gamecontrol.flow.ChessGameEventFactory;
 import com.sdm.units.chessgame.gamecontrol.flow.ScoreKeeper;
 import com.sdm.units.chessgame.gamecontrol.flow.TurnManager;
+import com.sdm.units.chessgame.gamecontrol.state.GameReason;
 import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
@@ -64,15 +65,15 @@ class ChessGameEventFactoryTest {
     @DisplayName("moveApplied")
     class MoveApplied {
 
-        private TurnManager turns;
-        private ScoreKeeper scores;
+        private TurnManager dummyTurns;
+        private ScoreKeeper dummyScores;
         private ReversibleMove dummyMove;
         private MoveResult result;
 
         @BeforeEach
         void init() {
-            turns = new TurnManager();
-            scores = new ScoreKeeper();
+            dummyTurns = mock(TurnManager.class);
+            dummyScores = mock(ScoreKeeper.class);
             dummyMove = mock(ReversibleMove.class);
             result = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
         }
@@ -80,8 +81,9 @@ class ChessGameEventFactoryTest {
         @Test
         @DisplayName("should assemble a record, update, stop clock and start clock events")
         void shouldAssembleMoveAppliedEvents() {
-            ChessGameEvent event = factory.moveApplied(result, turns, scores);
+            ChessGameEvent event = factory.moveApplied(result, dummyTurns, dummyScores);
 
+            assertThat(event).isInstanceOf(CompositeChessGameEvent.class);
             CompositeChessGameEvent composite = (CompositeChessGameEvent) event;
 
             assertThat(composite.events()).hasExactlyElementsOfTypes(
@@ -100,28 +102,75 @@ class ChessGameEventFactoryTest {
         @Test
         @DisplayName("should assemble a GameMessageEvent with rejection reason")
         void shouldAssembleMoveRejectedEvent() {
-            ChessGameEvent event = factory.moveRejected("illegal move");
+            ChessGameEvent event = factory.moveRejected(GameReason.ILLEGAL_MOVE);
 
-            assertThat(event).isInstanceOf(GameMessageEvent.class);
-            GameMessageEvent messageEvent = (GameMessageEvent) event;
-
-            assertThat(messageEvent.getMessage()).contains("illegal move");
-        }
-    }
-
-    @Nested
-    @DisplayName("playerInCheck")
-    class PlayerInCheck {
-
-        @Test
-        @DisplayName("should assemble update and check message events")
-        void shouldAssembleCheckEvents() {
-            ChessGameEvent event = factory.playerInCheck(ChessPieceColor.BLACK);
-
+            assertThat(event).isInstanceOf(CompositeChessGameEvent.class);
             CompositeChessGameEvent composite = (CompositeChessGameEvent) event;
 
             assertThat(composite.events()).hasExactlyElementsOfTypes(
                 UpdateChessboardEvent.class,
+                GameMessageEvent.class
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("moveUndone")
+    class MoveUndone {
+
+        private TurnManager dummyTurns;
+        private ScoreKeeper dummyScores;
+        private ReversibleMove dummyMove;
+        private MoveResult result;
+
+        @BeforeEach
+        void init() {
+            dummyTurns = new TurnManager();
+            dummyScores = new ScoreKeeper();
+            dummyMove = mock(ReversibleMove.class);
+            result = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
+        }
+
+        @Test
+        @DisplayName("should assemble a record, update, stop clock and start clock events")
+        void shouldAssembleMoveUndoneEvents() {
+            ChessGameEvent event = factory.moveUndone(result, dummyTurns, dummyScores);
+
+            assertThat(event).isInstanceOf(CompositeChessGameEvent.class);
+            CompositeChessGameEvent composite = (CompositeChessGameEvent) event;
+
+            assertThat(composite.events()).hasExactlyElementsOfTypes(
+                GameRecordEvent.class,
+                UpdateChessboardEvent.class,
+                ClockStopEvent.class,
+                ClockStartEvent.class
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("playerWon")
+    class PlayerWon {
+
+        private TurnManager dummyTurns;
+
+        @BeforeEach
+        void init() {
+            dummyTurns = mock(TurnManager.class);
+        }
+
+        @Test
+        @DisplayName("should assemble update, stop all clocks and message events")
+        void shouldAssemblePlayerWonEvents() {
+            ChessGameEvent event = factory.playerWon(dummyTurns, ChessPieceColor.WHITE, GameReason.CHECKMATE);
+
+            assertThat(event).isInstanceOf(CompositeChessGameEvent.class);
+            CompositeChessGameEvent composite = (CompositeChessGameEvent) event;
+
+            assertThat(composite.events()).hasExactlyElementsOfTypes(
+                UpdateChessboardEvent.class,
+                ClockStopEvent.class,
+                ClockStopEvent.class,
                 GameMessageEvent.class
             );
         }
