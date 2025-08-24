@@ -33,6 +33,6 @@ public final class EvaluatorsFactory {
     }
 
     public GameOutcomeEvaluator gameOutcomeEvaluator(MoveRuleSet ruleSet) {
-        return new GameOutcomeEvaluator(attackDetector(ruleSet), checkmateService(ruleSet));
+        return new DefaultGameOutcomeEvaluator(attackDetector(ruleSet), checkmateService(ruleSet));
     }
 }
