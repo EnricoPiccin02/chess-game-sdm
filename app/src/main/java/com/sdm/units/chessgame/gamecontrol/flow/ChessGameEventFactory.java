@@ -14,7 +14,7 @@ import com.sdm.units.chessgame.gui.controller.events.GameRecordEvent;
 import com.sdm.units.chessgame.gui.controller.events.GameStartedEvent;
 import com.sdm.units.chessgame.gui.controller.events.UpdateChessboardEvent;
 
-public class ChessGameEventFactory implements EventFactory {
+public final class ChessGameEventFactory implements EventFactory {
     
     private final Chessboard board;
 

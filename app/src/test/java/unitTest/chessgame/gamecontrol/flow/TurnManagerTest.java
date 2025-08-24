@@ -35,7 +35,7 @@ class TurnManagerTest {
     @Test
     @DisplayName("should reset to WHITE on start()")
     void shouldResetToWhite() {
-        turns.swap(); // now black
+        turns.swap();
         turns.start();
         assertEquals(ChessPieceColor.WHITE, turns.current());
     }

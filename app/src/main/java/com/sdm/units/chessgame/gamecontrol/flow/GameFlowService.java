@@ -10,7 +10,7 @@ import com.sdm.units.chessgame.gui.controller.events.ChessGameEvent;
 import com.sdm.units.chessgame.gui.controller.events.ChessGameEventListener;
 import com.sdm.units.chessgame.gui.controller.events.ChessGameEventPublisher;
 
-public class GameFlowService implements GameFlowController, ChessGameEventPublisher {
+public final class GameFlowService implements GameFlowController, ChessGameEventPublisher {
 
     private final ScoreKeeper scores;
     private final TurnManager turns;

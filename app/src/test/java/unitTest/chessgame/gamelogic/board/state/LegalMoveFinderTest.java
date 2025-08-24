@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
+import com.sdm.units.chessgame.gamelogic.board.state.DefaultLegalMoveFinder;
 import com.sdm.units.chessgame.gamelogic.board.state.LegalMoveFinder;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
@@ -47,7 +48,7 @@ class LegalMoveFinderTest {
         orientation = ChessboardOrientation.WHITE_BOTTOM;
         board = new ChessboardFake();
 
-        finder = new LegalMoveFinder(validatorMock, generatorMock, orientation);
+        finder = new DefaultLegalMoveFinder(validatorMock, generatorMock, orientation);
 
         from = new ChessboardPosition(ChessboardFile.B, ChessboardRank.FOUR);
         to = new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE);
