@@ -1,4 +1,4 @@
-package guitest.chessgame.pieces;
+package unittest.chessgame.gui.pieces;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;

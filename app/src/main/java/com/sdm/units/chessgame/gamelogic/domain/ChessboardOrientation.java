@@ -1,6 +1,6 @@
 package com.sdm.units.chessgame.gamelogic.domain;
 
-import java.util.List;
+import java.util.Set;
 
 public enum ChessboardOrientation {
     
@@ -33,10 +33,10 @@ public enum ChessboardOrientation {
             : ChessboardDirection.DOWN;
     }
 
-    public List<ChessboardDirection> pawnCaptureDirections(ChessPieceColor color) {
+    public Set<ChessboardDirection> pawnCaptureDirections(ChessPieceColor color) {
         return pawnForwardDirection(color) == ChessboardDirection.UP
-            ? List.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT)
-            : List.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT);
+            ? Set.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT)
+            : Set.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT);
     }
 
     public ChessboardRank promotionRank(ChessPieceColor color) {

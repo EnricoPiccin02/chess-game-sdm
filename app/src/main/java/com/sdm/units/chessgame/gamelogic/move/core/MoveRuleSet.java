@@ -7,7 +7,7 @@ public final class MoveRuleSet {
     private final List<ComposedMoveRule> rules;
 
     public MoveRuleSet(List<ComposedMoveRule> rules) {
-        this.rules = rules;
+        this.rules = List.copyOf(rules);
     }
 
     public MoveValidator asValidator() {

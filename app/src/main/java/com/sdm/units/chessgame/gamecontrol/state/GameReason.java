@@ -31,6 +31,12 @@ public enum GameReason {
         public String getDescription() {
             return "No undo available!";
         }
+    },
+    GAME_ENDED {
+        @Override
+        public String getDescription() {
+            return "Game has ended! Exiting...";
+        }
     };
 
     public abstract String getDescription();

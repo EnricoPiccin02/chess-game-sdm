@@ -6,9 +6,9 @@ public class DefaultPieceResourceResolver implements PieceResourceResolver {
     
     @Override
     public String resolvePath(ChessPiece piece) {
-        String color = piece.pieceColor().name().toLowerCase();
-        String type = piece.getClass().getSimpleName().toLowerCase();
-        
-        return "images/pieces/" + color + "/" + type + ".svg";
+        String color = piece.pieceColor().toString().toLowerCase();
+        String info = piece.pieceInfo().toString().toLowerCase();
+
+        return "images/pieces/" + color + "/" + info + ".svg";
     }
 }

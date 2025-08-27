@@ -15,18 +15,18 @@ public class StandardMoveRule implements ComposedMoveRule {
     @Override
     public List<ReversibleMove> generateMovesFrom(Chessboard board, ChessboardPosition from, ChessboardOrientation orientation) {
         return board.getPieceAt(from)
-                .map(piece -> piece.getLegalDestinations(board, from).stream()
-                        .map(to -> validateAndCreate(board, from, to, orientation))
-                        .flatMap(Optional::stream)
-                        .toList())
-                .orElse(List.of());
+            .map(piece -> piece.getLegalDestinations(board, from).stream()
+                    .map(to -> validateAndCreate(board, from, to, orientation))
+                    .flatMap(Optional::stream)
+                    .toList())
+            .orElse(List.of());
     }
 
     @Override
     public Optional<ReversibleMove> validateAndCreate(Chessboard board, ChessboardPosition from, ChessboardPosition to, ChessboardOrientation orientation) {
         return board.getPieceAt(from)
-                .filter(piece -> piece.getLegalDestinations(board, from).contains(to))
-                .map(piece -> new StandardMove(from, to, piece, board.getPieceAt(to)));
+            .filter(piece -> piece.getLegalDestinations(board, from).contains(to))
+            .map(piece -> new StandardMove(from, to, piece, board.getPieceAt(to)));
     }
 
     @Override

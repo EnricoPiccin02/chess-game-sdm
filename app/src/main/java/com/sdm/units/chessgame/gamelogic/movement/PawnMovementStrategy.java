@@ -1,7 +1,6 @@
 package com.sdm.units.chessgame.gamelogic.movement;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class PawnMovementStrategy implements MovementStrategy {
         return moves;
     }
 
-    private Set<ChessboardPosition> getCaptureMoves(Chessboard board, ChessPieceColor player, ChessboardPosition fromPosition, List<ChessboardDirection> captureDirs) {
+    private Set<ChessboardPosition> getCaptureMoves(Chessboard board, ChessPieceColor player, ChessboardPosition fromPosition, Set<ChessboardDirection> captureDirs) {
         return captureDirs.stream()
             .map(fromPosition::nextPosition)
             .filter(Optional::isPresent)

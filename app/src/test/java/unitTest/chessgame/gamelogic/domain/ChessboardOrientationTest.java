@@ -2,7 +2,7 @@ package unittest.chessgame.gamelogic.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,15 +67,15 @@ class ChessboardOrientationTest {
         @Test
         @DisplayName("should allow white pawns to capture diagonally upward")
         void shouldAllowWhitePawnsToCaptureDiagonallyUpward() {
-            assertEquals(List.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT),
-                         orientation.pawnCaptureDirections(ChessPieceColor.WHITE));
+            assertEquals(Set.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT),
+                orientation.pawnCaptureDirections(ChessPieceColor.WHITE));
         }
 
         @Test
         @DisplayName("should allow black pawns to capture diagonally downward")
         void shouldAllowBlackPawnsToCaptureDiagonallyDownward() {
-            assertEquals(List.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT),
-                         orientation.pawnCaptureDirections(ChessPieceColor.BLACK));
+            assertEquals(Set.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT),
+                orientation.pawnCaptureDirections(ChessPieceColor.BLACK));
         }
 
         @Test
@@ -141,15 +141,15 @@ class ChessboardOrientationTest {
         @Test
         @DisplayName("should allow white pawns to capture diagonally downward")
         void shouldAllowWhitePawnsToCaptureDiagonallyDownward() {
-            assertEquals(List.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT),
-                         orientation.pawnCaptureDirections(ChessPieceColor.WHITE));
+            assertEquals(Set.of(ChessboardDirection.DOWN_LEFT, ChessboardDirection.DOWN_RIGHT),
+                orientation.pawnCaptureDirections(ChessPieceColor.WHITE));
         }
 
         @Test
         @DisplayName("should allow black pawns to capture diagonally upward")
         void shouldAllowBlackPawnsToCaptureDiagonallyUpward() {
-            assertEquals(List.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT),
-                         orientation.pawnCaptureDirections(ChessPieceColor.BLACK));
+            assertEquals(Set.of(ChessboardDirection.UP_LEFT, ChessboardDirection.UP_RIGHT),
+                orientation.pawnCaptureDirections(ChessPieceColor.BLACK));
         }
 
         @Test

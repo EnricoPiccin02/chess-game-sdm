@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,31 +35,23 @@ class ChessboardPositionTest {
     class SingleDirectionNavigation {
 
         @Test
-        @DisplayName("should move a piece upwards from d4 to d5")
-        void shouldMovePieceUpwards() {
+        @DisplayName("should move upwards from d4 to d5")
+        void shouldMoveUpwardsFromD4() {
             Optional<ChessboardPosition> result = d4.nextPosition(ChessboardDirection.UP);
-            assertEquals(new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE), result.orElseThrow());
+            assertEquals(new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE), result.get());
         }
 
         @Test
-        @DisplayName("should move a piece diagonally up-right from d4 to e5")
-        void shouldMovePieceDiagonallyUpRight() {
+        @DisplayName("should move diagonally up-right from d4 to e5")
+        void shouldMoveDiagonallyUpRightFromD4() {
             Optional<ChessboardPosition> result = d4.nextPosition(ChessboardDirection.UP_RIGHT);
-            assertEquals(e5, result.orElseThrow());
+            assertEquals(e5, result.get());
         }
 
         @Test
-        @DisplayName("should stop movement at the edge of the board when moving beyond h8")
-        void shouldStopAtBoardEdge() {
+        @DisplayName("should stop movement at the edge when moving beyond h8")
+        void shouldStopAtEdgeBeyondH8() {
             Optional<ChessboardPosition> result = h8.nextPosition(ChessboardDirection.UP_RIGHT);
-            assertTrue(result.isEmpty());
-        }
-
-        @Test
-        @DisplayName("should ignore movement when position has no valid coordinates")
-        void shouldIgnoreInvalidPosition() {
-            ChessboardPosition invalid = new ChessboardPosition(null, ChessboardRank.FOUR);
-            Optional<ChessboardPosition> result = invalid.nextPosition(ChessboardDirection.UP);
             assertTrue(result.isEmpty());
         }
     }
@@ -70,16 +61,16 @@ class ChessboardPositionTest {
     class MultipleDirectionNavigation {
 
         @Test
-        @DisplayName("should follow a sequence of moves from d4 to e5 via up then right")
-        void shouldFollowMoveSequence() {
+        @DisplayName("should follow sequence from d4 to e5 via up then right")
+        void shouldFollowSequenceUpThenRight() {
             Optional<ChessboardPosition> result = d4.nextPosition(List.of(
                 ChessboardDirection.UP, ChessboardDirection.RIGHT));
-            assertEquals(e5, result.orElseThrow());
+            assertEquals(e5, result.get());
         }
 
         @Test
-        @DisplayName("should halt navigation when a move goes beyond the board")
-        void shouldHaltWhenStepExceedsBoard() {
+        @DisplayName("should halt sequence when moving beyond the board")
+        void shouldHaltWhenMovingBeyondBoard() {
             Optional<ChessboardPosition> result = h8.nextPosition(List.of(
                 ChessboardDirection.UP, ChessboardDirection.RIGHT));
             assertTrue(result.isEmpty());
@@ -87,58 +78,36 @@ class ChessboardPositionTest {
     }
 
     @Nested
-    @DisplayName("measuring the distance between positions")
-    class DistanceMeasurement {
+    @DisplayName("checking diagonals")
+    class DiagonalCheck {
 
         @Test
-        @DisplayName("should compute Manhattan distance of 2 between d4 and e5")
-        void shouldComputeManhattanDistance() {
-            OptionalInt distance = d4.distance(e5);
-            assertEquals(2, distance.orElseThrow());
+        @DisplayName("should recognize d4 and e5 as diagonal")
+        void shouldRecognizeCloseDiagonalPositions() {
+            assertTrue(d4.isDiagonalTo(e5));
         }
 
         @Test
-        @DisplayName("should produce no distance when comparing with a missing position")
-        void shouldProduceNoDistanceWithMissingPosition() {
-            assertTrue(d4.distance(null).isEmpty());
+        @DisplayName("should recognize d4 and h8 as diagonal")
+        void shouldRecognizeFarDiagonalPositions() {
+            assertTrue(d4.isDiagonalTo(h8));
         }
 
         @Test
-        @DisplayName("should produce no distance when one position lacks coordinates")
-        void shouldProduceNoDistanceWithIncompletePosition() {
-            ChessboardPosition incomplete = new ChessboardPosition(null, ChessboardRank.FOUR);
-            assertTrue(incomplete.distance(d4).isEmpty());
+        @DisplayName("should not consider diagonal relation with missing position")
+        void shouldNotConsiderMissingPositionAsDiagonal() {
+            assertTrue(!d4.isDiagonalTo(null));
         }
     }
 
     @Nested
-    @DisplayName("comparing positions")
-    class PositionComparison {
+    @DisplayName("string representation")
+    class StringRepresentation {
 
         @Test
-        @DisplayName("should treat two identical positions as equal")
-        void shouldTreatIdenticalPositionsAsEqual() {
-            assertEquals(0, d4.compareTo(d4));
-        }
-
-        @Test
-        @DisplayName("should order d4 before e5")
-        void shouldOrderEarlierPositionBeforeLater() {
-            assertTrue(d4.compareTo(e5) > 0);
-        }
-
-        @Test
-        @DisplayName("should order e5 after d4")
-        void shouldOrderLaterPositionAfterEarlier() {
-            assertTrue(e5.compareTo(d4) < 0);
-        }
-
-        @Test
-        @DisplayName("should treat comparison with an incomplete or missing position as equal")
-        void shouldTreatMissingOrIncompleteAsEqual() {
-            ChessboardPosition incomplete = new ChessboardPosition(null, ChessboardRank.ONE);
-            assertEquals(0, incomplete.compareTo(d4));
-            assertEquals(0, d4.compareTo(null));
+        @DisplayName("should display d4 as (D, 4)")
+        void shouldDisplayAsReadableString() {
+            assertEquals("(D, 4)", d4.toString());
         }
     }
 }

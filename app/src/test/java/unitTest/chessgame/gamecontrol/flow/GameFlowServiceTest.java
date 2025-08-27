@@ -214,9 +214,9 @@ class GameFlowServiceTest {
         @DisplayName("should announce that the game has ended")
         void shouldAnnounceGameEnded() {
             ChessGameEvent event = mock(ChessGameEvent.class);
-            when(factory.gameEnded()).thenReturn(event);
+            when(factory.gameEnded(GameReason.GAME_ENDED)).thenReturn(event);
 
-            service.onGameEnd();
+            service.onGameEnd(GameReason.GAME_ENDED);
 
             verify(spyListener).onChessGameEvent(event);
         }
@@ -224,7 +224,7 @@ class GameFlowServiceTest {
         @Test
         @DisplayName("should not affect scores or turns")
         void shouldNotAffectScoresOrTurns() {
-            service.onGameEnd();
+            service.onGameEnd(GameReason.GAME_ENDED);
 
             verifyNoInteractions(spyScores);
             verifyNoInteractions(spyTurns);

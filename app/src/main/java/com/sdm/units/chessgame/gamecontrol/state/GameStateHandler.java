@@ -82,6 +82,6 @@ public final class GameStateHandler implements GameStateController {
 
     @Override
     public void end() {
-        flowController.onGameEnd();
+        flowController.onGameEnd(GameReason.GAME_ENDED);
     }
 }

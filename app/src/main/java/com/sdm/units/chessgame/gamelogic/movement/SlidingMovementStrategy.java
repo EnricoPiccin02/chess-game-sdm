@@ -9,16 +9,16 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 public class SlidingMovementStrategy implements MovementStrategy {
     
     private final DirectionProvider directionProvider;
-    private final SlidingPieceMovementHelper slidingHelper;
+    private final SlidingMovementResolver slidingResolver;
 
     public SlidingMovementStrategy(DirectionProvider directionProvider) {
         this.directionProvider = directionProvider;
-        this.slidingHelper = new SlidingPieceMovementHelper();
+        this.slidingResolver = new SlidingPieceMovementHelper();
     }
     
     @Override
     public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor) {
-        return slidingHelper.getSlidingDestinations(
+        return slidingResolver.getSlidingDestinations(
             board,
             fromPosition,
             playerColor,

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -19,47 +18,62 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 
 @DisplayName("ChessboardFile")
-public class ChessboardFileTest {
+class ChessboardFileTest {
 
-    @ParameterizedTest(name = "file {0} has character value \''{1}\''")
-    @MethodSource("fileValueProvider")
-    @DisplayName("should associate correct character value")
-    void shouldAssociateCorrectValue(ChessboardFile file, char expectedChar) {
-        assertEquals(expectedChar, file.value());
-    }
+    @Nested
+    @DisplayName("file indexing")
+    class FileIndexing {
 
-    static Stream<Arguments> fileValueProvider() {
-        return Stream.of(
-            arguments(ChessboardFile.A, 'a'),
-            arguments(ChessboardFile.B, 'b'),
-            arguments(ChessboardFile.C, 'c'),
-            arguments(ChessboardFile.D, 'd'),
-            arguments(ChessboardFile.E, 'e'),
-            arguments(ChessboardFile.F, 'f'),
-            arguments(ChessboardFile.G, 'g'),
-            arguments(ChessboardFile.H, 'h')
-        );
+        @ParameterizedTest(name = "{0} should have index {1}")
+        @MethodSource("fileIndexProvider")
+        @DisplayName("should associate file with correct index")
+        void shouldAssociateFileWithCorrectIndex(ChessboardFile file, int expectedIndex) {
+            assertEquals(expectedIndex, file.index());
+        }
+
+        static Stream<Arguments> fileIndexProvider() {
+            return Stream.of(
+                arguments(ChessboardFile.A, 0),
+                arguments(ChessboardFile.B, 1),
+                arguments(ChessboardFile.C, 2),
+                arguments(ChessboardFile.D, 3),
+                arguments(ChessboardFile.E, 4),
+                arguments(ChessboardFile.F, 5),
+                arguments(ChessboardFile.G, 6),
+                arguments(ChessboardFile.H, 7)
+            );
+        }
     }
 
     @Nested
     @DisplayName("next file computation")
     class NextFileComputation {
 
-        @Test
-        @DisplayName("should produce no file when direction is not valid")
-        void shouldReturnNoFileWhenDirectionIsNotValid() {
-            assertTrue(ChessboardFile.A.nextFile(null).isEmpty());
-        }
-
-        @ParameterizedTest(name = "{0} from file A should produce file B")
-        @MethodSource("validForwardDirections")
-        @DisplayName("should produce next file when direction is valid")
-        void shouldProduceValidNextFile(ChessboardDirection direction) {
+        @ParameterizedTest(name = "{0} from file A should advance to file B")
+        @MethodSource("forwardDirections")
+        @DisplayName("should advance file when moving forward")
+        void shouldAdvanceFileWhenMovingForward(ChessboardDirection direction) {
             Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
             assertEquals(Optional.of(ChessboardFile.B), result);
         }
 
-        static Stream<ChessboardDirection> validForwardDirections() {
+        @ParameterizedTest(name = "{0} from file A should remain at file A")
+        @MethodSource("verticalDirections")
+        @DisplayName("should keep same file when moving vertically")
+        void shouldKeepSameFileWhenMovingVertically(ChessboardDirection direction) {
+            Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
+            assertEquals(Optional.of(ChessboardFile.A), result);
+        }
+
+        @ParameterizedTest(name = "{0} from file A should move off the board")
+        @MethodSource("backwardDirections")
+        @DisplayName("should not advance file when moving off the board")
+        void shouldNotAdvanceFileWhenMovingOffTheBoard(ChessboardDirection direction) {
+            Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
+            assertTrue(result.isEmpty());
+        }
+
+        static Stream<ChessboardDirection> forwardDirections() {
             return Stream.of(
                 ChessboardDirection.RIGHT,
                 ChessboardDirection.UP_RIGHT,
@@ -67,30 +81,14 @@ public class ChessboardFileTest {
             );
         }
 
-        @ParameterizedTest(name = "{0} from file A should produce file A")
-        @MethodSource("sameFileDirections")
-        @DisplayName("should produce same file when moving vertically")
-        void shouldProduceSameFileWhenNoHorizontalChange(ChessboardDirection direction) {
-            Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
-            assertEquals(Optional.of(ChessboardFile.A), result);
-        }
-
-        static Stream<ChessboardDirection> sameFileDirections() {
+        static Stream<ChessboardDirection> verticalDirections() {
             return Stream.of(
                 ChessboardDirection.UP,
                 ChessboardDirection.DOWN
             );
         }
 
-        @ParameterizedTest(name = "{0} from file A should produce no file")
-        @MethodSource("invalidBackwardDirections")
-        @DisplayName("should produce no file when moving off board")
-        void shouldProduceNoFileForOutOfBoundsDirections(ChessboardDirection direction) {
-            Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
-            assertTrue(result.isEmpty());
-        }
-
-        static Stream<ChessboardDirection> invalidBackwardDirections() {
+        static Stream<ChessboardDirection> backwardDirections() {
             return Stream.of(
                 ChessboardDirection.LEFT,
                 ChessboardDirection.UP_LEFT,
@@ -100,46 +98,23 @@ public class ChessboardFileTest {
     }
 
     @Nested
-    @DisplayName("distance between files")
-    class DistanceBetweenFiles {
-
-        @Test
-        @DisplayName("should compute no distance when comparing file is not valid")
-        void shouldComputeNoDistanceForInvalidFile() {
-            assertTrue(ChessboardFile.D.distance(null).isEmpty());
-        }
-
-        @ParameterizedTest(name = "distance from {0} to {1} = {2}")
-        @MethodSource("fileDistanceProvider")
-        @DisplayName("should compute correct file distance")
-        void shouldReturnCorrectDistance(ChessboardFile from, ChessboardFile to, int expected) {
-            OptionalInt result = from.distance(to);
-            assertTrue(result.isPresent());
-            assertEquals(expected, result.getAsInt());
-        }
-
-        static Stream<Arguments> fileDistanceProvider() {
-            return Stream.of(
-                arguments(ChessboardFile.A, ChessboardFile.A, 0),
-                arguments(ChessboardFile.B, ChessboardFile.A, 1),
-                arguments(ChessboardFile.A, ChessboardFile.B, -1),
-                arguments(ChessboardFile.H, ChessboardFile.E, 3),
-                arguments(ChessboardFile.C, ChessboardFile.H, -5)
-            );
-        }
-    }
-
-    @Nested
     @DisplayName("character to file mapping")
     class CharacterToFileMapping {
 
-        @ParameterizedTest(name = "should map character \''{0}\'' into file {1}")
+        @ParameterizedTest(name = "should map character '{0}' to file {1}")
         @MethodSource("validCharProvider")
-        @DisplayName("should map character to correct file")
-        void shouldMapCharacterToCorrectFile(char inputChar, ChessboardFile expectedFile) {
-            Optional<ChessboardFile> result = ChessboardFile.valueOf(inputChar);
-            assertTrue(result.isPresent());
-            assertEquals(expectedFile, result.get());
+        @DisplayName("should map valid characters to files")
+        void shouldMapValidCharactersToFiles(char inputChar, ChessboardFile expectedFile) {
+            Optional<ChessboardFile> result = ChessboardFile.of(inputChar);
+            assertEquals(Optional.of(expectedFile), result);
+        }
+
+        @ParameterizedTest(name = "should not map character '{0}' to any file")
+        @MethodSource("invalidCharProvider")
+        @DisplayName("should reject invalid characters")
+        void shouldRejectInvalidCharacters(char inputChar) {
+            Optional<ChessboardFile> result = ChessboardFile.of(inputChar);
+            assertTrue(result.isEmpty());
         }
 
         static Stream<Arguments> validCharProvider() {
@@ -151,20 +126,64 @@ public class ChessboardFileTest {
                 arguments('e', ChessboardFile.E),
                 arguments('f', ChessboardFile.F),
                 arguments('g', ChessboardFile.G),
-                arguments('h', ChessboardFile.H)
+                arguments('h', ChessboardFile.H),
+                // Uppercase mappings included
+                arguments('A', ChessboardFile.A),
+                arguments('H', ChessboardFile.H)
             );
         }
 
-        @ParameterizedTest(name = "should not map to any file for invalid character \''{0}\''")
-        @MethodSource("invalidCharProvider")
-        @DisplayName("should not map to any file for invalid characters")
-        void shouldNotMapToAnyFileForInvalidCharacter(char inputChar) {
-            Optional<ChessboardFile> result = ChessboardFile.valueOf(inputChar);
+        static Stream<Character> invalidCharProvider() {
+            return Stream.of('i', 'z', '1', '@', ' ');
+        }
+    }
+
+    @Nested
+    @DisplayName("index to file mapping")
+    class IndexToFileMapping {
+
+        @ParameterizedTest(name = "should map index {0} to file {1}")
+        @MethodSource("validIndexProvider")
+        @DisplayName("should map valid indexes to files")
+        void shouldMapValidIndexesToFiles(int index, ChessboardFile expectedFile) {
+            Optional<ChessboardFile> result = ChessboardFile.of(index);
+            assertEquals(Optional.of(expectedFile), result);
+        }
+
+        @ParameterizedTest(name = "should not map index {0} to any file")
+        @MethodSource("invalidIndexProvider")
+        @DisplayName("should reject invalid indexes")
+        void shouldRejectInvalidIndexes(int invalidIndex) {
+            Optional<ChessboardFile> result = ChessboardFile.of(invalidIndex);
             assertTrue(result.isEmpty());
         }
 
-        static Stream<Character> invalidCharProvider() {
-            return Stream.of('i', 'z', '1', 'A', '@', ' ');
+        static Stream<Arguments> validIndexProvider() {
+            return Stream.of(
+                arguments(0, ChessboardFile.A),
+                arguments(1, ChessboardFile.B),
+                arguments(2, ChessboardFile.C),
+                arguments(3, ChessboardFile.D),
+                arguments(4, ChessboardFile.E),
+                arguments(5, ChessboardFile.F),
+                arguments(6, ChessboardFile.G),
+                arguments(7, ChessboardFile.H)
+            );
+        }
+
+        static Stream<Integer> invalidIndexProvider() {
+            return Stream.of(-1, 8, 99);
+        }
+    }
+
+    @Nested
+    @DisplayName("string representation")
+    class StringRepresentation {
+
+        @Test
+        @DisplayName("should display file descriptor properly")
+        void shouldDisplayAsReadableString() {
+            assertEquals("H", ChessboardFile.H.toString());
         }
     }
 }

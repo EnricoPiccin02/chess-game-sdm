@@ -183,12 +183,12 @@ class ChessGameEventFactoryTest {
         @Test
         @DisplayName("should assemble game ended events with exit message")
         void shouldReturnGameEndedEvent() {
-            ChessGameEvent event = factory.gameEnded();
+            ChessGameEvent event = factory.gameEnded(GameReason.GAME_ENDED);
 
             assertThat(event).isInstanceOf(GameEndedEvent.class);
             GameEndedEvent ended = (GameEndedEvent) event;
 
-            assertThat(ended.getMessage()).contains("Exiting");
+            assertThat(ended.getMessage()).contains(GameReason.GAME_ENDED.getDescription());
         }
     }
 }

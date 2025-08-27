@@ -2,12 +2,13 @@ package com.sdm.units.chessgame.gui.board.view;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -19,7 +20,6 @@ import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gui.board.square.ChessboardSquareComponent;
 import com.sdm.units.chessgame.gui.board.square.ChessboardSquareHandler;
 import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
@@ -36,27 +36,26 @@ public class ChessboardPanel extends JPanel implements ChessboardView {
         this.viewFactory = viewFactory;
         this.highlightRenderer = highlightRenderer;
         setLayout(new GridLayout(ChessboardRank.values().length, ChessboardFile.values().length));
-        setPreferredSize(new Dimension(
-            ChessboardFile.values().length * SquareSize.SQUARE_WIDTH.getSize(),
-            ChessboardRank.values().length * SquareSize.SQUARE_HEIGHT.getSize()
-        ));
 
         initializeSquares();
     }
 
     private void initializeSquares() {
-        for (int rank = ChessboardRank.values().length - 1; rank >= 0; rank--) {
-            for (int file = 0; file < ChessboardFile.values().length; file++) {
-                ChessboardFile f = ChessboardFile.values()[file];
-                ChessboardRank r = ChessboardRank.values()[rank];
-                ChessboardPosition position = new ChessboardPosition(f, r);
-
-                ChessboardSquareComponent square = new ChessboardSquareComponent(position, viewFactory, highlightRenderer);
-                square.setPreferredSize(new Dimension(SquareSize.SQUARE_WIDTH.getSize(), SquareSize.SQUARE_HEIGHT.getSize()));
-                add(square);
-                squareComponents.put(position, square);
-            }
-        }
+        Arrays.stream(ChessboardRank.values())
+            .sorted(Comparator.reverseOrder())
+            .forEach(rank ->
+                Arrays.stream(ChessboardFile.values())
+                    .forEach(file -> {
+                        ChessboardPosition position = new ChessboardPosition(file, rank);
+                        ChessboardSquareComponent square = new ChessboardSquareComponent(position, viewFactory, highlightRenderer);
+                        square.setPreferredSize(new Dimension(
+                            SquareSize.SQUARE_WIDTH.getSize(),
+                            SquareSize.SQUARE_HEIGHT.getSize()
+                        ));
+                        add(square);
+                        squareComponents.put(position, square);
+                    })
+            );
     }
 
     public ChessboardSquareHandler getSquareAt(ChessboardPosition position) {
@@ -73,10 +72,7 @@ public class ChessboardPanel extends JPanel implements ChessboardView {
 
     @Override
     public void renderChessboardState(Chessboard board) {
-        squareComponents.forEach((position, square) -> {
-            Optional<ChessPiece> piece = board.getPieceAt(position);
-            square.setPiece(piece);
-        });
+        squareComponents.forEach((position, square) -> square.setPiece(board.getPieceAt(position)));
         repaint();
     }
 

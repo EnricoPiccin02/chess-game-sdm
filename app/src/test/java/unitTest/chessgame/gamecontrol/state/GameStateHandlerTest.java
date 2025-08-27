@@ -181,7 +181,7 @@ class GameStateHandlerTest {
         @DisplayName("should announce game end")
         void shouldAnnounceGameEnd() {
             handler.end();
-            verify(flowController).onGameEnd();
+            verify(flowController).onGameEnd(GameReason.GAME_ENDED);
         }
     }
 }

@@ -1,11 +1,11 @@
 package com.sdm.units.chessgame.gamelogic.movement;
 
-import java.util.List;
+import java.util.Set;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 
 @FunctionalInterface
 public interface DirectionProvider {
     
-    List<ChessboardDirection> getDirections();
+    Set<ChessboardDirection> getDirections();
 }

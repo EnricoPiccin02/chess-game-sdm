@@ -16,5 +16,5 @@ public interface GameFlowController {
 
     void onPlayerWon(ChessPieceColor winner, GameReason reason);
 
-    void onGameEnd();
+    void onGameEnd(GameReason reason);
 }

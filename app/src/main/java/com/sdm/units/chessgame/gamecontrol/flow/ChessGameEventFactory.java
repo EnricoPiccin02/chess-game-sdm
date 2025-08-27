@@ -70,7 +70,7 @@ public final class ChessGameEventFactory implements EventFactory {
     }
 
     @Override
-    public ChessGameEvent gameEnded() {
-        return new GameEndedEvent("Exiting...");
+    public ChessGameEvent gameEnded(GameReason reason) {
+        return new GameEndedEvent(reason.getDescription());
     }   
 }

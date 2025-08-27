@@ -1,54 +1,56 @@
 package com.sdm.units.chessgame.gamelogic.domain;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public enum ChessboardRank {
-    
-    ONE(1),
-    TWO(2),
-    THREE(3),
-    FOUR(4),
-    FIVE(5),
-    SIX(6),
-    SEVEN(7),
-    EIGHT(8);
 
-    private final Integer rankNumber;
+    ONE(0, 1),
+    TWO(1, 2),
+    THREE(2, 3),
+    FOUR(3, 4),
+    FIVE(4, 5),
+    SIX(5, 6),
+    SEVEN(6, 7),
+    EIGHT(7, 8);
 
-    ChessboardRank(int rankNumber) {
+    private final int index;
+    private final int rankNumber;
+
+    private static final Map<Integer, ChessboardRank> LOOKUP_BY_NUMBER = Arrays.stream(values()).collect(Collectors.toMap(ChessboardRank::rankNumber, r -> r));
+
+    private static final Map<Integer, ChessboardRank> LOOKUP_BY_INDEX = Arrays.stream(values()).collect(Collectors.toMap(ChessboardRank::index, r -> r));
+
+    ChessboardRank(int index, int rankNumber) {
+        this.index = index;
         this.rankNumber = rankNumber;
     }
 
-    public String id(){
-        return name();
+    public int index() {
+        return index;
     }
 
-    public Integer value() {
-        return this.rankNumber;
+    public int rankNumber() {
+        return rankNumber;
     }
 
-    public static Optional<ChessboardRank> valueOf(Integer value) {
-        return Stream.of(values())
-            .filter(chessboardRank -> chessboardRank.rankNumber == value)
-            .findFirst();
+    public static Optional<ChessboardRank> ofNumber(int number) {
+        return Optional.ofNullable(LOOKUP_BY_NUMBER.get(number));
+    }
+
+    public static Optional<ChessboardRank> ofIndex(int index) {
+        return Optional.ofNullable(LOOKUP_BY_INDEX.get(index));
     }
 
     public Optional<ChessboardRank> nextRank(ChessboardDirection direction) {
-        if (direction == null) return Optional.empty();
-
-        return valueOf(this.rankNumber + direction.directionRankDescriptor());
-    }
-
-    public OptionalInt distance(ChessboardRank rank) {
-        if(rank == null) return OptionalInt.empty();
-
-        return OptionalInt.of(rank.rankNumber - this.rankNumber);
+        int newIndex = this.index + direction.directionRankDescriptor();
+        return ofIndex(newIndex);
     }
 
     @Override
     public String toString() {
-        return String.valueOf(value());
+        return String.valueOf(rankNumber);
     }
 }
