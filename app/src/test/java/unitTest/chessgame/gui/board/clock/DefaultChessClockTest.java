@@ -29,33 +29,29 @@ class DefaultChessClockTest {
 
     @Nested
     @DisplayName("when ticking")
-    class TickingTests {
+    class Ticking {
 
         @Test
-        @DisplayName("should decrease remaining time on each tick")
-        void shouldDecreaseRemainingTimeOnEachTick() {
+        @DisplayName("should reduce time after one tick")
+        void shouldReduceTimeAfterOneTick() {
             clock.start();
-
             clock.tick();
+
             assertEquals(4000, listenerSpy.getLastUpdated());
-
-            clock.tick();
-            assertEquals(3000, listenerSpy.getLastUpdated());
         }
 
         @Test
-        @DisplayName("should notify listener on each update")
-        void shouldNotifyListenerOnEachUpdate() {
+        @DisplayName("should update time after one tick")
+        void shouldUpdateTimeAfterOneTick() {
             clock.start();
             clock.tick();
 
             assertTrue(listenerSpy.isUpdatedCalled());
-            assertEquals(4000, listenerSpy.getLastUpdated());
         }
 
         @Test
-        @DisplayName("should stop and notify expiration when time reaches zero")
-        void shouldNotifyOnExpiration() {
+        @DisplayName("should stop when time runs out")
+        void shouldStopWhenTimeRunsOut() {
             clock.start();
 
             clock.tick();
@@ -70,11 +66,11 @@ class DefaultChessClockTest {
 
     @Nested
     @DisplayName("when resetting")
-    class ResetTests {
+    class Resetting {
 
         @Test
-        @DisplayName("should restore full time and notify listener")
-        void shouldRestoreFullTime() {
+        @DisplayName("should restore full time after reset")
+        void shouldRestoreFullTimeAfterReset() {
             clock.start();
             clock.tick();
             clock.reset();

@@ -56,11 +56,11 @@ class EnPassantEligibilityTest {
     }
 
     @Nested
-    @DisplayName("when evaluating en passant eligibility")
-    class WhenEvaluatingEnPassantEligibility {
+    @DisplayName("when all conditions are met")
+    class WhenAllConditionsMet {
 
         @Test
-        @DisplayName("should allow when target is opponent pawn, landing square empty, and last move is valid two-square pawn advance")
+        @DisplayName("should allow when target is opponent pawn, landing square vacant, and last move is valid two-square pawn advance")
         void shouldAllowWhenConditionsAreMet() {
             board.putPieceAt(capturingPos, blackPawnFake);
 
@@ -74,6 +74,11 @@ class EnPassantEligibilityTest {
 
             assertThat(result).isTrue();
         }
+    }
+
+    @Nested
+    @DisplayName("when any condition fails")
+    class WhenAnyConditionFails {
 
         @Test
         @DisplayName("should deny when target is not a pawn")
@@ -136,7 +141,7 @@ class EnPassantEligibilityTest {
             assertThat(result).isFalse();
         }
     }
-
+    
     private static class MoveRecorderStub implements MoveRecorder<ReversibleMove> {
         
         private Optional<ReversibleMove> lastMove = Optional.empty();
@@ -151,19 +156,15 @@ class EnPassantEligibilityTest {
         }
 
         @Override
-        public void pushMove(ReversibleMove move) {
-            throw new UnsupportedOperationException("pushMove not tested here");
-        }
+        public void pushMove(ReversibleMove move) {}
 
         @Override
         public Optional<ReversibleMove> popMove() {
-            throw new UnsupportedOperationException("popMove not tested here");
+            return Optional.empty();
         }
 
         @Override
-        public void clear() {
-            throw new UnsupportedOperationException("clear not tested here");
-        }
+        public void clear() {}
     }
 
     private ReversibleMove validTwoSquarePawnMove(ChessPiece pawn) {

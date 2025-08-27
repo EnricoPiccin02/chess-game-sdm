@@ -8,4 +8,4 @@ public record GameStateAssembly(
     TurnManager turns,
     ScoreKeeper scores,
     EventFactory notifier
-) { }
+) {}

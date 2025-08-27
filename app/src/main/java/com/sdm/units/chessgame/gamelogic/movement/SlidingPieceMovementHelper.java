@@ -1,7 +1,6 @@
 package com.sdm.units.chessgame.gamelogic.movement;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +11,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 
 public class SlidingPieceMovementHelper implements SlidingMovementResolver {
 
-    public Set<ChessboardPosition> getSlidingDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor, List<ChessboardDirection> directions) {
+    public Set<ChessboardPosition> getSlidingDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor, Set<ChessboardDirection> directions) {
         Set<ChessboardPosition> legalDestinations = new HashSet<>();
 
         directions.forEach(direction -> {

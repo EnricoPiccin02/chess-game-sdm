@@ -47,13 +47,13 @@ class MoveQueryServiceTest {
     }
 
     @Nested
-    @DisplayName("selectable()")
-    class Selectable {
+    @DisplayName("when selecting occupied squares")
+    class SelectingOccupiedSquares {
 
         @Test
-        @DisplayName("should return only occupied squares of current player")
-        void shouldReturnOccupiedSquares() {
-            board.setOccupiedSquares(WHITE, Set.of(pos));
+        @DisplayName("should provide only occupied squares of the current player")
+        void shouldProvideOccupiedSquaresOfCurrentPlayer() {
+            board.placeFriendly(pos, WHITE);
 
             Set<ChessboardPosition> result = service.selectable();
 
@@ -62,16 +62,17 @@ class MoveQueryServiceTest {
     }
 
     @Nested
-    @DisplayName("legalDestinations()")
+    @DisplayName("when computing legal destinations")
     class LegalDestinations {
 
         private final ChessboardPosition from = pos;
         private final Set<ChessboardPosition> destinations = Set.of(
-            new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO));
+            new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO)
+        );
 
         @Test
-        @DisplayName("should return legal moves if piece belongs to current player")
-        void shouldReturnLegalMoves() {
+        @DisplayName("should provide legal moves if piece belongs to current player")
+        void shouldProvideLegalMovesOfCurrentPlayer() {
             board.putPieceAt(from, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN));
             moveFinder.setDestinations(destinations);
 
@@ -81,15 +82,15 @@ class MoveQueryServiceTest {
         }
 
         @Test
-        @DisplayName("should return empty when no piece at position")
-        void shouldReturnEmptyWhenNoPiece() {
+        @DisplayName("should not provide any legal destination when no piece at position")
+        void shouldNotProvideAnyLegalDestinationWhenNoPieceAtPosition() {
             Set<ChessboardPosition> result = service.legalDestinations(from);
             assertTrue(result.isEmpty());
         }
 
         @Test
-        @DisplayName("should return empty when piece belongs to opponent")
-        void shouldReturnEmptyWhenPieceOfOpponent() {
+        @DisplayName("should not provide any legal destination when piece belongs to opponent")
+        void shouldNotProvideAnyLegalDestinationWhenPieceOfOpponent() {
             board.putPieceAt(from, new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.PAWN));
 
             Set<ChessboardPosition> result = service.legalDestinations(from);

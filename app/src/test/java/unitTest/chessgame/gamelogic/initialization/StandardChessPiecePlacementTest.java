@@ -1,7 +1,6 @@
 package unittest.chessgame.gamelogic.initialization;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
@@ -35,40 +34,87 @@ class StandardChessPiecePlacementTest {
     @DisplayName("should place exactly 16 pieces for each color")
     void shouldPlaceSixteenPiecesPerColor(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-
         assertEquals(16, pieces.size());
     }
 
     @ParameterizedTest
     @EnumSource(ChessPieceColor.class)
-    @DisplayName("should place correcct number of all major and minor pieces")
-    void shouldPlaceCorrectNumberOfAllMajorAndMinorPieces(ChessPieceColor color) {
+    @DisplayName("should place correct number of pawns")
+    void shouldPlaceCorrectNumberOfPawns(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-
-        assertEquals(1, countOf(pieces, King.class));
-        assertEquals(1, countOf(pieces, Queen.class));
-        assertEquals(2, countOf(pieces, Bishop.class));
-        assertEquals(2, countOf(pieces, Knight.class));
-        assertEquals(2, countOf(pieces, Rook.class));
         assertEquals(8, countOf(pieces, Pawn.class));
     }
 
     @ParameterizedTest
     @EnumSource(ChessPieceColor.class)
-    @DisplayName("should place pieces on correct orientation-aware ranks")
-    void shouldPlacePiecesOnCorrectRanks(ChessPieceColor color) {
+    @DisplayName("should place correct number of rooks")
+    void shouldPlaceCorrectNumberOfRooks(ChessPieceColor color) {
+        Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
+        assertEquals(2, countOf(pieces, Rook.class));
+    }
+
+    @ParameterizedTest
+    @EnumSource(ChessPieceColor.class)
+    @DisplayName("should place correct number of bishops")
+    void shouldPlaceCorrectNumberOfBishops(ChessPieceColor color) {
+        Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
+        assertEquals(2, countOf(pieces, Bishop.class));
+    }
+
+    @ParameterizedTest
+    @EnumSource(ChessPieceColor.class)
+    @DisplayName("should place correct number of knights")
+    void shouldPlaceCorrectNumberOfKnights(ChessPieceColor color) {
+        Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
+        assertEquals(2, countOf(pieces, Knight.class));
+    }
+
+    @ParameterizedTest
+    @EnumSource(ChessPieceColor.class)
+    @DisplayName("should place correct number of queens")
+    void shouldPlaceCorrectNumberOfQueens(ChessPieceColor color) {
+        Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
+        assertEquals(1, countOf(pieces, Queen.class));
+    }
+
+    @ParameterizedTest
+    @EnumSource(ChessPieceColor.class)
+    @DisplayName("should place correct number of kings")
+    void shouldPlaceCorrectNumberOfKings(ChessPieceColor color) {
+        Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
+        assertEquals(1, countOf(pieces, King.class));
+    }
+
+    @ParameterizedTest
+    @EnumSource(ChessPieceColor.class)
+    @DisplayName("should place pawns on the orientation-aware pawn rank")
+    void shouldPlacePawnsOnPawnRank(ChessPieceColor color) {
+        Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
+
+        ChessboardRank pawnRank = ChessboardOrientation.WHITE_BOTTOM.getPawnRank(color);
+
+        assertTrue(
+            pieces.entrySet().stream()
+                .filter(e -> e.getValue() instanceof Pawn)
+                .allMatch(e -> e.getKey().rank() == pawnRank),
+            () -> "Not all pawns are on the pawn rank for " + color
+        );
+    }
+
+    @ParameterizedTest
+    @EnumSource(ChessPieceColor.class)
+    @DisplayName("should place back rank pieces on the orientation-aware back rank")
+    void shouldPlaceBackRankPiecesOnBackRank(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
 
         ChessboardRank backRank = ChessboardOrientation.WHITE_BOTTOM.getBackRank(color);
-        ChessboardRank pawnRank = ChessboardOrientation.WHITE_BOTTOM.getPawnRank(color);
 
-        for (Map.Entry<ChessboardPosition, ChessPiece> entry : pieces.entrySet()) {
-            if (entry.getValue() instanceof Pawn) {
-                assertEquals(pawnRank, entry.getKey().rank());
-            } else {
-                assertEquals(backRank, entry.getKey().rank());
-            }
-        }
+        assertTrue(
+            pieces.entrySet().stream()
+                .filter(e -> !(e.getValue() instanceof Pawn))
+                .allMatch(e -> e.getKey().rank() == backRank),
+            () -> "Not all back rank pieces are on the back rank for " + color
+        );
     }
 
     @ParameterizedTest
@@ -88,9 +134,10 @@ class StandardChessPiecePlacementTest {
     void shouldAssignCorrectColorToAllPieces(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
 
-        for (ChessPiece piece : pieces.values()) {
-            assertEquals(color, piece.pieceColor());
-        }
+        assertTrue(
+            pieces.values().stream().allMatch(p -> p.pieceColor() == color),
+            () -> "Not all pieces belong to " + color
+        );
     }
 
     @ParameterizedTest
@@ -99,13 +146,10 @@ class StandardChessPiecePlacementTest {
     void shouldNotPlacePiecesOutsideBoard(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
 
-        for (ChessboardPosition pos : pieces.keySet()) {
-            assertNotNull(pos.file());
-            assertNotNull(pos.rank());
-
-            assertTrue(pos.file().ordinal() >= 0 && pos.file().ordinal() < 8, () -> "Invalid file: " + pos.file());
-            assertTrue(pos.rank().ordinal() >= 0 && pos.rank().ordinal() < 8, () -> "Invalid rank: " + pos.rank());
-        }
+        assertTrue(
+            pieces.keySet().stream().allMatch(pos -> pos.file() != null && pos.rank() != null),
+            () -> "Some pieces are outside the board for " + color
+        );
     }
 
     private long countOf(Map<ChessboardPosition, ChessPiece> map, Class<? extends ChessPiece> type) {

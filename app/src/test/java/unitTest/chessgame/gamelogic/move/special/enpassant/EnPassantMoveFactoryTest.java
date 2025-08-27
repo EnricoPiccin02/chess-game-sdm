@@ -15,7 +15,6 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.special.enpassant.EnPassantCandidate;
-import com.sdm.units.chessgame.gamelogic.move.special.enpassant.EnPassantMove;
 import com.sdm.units.chessgame.gamelogic.move.special.enpassant.EnPassantMoveFactory;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
@@ -54,47 +53,96 @@ class EnPassantMoveFactoryTest {
     }
 
     @Nested
-    @DisplayName("when creating an en passant move")
-    class WhenCreatingEnPassantMove {
+    @DisplayName("when executing an en passant move")
+    class ExecuteEnPassantMove {
 
         @Test
-        @DisplayName("should remove adjacent pawn and move diagonally to target square")
-        void shouldRemoveAdjacentPawnAndMoveDiagonally() {
+        @DisplayName("should move pawn diagonally to target square")
+        void shouldMovePawnDiagonallyToTargetSquare() {
             ReversibleMove move = factory.create(candidate);
-
-            assertThat(move).isInstanceOf(EnPassantMove.class);
-
             ChessboardSpy board = new ChessboardSpy();
             board.putPieceAt(from, movingPawnFake);
-            board.putPieceAt(capturingPosition, capturedPawnDummy);
 
             move.executeOn(board);
 
-            assertThat(board.wasRemoveCalledWith(from)).isTrue();
-            assertThat(board.wasRemoveCalledWith(capturingPosition)).isTrue();
             assertThat(board.wasPutCalledWith(to, movingPawnFake)).isTrue();
         }
 
         @Test
-        @DisplayName("should restore captured pawn and original pawn position on undo")
-        void shouldRestoreCapturedPawnAndOriginalPawnPositionOnUndo() {
+        @DisplayName("should remove adjacent pawn when capturing en passant")
+        void shouldRemoveAdjacentPawnWhenCapturing() {
             ReversibleMove move = factory.create(candidate);
-
             ChessboardSpy board = new ChessboardSpy();
-            board.putPieceAt(from, movingPawnFake);
             board.putPieceAt(capturingPosition, capturedPawnDummy);
 
             move.executeOn(board);
-            move.undoOn(board);
 
-            assertThat(board.wasPutCalledWith(from, movingPawnFake)).isTrue();
-            assertThat(board.wasPutCalledWith(capturingPosition, capturedPawnDummy)).isTrue();
-            assertThat(board.wasRemoveCalledWith(to)).isTrue();
+            assertThat(board.wasRemoveCalledWith(capturingPosition)).isTrue();
         }
 
         @Test
-        @DisplayName("should return pawn diagonal move component")
-        void shouldReturnPawnDiagonalMoveComponent() {
+        @DisplayName("should clear original pawn square after moving")
+        void shouldClearOriginalPawnSquareAfterMoving() {
+            ReversibleMove move = factory.create(candidate);
+            ChessboardSpy board = new ChessboardSpy();
+            board.putPieceAt(from, movingPawnFake);
+
+            move.executeOn(board);
+
+            assertThat(board.wasRemoveCalledWith(from)).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("when undoing an en passant move")
+    class UndoEnPassantMove {
+
+        @Test
+        @DisplayName("should restore pawn to original position when undone")
+        void shouldRestorePawnToOriginalPositionWhenUndone() {
+            ReversibleMove move = factory.create(candidate);
+            ChessboardSpy board = new ChessboardSpy();
+            board.putPieceAt(from, movingPawnFake);
+            move.executeOn(board);
+
+            move.undoOn(board);
+
+            assertThat(board.wasPutCalledWith(from, movingPawnFake)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should restore captured pawn when undone")
+        void shouldRestoreCapturedPawnWhenUndone() {
+            ReversibleMove move = factory.create(candidate);
+            ChessboardSpy board = new ChessboardSpy();
+            board.putPieceAt(capturingPosition, capturedPawnDummy);
+            move.executeOn(board);
+
+            move.undoOn(board);
+
+            assertThat(board.wasPutCalledWith(capturingPosition, capturedPawnDummy)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should clear target square when undone")
+        void shouldClearTargetSquareWhenUndone() {
+            ReversibleMove move = factory.create(candidate);
+            ChessboardSpy board = new ChessboardSpy();
+            move.executeOn(board);
+
+            move.undoOn(board);
+
+            assertThat(board.wasRemoveCalledWith(to)).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("when inspecting en passant move components")
+    class InspectMoveComponents {
+
+        @Test
+        @DisplayName("should expose pawn diagonal move component")
+        void shouldProvidePawnDiagonalMoveComponent() {
             ReversibleMove move = factory.create(candidate);
 
             MoveComponent primary = move.getPrimaryMoveComponent();

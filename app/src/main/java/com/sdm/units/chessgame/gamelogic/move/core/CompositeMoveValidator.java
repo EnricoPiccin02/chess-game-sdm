@@ -16,7 +16,7 @@ public class CompositeMoveValidator implements MoveValidator {
     public CompositeMoveValidator(List<? extends PrioritizedMoveValidator> rules) {
         this.rules = rules.stream()
             .sorted(Comparator.comparing(PrioritizedMoveValidator::getPriority))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     @Override

@@ -1,13 +1,29 @@
 package guitest.chessgame.testdoubles;
 
-import static org.mockito.Mockito.mock;
+import javax.swing.JComponent;
+import javax.swing.JToolBar;
 
-import com.sdm.units.chessgame.gui.board.view.ChessGameToolbar;
-import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionController;
+import com.sdm.units.chessgame.gui.board.view.GameToolbarView;
 
-public class ChessGameToolbarDummy extends ChessGameToolbar {
-    
-    public ChessGameToolbarDummy() {
-        super(mock(ToolbarInteractionController.class));
+public class ChessGameToolbarDummy implements GameToolbarView {
+
+    @Override
+    public void restart() {
+        throw new UnsupportedOperationException("Dummy should not be asked for 'restart'");
+    }
+
+    @Override
+    public void undo() {
+        throw new UnsupportedOperationException("Dummy should not be asked for 'undo'");
+    }
+
+    @Override
+    public void exit() {
+        throw new UnsupportedOperationException("Dummy should not be asked for 'exit'");
+    }
+
+    @Override
+    public JComponent asComponent() {
+        return new JToolBar();
     }
 }

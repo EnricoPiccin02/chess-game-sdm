@@ -21,15 +21,9 @@ public class ChessboardInteractionController implements ChessboardInteractionStr
     }
 
     @Override
-    public void enableSelectablePieces(Set<ChessboardPosition> positions) {
+    public void enableSelectableSquares(Set<ChessboardPosition> positions) {
         chessboardView.updateSquaresAt(positions,
             square -> HighlightStyle.SELECTABLE.apply(square, clickHandler));
-    }
-
-    @Override
-    public void enableLegalDestinations(Set<ChessboardPosition> positions) {
-        chessboardView.updateSquaresAt(positions,
-            square -> HighlightStyle.LEGAL_DESTINATION.apply(square, clickHandler));
     }
 
     @Override

@@ -1,5 +1,12 @@
 package unittest.chessgame.gamelogic.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,68 +17,68 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 @DisplayName("ChessboardRank")
 class ChessboardRankTest {
+    
+    @Nested
+    @DisplayName("rank indexing")
+    class RankIndexing {
 
-    @ParameterizedTest(name = "rank {0} has numeric value {1}")
-    @MethodSource("rankValueProvider")
-    @DisplayName("should return correct numeric value")
-    void shouldReturnCorrectValue(ChessboardRank rank, int expectedValue) {
-        assertEquals(expectedValue, rank.value());
-    }
+        @ParameterizedTest(name = "{0} should have index {1}")
+        @MethodSource("rankIndexProvider")
+        @DisplayName("should associate rank with correct index")
+        void shouldAssociateRankWithCorrectIndex(ChessboardRank rank, int expectedIndex) {
+            assertEquals(expectedIndex, rank.index());
+        }
 
-    static Stream<Arguments> rankValueProvider() {
-        return Stream.of(
-            arguments(ChessboardRank.ONE, 1),
-            arguments(ChessboardRank.TWO, 2),
-            arguments(ChessboardRank.THREE, 3),
-            arguments(ChessboardRank.FOUR, 4),
-            arguments(ChessboardRank.FIVE, 5),
-            arguments(ChessboardRank.SIX, 6),
-            arguments(ChessboardRank.SEVEN, 7),
-            arguments(ChessboardRank.EIGHT, 8)
-        );
+        static Stream<Arguments> rankIndexProvider() {
+            return Stream.of(
+                arguments(ChessboardRank.ONE, 0),
+                arguments(ChessboardRank.TWO, 1),
+                arguments(ChessboardRank.THREE, 2),
+                arguments(ChessboardRank.FOUR, 3),
+                arguments(ChessboardRank.FIVE, 4),
+                arguments(ChessboardRank.SIX, 5),
+                arguments(ChessboardRank.SEVEN, 6),
+                arguments(ChessboardRank.EIGHT, 7)
+            );
+        }
     }
 
     @Nested
-    @DisplayName("nextRank()")
-    class NextRankTests {
+    @DisplayName("next rank computation")
+    class NextRankComputation {
 
-        @Test
-        @DisplayName("should return empty when direction is null")
-        void shouldReturnEmptyWhenDirectionIsNull() {
-            assertTrue(ChessboardRank.ONE.nextRank(null).isEmpty());
-        }
-
-        @ParameterizedTest(name = "{0} from rank ONE should return rank TWO")
-        @MethodSource("validUpwardDirections")
-        @DisplayName("should return next rank when direction is valid")
-        void shouldReturnValidNextRank(ChessboardDirection direction) {
+        @ParameterizedTest(name = "{0} from rank ONE should advance to rank TWO")
+        @MethodSource("upwardDirections")
+        @DisplayName("should advance rank when moving upward")
+        void shouldAdvanceRankWhenMovingUpward(ChessboardDirection direction) {
             Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
             assertEquals(Optional.of(ChessboardRank.TWO), result);
         }
 
-        static Stream<ChessboardDirection> validUpwardDirections() {
+        @ParameterizedTest(name = "{0} from rank ONE should remain at rank ONE")
+        @MethodSource("horizontalDirections")
+        @DisplayName("should keep same rank when moving horizontally")
+        void shouldKeepSameRankWhenMovingHorizontally(ChessboardDirection direction) {
+            Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
+            assertEquals(Optional.of(ChessboardRank.ONE), result);
+        }
+
+        @ParameterizedTest(name = "{0} from rank ONE should move off the board")
+        @MethodSource("downwardDirections")
+        @DisplayName("should not advance rank when moving off the board")
+        void shouldNotAdvanceRankWhenMovingOffTheBoard(ChessboardDirection direction) {
+            Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
+            assertTrue(result.isEmpty());
+        }
+
+        static Stream<ChessboardDirection> upwardDirections() {
             return Stream.of(
                 ChessboardDirection.UP,
                 ChessboardDirection.UP_LEFT,
                 ChessboardDirection.UP_RIGHT
             );
-        }
-
-        @ParameterizedTest(name = "{0} from rank ONE should return rank ONE")
-        @MethodSource("horizontalDirections")
-        @DisplayName("should return same rank when moving horizontally")
-        void shouldReturnSameRankWhenNoVerticalChange(ChessboardDirection direction) {
-            Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
-            assertEquals(Optional.of(ChessboardRank.ONE), result);
         }
 
         static Stream<ChessboardDirection> horizontalDirections() {
@@ -81,15 +88,7 @@ class ChessboardRankTest {
             );
         }
 
-        @ParameterizedTest(name = "{0} from rank ONE should return empty")
-        @MethodSource("invalidDownwardDirections")
-        @DisplayName("should return empty when moving off board")
-        void shouldReturnEmptyForOutOfBoundsDirections(ChessboardDirection direction) {
-            Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
-            assertTrue(result.isEmpty());
-        }
-
-        static Stream<ChessboardDirection> invalidDownwardDirections() {
+        static Stream<ChessboardDirection> downwardDirections() {
             return Stream.of(
                 ChessboardDirection.DOWN,
                 ChessboardDirection.DOWN_LEFT,
@@ -99,49 +98,26 @@ class ChessboardRankTest {
     }
 
     @Nested
-    @DisplayName("distance()")
-    class DistanceTests {
+    @DisplayName("number to rank mapping")
+    class NumberToRankMapping {
 
-        @Test
-        @DisplayName("should return empty when argument is null")
-        void shouldReturnEmptyForNullArgument() {
-            assertTrue(ChessboardRank.THREE.distance(null).isEmpty());
+        @ParameterizedTest(name = "should map number {0} to rank {1}")
+        @MethodSource("validNumberProvider")
+        @DisplayName("should map valid numbers to ranks")
+        void shouldMapValidNumbersToRanks(int number, ChessboardRank expectedRank) {
+            Optional<ChessboardRank> result = ChessboardRank.ofNumber(number);
+            assertEquals(Optional.of(expectedRank), result);
         }
 
-        @ParameterizedTest(name = "distance from {0} to {1} = {2}")
-        @MethodSource("rankDistanceProvider")
-        @DisplayName("should compute correct rank distance")
-        void shouldReturnCorrectDistance(ChessboardRank from, ChessboardRank to, int expectedDistance) {
-            OptionalInt result = from.distance(to);
-            assertTrue(result.isPresent());
-            assertEquals(expectedDistance, result.getAsInt());
+        @ParameterizedTest(name = "should not map number {0} to any rank")
+        @MethodSource("invalidNumberProvider")
+        @DisplayName("should reject invalid numbers")
+        void shouldRejectInvalidNumbers(int invalidNumber) {
+            Optional<ChessboardRank> result = ChessboardRank.ofNumber(invalidNumber);
+            assertTrue(result.isEmpty());
         }
 
-        static Stream<Arguments> rankDistanceProvider() {
-            return Stream.of(
-                arguments(ChessboardRank.ONE, ChessboardRank.ONE, 0),
-                arguments(ChessboardRank.TWO, ChessboardRank.ONE, -1),
-                arguments(ChessboardRank.ONE, ChessboardRank.TWO, 1),
-                arguments(ChessboardRank.SIX, ChessboardRank.FOUR, -2),
-                arguments(ChessboardRank.THREE, ChessboardRank.EIGHT, 5)
-            );
-        }
-    }
-
-    @Nested
-    @DisplayName("valueOf(Integer)")
-    class ValueOfIntegerTests {
-
-        @ParameterizedTest(name = "should parse integer {0} into rank {1}")
-        @MethodSource("validRankNumberProvider")
-        @DisplayName("should map number to correct ChessboardRank")
-        void shouldMapNumberToCorrectRank(int value, ChessboardRank expectedRank) {
-            Optional<ChessboardRank> result = ChessboardRank.valueOf(value);
-            assertTrue(result.isPresent());
-            assertEquals(expectedRank, result.get());
-        }
-
-        static Stream<Arguments> validRankNumberProvider() {
+        static Stream<Arguments> validNumberProvider() {
             return Stream.of(
                 arguments(1, ChessboardRank.ONE),
                 arguments(2, ChessboardRank.TWO),
@@ -154,16 +130,57 @@ class ChessboardRankTest {
             );
         }
 
-        @ParameterizedTest(name = "should return empty for invalid rank {0}")
-        @MethodSource("invalidRankNumberProvider")
-        @DisplayName("should return empty for invalid numbers")
-        void shouldReturnEmptyForInvalidRankNumber(int invalidValue) {
-            Optional<ChessboardRank> result = ChessboardRank.valueOf(invalidValue);
+        static Stream<Integer> invalidNumberProvider() {
+            return Stream.of(0, 9, -1, 99);
+        }
+    }
+
+    @Nested
+    @DisplayName("index to rank mapping")
+    class IndexToRankMapping {
+
+        @ParameterizedTest(name = "should map index {0} to rank {1}")
+        @MethodSource("validIndexProvider")
+        @DisplayName("should map valid indices to ranks")
+        void shouldMapValidIndicesToRanks(int index, ChessboardRank expectedRank) {
+            Optional<ChessboardRank> result = ChessboardRank.ofIndex(index);
+            assertEquals(Optional.of(expectedRank), result);
+        }
+
+        @ParameterizedTest(name = "should not map index {0} to any rank")
+        @MethodSource("invalidIndexProvider")
+        @DisplayName("should reject invalid indices")
+        void shouldRejectInvalidIndices(int invalidIndex) {
+            Optional<ChessboardRank> result = ChessboardRank.ofIndex(invalidIndex);
             assertTrue(result.isEmpty());
         }
 
-        static Stream<Integer> invalidRankNumberProvider() {
-            return Stream.of(0, 9, -1, 99);
+        static Stream<Arguments> validIndexProvider() {
+            return Stream.of(
+                arguments(0, ChessboardRank.ONE),
+                arguments(1, ChessboardRank.TWO),
+                arguments(2, ChessboardRank.THREE),
+                arguments(3, ChessboardRank.FOUR),
+                arguments(4, ChessboardRank.FIVE),
+                arguments(5, ChessboardRank.SIX),
+                arguments(6, ChessboardRank.SEVEN),
+                arguments(7, ChessboardRank.EIGHT)
+            );
+        }
+
+        static Stream<Integer> invalidIndexProvider() {
+            return Stream.of(-1, 8);
+        }
+    }
+
+    @Nested
+    @DisplayName("string representation")
+    class StringRepresentation {
+
+        @Test
+        @DisplayName("should display rank descriptor properly")
+        void shouldDisplayAsReadableString() {
+            assertEquals("7", ChessboardRank.SEVEN.toString());
         }
     }
 }

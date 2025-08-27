@@ -38,13 +38,13 @@ class PromotionEligibilityTest {
         orientation = ChessboardOrientation.WHITE_BOTTOM;
     }
 
-    @Nested
-    @DisplayName("canExecute")
-    class CanExecute {
+        @Nested
+    @DisplayName("when all conditions are met")
+    class WhenAllConditionsMet {
 
         @Test
-        @DisplayName("should return true for pawn moving forward one step to promotion rank")
-        void shouldReturnTrueForValidPromotionMove() {
+        @DisplayName("should allow promotion for pawn moving forward one step to promotion rank")
+        void shouldAllowPromotionForValidPromotionMove() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
             ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
@@ -54,10 +54,15 @@ class PromotionEligibilityTest {
 
             assertThat(result).isTrue();
         }
+    }
+
+    @Nested
+    @DisplayName("when any condition fails")
+    class WhenAnyConditionFails {
 
         @Test
-        @DisplayName("should return false when piece is not a pawn")
-        void shouldReturnFalseWhenNotPawn() {
+        @DisplayName("should deny when piece is not a pawn")
+        void shouldDenyWhenNotPawn() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
             ChessPiece rook = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.ROOK);
@@ -69,8 +74,8 @@ class PromotionEligibilityTest {
         }
 
         @Test
-        @DisplayName("should return false not a legal pawn move")
-        void shouldReturnFalseWhenNotLegalPawnMove() {
+        @DisplayName("should deny when not a legal pawn move")
+        void shouldDenyWhenNotLegalPawnMove() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SIX);
             ChessboardPosition legalTo = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition illegalTo = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
@@ -83,8 +88,8 @@ class PromotionEligibilityTest {
         }
 
         @Test
-        @DisplayName("should return false when destination rank is not promotion rank")
-        void shouldReturnFalseWhenNotPromotionRank() {
+        @DisplayName("should deny when destination rank is not promotion rank")
+        void shouldDenyWhenNotPromotionRank() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SIX);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));

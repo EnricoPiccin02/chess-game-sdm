@@ -11,6 +11,10 @@ import com.sdm.units.chessgame.gui.board.clock.DefaultClockFormatter;
 @DisplayName("DefaultClockFormatter")
 class DefaultClockFormatterTest {
 
+    private static final long FIVE_SECONDS = 5000L;
+    private static final long ONE_MINUTE = 60_000L;
+    private static final long TWO_MINUTES_NINE_SECONDS = 129_000L;
+
     private DefaultClockFormatter formatter;
 
     @BeforeEach
@@ -19,10 +23,20 @@ class DefaultClockFormatterTest {
     }
 
     @Test
-    @DisplayName("should format minutes and seconds with leading zeros")
+    @DisplayName("should format seconds with leading zeros")
+    void shouldFormatSeconds() {
+        assertEquals("\t0:05", formatter.formatTime(FIVE_SECONDS));
+    }
+
+    @Test
+    @DisplayName("should format minutes with trailing zeros")
+    void shouldFormatMinutes() {
+        assertEquals("\t1:00", formatter.formatTime(ONE_MINUTE));
+    }
+
+    @Test
+    @DisplayName("should format minutes and seconds")
     void shouldFormatMinutesAndSeconds() {
-        assertEquals("\t0:05", formatter.formatTime(5000));
-        assertEquals("\t1:00", formatter.formatTime(60000));
-        assertEquals("\t2:09", formatter.formatTime(129000));
+        assertEquals("\t2:09", formatter.formatTime(TWO_MINUTES_NINE_SECONDS));
     }
 }

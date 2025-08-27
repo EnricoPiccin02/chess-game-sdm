@@ -2,7 +2,6 @@ package unittest.chessgame.gamecontrol.flow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -18,6 +17,8 @@ import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.result.MoveResult;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
+import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
+
 @DisplayName("ScoreKeeper")
 class ScoreKeeperTest {
 
@@ -30,15 +31,14 @@ class ScoreKeeperTest {
     void setUp() {
         scores = new ScoreKeeper();
         dummyMove = mock(ReversibleMove.class);
-        dummyPiece = mock(ChessPiece.class);
+        dummyPiece = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
 
-        when(dummyPiece.pieceInfo()).thenReturn(ChessPieceInfo.PAWN);
         result = new MoveResult(dummyMove, new CaptureResult(Optional.of(dummyPiece)));
     }
 
     @Test
-    @DisplayName("should start with zero for all players")
-    void shouldStartWithZero() {
+    @DisplayName("should start by resetting the scores for all players")
+    void shouldStartResettingScores() {
         assertEquals(0, scores.scoreOf(ChessPieceColor.WHITE));
         assertEquals(0, scores.scoreOf(ChessPieceColor.BLACK));
     }

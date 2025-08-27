@@ -53,15 +53,27 @@ class GameFlowServiceTest {
         }
 
         @Test
-        @DisplayName("should reset scores, set turns to WHITE and fire gameStarted event")
-        void shouldResetScoresAndNotify() {
+        @DisplayName("should begin with White as the first player")
+        void shouldBeginWithWhiteAsFirstPlayer() {
+            service.onGameStart();
+            verify(spyTurns).start();
+        }
+
+        @Test
+        @DisplayName("should clear all previous scores")
+        void shouldClearPreviousScores() {
+            service.onGameStart();
+            verify(spyScores).reset();
+        }
+
+        @Test
+        @DisplayName("should announce that the game has started")
+        void shouldAnnounceGameStarted() {
             ChessGameEvent event = mock(ChessGameEvent.class);
             when(factory.gameStarted(ChessPieceColor.WHITE)).thenReturn(event);
 
             service.onGameStart();
 
-            verify(spyScores).reset();
-            verify(spyTurns).start();
             verify(spyListener).onChessGameEvent(event);
         }
     }
@@ -76,20 +88,31 @@ class GameFlowServiceTest {
         void init() {
             ReversibleMove dummyMove = mock(ReversibleMove.class);
             resultStub = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
-
             when(spyTurns.current()).thenReturn(ChessPieceColor.WHITE);
         }
 
         @Test
-        @DisplayName("should update scores, fire moveApplied event and swap turns")
-        void shouldUpdateScoresAndNotify() {
+        @DisplayName("should update the score for the moving player")
+        void shouldUpdateScoreForMovingPlayer() {
+            service.onMoveApplied(resultStub);
+            verify(spyScores).apply(resultStub, ChessPieceColor.WHITE);
+        }
+
+        @Test
+        @DisplayName("should announce that a move has been made")
+        void shouldAnnounceMoveApplied() {
             ChessGameEvent event = mock(ChessGameEvent.class);
             when(factory.moveApplied(resultStub, spyTurns, spyScores)).thenReturn(event);
 
             service.onMoveApplied(resultStub);
 
-            verify(spyScores).apply(resultStub, ChessPieceColor.WHITE);            
             verify(spyListener).onChessGameEvent(event);
+        }
+
+        @Test
+        @DisplayName("should give the turn to the opponent")
+        void shouldGiveTurnToOpponent() {
+            service.onMoveApplied(resultStub);
             verify(spyTurns).swap();
         }
     }
@@ -104,20 +127,31 @@ class GameFlowServiceTest {
         void init() {
             ReversibleMove dummyMove = mock(ReversibleMove.class);
             resultStub = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
-
             when(spyTurns.opponent()).thenReturn(ChessPieceColor.BLACK);
         }
 
         @Test
-        @DisplayName("should revert scores, fire moveUndone event and swap turns")
-        void shouldRevertScoresAndNotify() {
+        @DisplayName("should restore the previous score state")
+        void shouldRestorePreviousScoreState() {
+            service.onMoveUndone(resultStub);
+            verify(spyScores).revert(resultStub, ChessPieceColor.BLACK);
+        }
+
+        @Test
+        @DisplayName("should announce that a move was undone")
+        void shouldAnnounceMoveUndone() {
             ChessGameEvent event = mock(ChessGameEvent.class);
             when(factory.moveUndone(resultStub, spyTurns, spyScores)).thenReturn(event);
 
             service.onMoveUndone(resultStub);
 
-            verify(spyScores).revert(resultStub, ChessPieceColor.BLACK);            
             verify(spyListener).onChessGameEvent(event);
+        }
+
+        @Test
+        @DisplayName("should return the turn to the previous player")
+        void shouldReturnTurnToPreviousPlayer() {
+            service.onMoveUndone(resultStub);
             verify(spyTurns).swap();
         }
     }
@@ -127,14 +161,21 @@ class GameFlowServiceTest {
     class WhenMoveRejected {
 
         @Test
-        @DisplayName("should fire moveRejected event without touching scores or turns")
-        void shouldFireRejectedEvent() {
+        @DisplayName("should announce that the move was rejected")
+        void shouldAnnounceMoveRejected() {
             ChessGameEvent event = mock(ChessGameEvent.class);
             when(factory.moveRejected(GameReason.ILLEGAL_MOVE)).thenReturn(event);
 
             service.onMoveRejected(GameReason.ILLEGAL_MOVE);
 
             verify(spyListener).onChessGameEvent(event);
+        }
+
+        @Test
+        @DisplayName("should not affect scores or turns")
+        void shouldNotAffectScoresOrTurns() {
+            service.onMoveRejected(GameReason.ILLEGAL_MOVE);
+
             verifyNoInteractions(spyScores);
             verifyNoInteractions(spyTurns);
         }
@@ -145,14 +186,21 @@ class GameFlowServiceTest {
     class WhenPlayerWins {
 
         @Test
-        @DisplayName("should fire playerWon event without resetting scores/turns")
-        void shouldFireWinEventWithoutResetting() {
+        @DisplayName("should announce the winner")
+        void shouldAnnounceWinner() {
             ChessGameEvent event = mock(ChessGameEvent.class);
             when(factory.playerWon(spyTurns, ChessPieceColor.WHITE, GameReason.CHECKMATE)).thenReturn(event);
 
             service.onPlayerWon(ChessPieceColor.WHITE, GameReason.CHECKMATE);
 
             verify(spyListener).onChessGameEvent(event);
+        }
+
+        @Test
+        @DisplayName("should not affect scores or turns")
+        void shouldNotAffectScoresOrTurns() {
+            service.onPlayerWon(ChessPieceColor.WHITE, GameReason.CHECKMATE);
+
             verifyNoInteractions(spyScores);
             verifyNoInteractions(spyTurns);
         }
@@ -163,14 +211,21 @@ class GameFlowServiceTest {
     class WhenGameEnds {
 
         @Test
-        @DisplayName("should fire gameEnded event without resetting scores/turns")
-        void shouldFireGameEndedEventWithoutResetting() {
+        @DisplayName("should announce that the game has ended")
+        void shouldAnnounceGameEnded() {
             ChessGameEvent event = mock(ChessGameEvent.class);
-            when(factory.gameEnded()).thenReturn(event);
+            when(factory.gameEnded(GameReason.GAME_ENDED)).thenReturn(event);
 
-            service.onGameEnd();
+            service.onGameEnd(GameReason.GAME_ENDED);
 
             verify(spyListener).onChessGameEvent(event);
+        }
+
+        @Test
+        @DisplayName("should not affect scores or turns")
+        void shouldNotAffectScoresOrTurns() {
+            service.onGameEnd(GameReason.GAME_ENDED);
+
             verifyNoInteractions(spyScores);
             verifyNoInteractions(spyTurns);
         }

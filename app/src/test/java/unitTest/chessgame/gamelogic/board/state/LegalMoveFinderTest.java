@@ -58,12 +58,12 @@ class LegalMoveFinderTest {
     }
 
     @Nested
-    @DisplayName("createIfValid")
-    class CreateIfValidTests {
+    @DisplayName("validate and create move")
+    class CreateIfValid {
 
         @Test
-        @DisplayName("should return move when validator approves")
-        void shouldReturnMoveWhenValidatorApproves() {
+        @DisplayName("should get correct move when validator approves")
+        void shouldGetMoveWhenValidatorApproves() {
             Mockito.when(validatorMock.validateAndCreate(board, from, to, orientation))
                 .thenReturn(Optional.of(moveStub));
 
@@ -73,8 +73,8 @@ class LegalMoveFinderTest {
         }
 
         @Test
-        @DisplayName("should return empty when validator rejects")
-        void shouldReturnEmptyWhenValidatorRejects() {
+        @DisplayName("should not get any move when validator rejects")
+        void shouldNotGetAnyMoveWhenValidatorRejects() {
             Mockito.when(validatorMock.validateAndCreate(board, from, to, orientation))
                 .thenReturn(Optional.empty());
 
@@ -85,12 +85,12 @@ class LegalMoveFinderTest {
     }
 
     @Nested
-    @DisplayName("findLegalDestinations")
-    class FindLegalDestinationsTests {
+    @DisplayName("find legal destinations")
+    class FindLegalDestinations {
 
         @Test
-        @DisplayName("should return destination squares from generated moves")
-        void shouldReturnDestinationSquaresFromGeneratedMoves() {
+        @DisplayName("should provide destination squares from generated moves")
+        void shouldProvideDestinationSquaresFromGeneratedMoves() {
             List<ReversibleMove> moves = List.of(moveStub);
             Mockito.when(generatorMock.generateMovesFrom(board, from, orientation)).thenReturn(moves);
 
@@ -100,8 +100,8 @@ class LegalMoveFinderTest {
         }
 
         @Test
-        @DisplayName("should return empty set when no moves are generated")
-        void shouldReturnEmptySetWhenNoMovesAreGenerated() {
+        @DisplayName("should not provide any destination when no moves are generated")
+        void shouldNotProvideAnyDestinationWhenNoMovesAreGenerated() {
             Mockito.when(generatorMock.generateMovesFrom(board, from, orientation)).thenReturn(List.of());
 
             Set<ChessboardPosition> result = finder.findLegalDestinations(board, from);

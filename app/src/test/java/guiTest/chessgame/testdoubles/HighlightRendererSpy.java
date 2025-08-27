@@ -1,22 +1,20 @@
 package guitest.chessgame.testdoubles;
 
-import java.util.Optional;
-
 import javax.swing.JComponent;
 
-import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
 import com.sdm.units.chessgame.gui.board.square.HighlightColor;
+import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
 
 public class HighlightRendererSpy implements HighlightRenderer {
     
-    private Optional<HighlightColor> lastApplied;
+    private HighlightColor lastApplied;
 
     @Override
-    public void apply(JComponent component, Optional<HighlightColor> type) {
-        this.lastApplied = type;
+    public void apply(JComponent component, HighlightColor color) {
+        this.lastApplied = color;
     }
 
-    public Optional<HighlightColor> getLastApplied() {
+    public HighlightColor getLastApplied() {
         return lastApplied;
     }
 }

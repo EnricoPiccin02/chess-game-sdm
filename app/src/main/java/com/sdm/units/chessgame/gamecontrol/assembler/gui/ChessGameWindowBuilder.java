@@ -7,7 +7,7 @@ import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
 import com.sdm.units.chessgame.gamecontrol.state.MoveQuery;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gui.board.clock.ChessClock;
-import com.sdm.units.chessgame.gui.board.clock.ChessClockPanel;
+import com.sdm.units.chessgame.gui.board.clock.ChessClockView;
 import com.sdm.units.chessgame.gui.board.clock.PlayerClocksFactory;
 import com.sdm.units.chessgame.gui.board.square.BorderHighlightRenderer;
 import com.sdm.units.chessgame.gui.board.view.ChessGameFrame;
@@ -24,12 +24,14 @@ import com.sdm.units.chessgame.gui.pieces.ChessViewConfigurator;
 
 public final class ChessGameWindowBuilder {
 
+    private static final long CLOCK_TIME_LIMIT = 300_000L; // 5 minutes
+
     private MoveQuery moveQuery;
     private GameStateController controller;
     private ChessGameEventPublisher publisher;
     private InteractionContext interactionContext;
 
-    private ChessGameWindowBuilder() { }
+    private ChessGameWindowBuilder() {}
 
     public static ChessGameWindowBuilder create() {
         return new ChessGameWindowBuilder();
@@ -44,7 +46,7 @@ public final class ChessGameWindowBuilder {
     
     public ChessGameView build() {
         ChessboardView chessboardView = new ChessboardPanel(
-            ChessViewConfigurator.createViewRegistry(),
+            ChessViewConfigurator.createPieceViewFactory(),
             new BorderHighlightRenderer()
         );
 
@@ -54,12 +56,12 @@ public final class ChessGameWindowBuilder {
 
         CommandFactory commandFactory = new CommandFactory(interactionContext, controller);
         ToolbarInteractionController toolbarController = new ToolbarInteractionController(commandFactory);
-        
-        PlayerClocksFactory clockFactory = new PlayerClocksFactory(300000); // 5 min
+
+        PlayerClocksFactory clockFactory = new PlayerClocksFactory(CLOCK_TIME_LIMIT);
         EnumMap<ChessPieceColor, ChessClock> clocks = clockFactory.createClocks();
 
         PlayerClockPanelFactory clockPanelFactory = new PlayerClockPanelFactory(controller);
-        EnumMap<ChessPieceColor, ChessClockPanel> clockPanels = clockPanelFactory.createPanels(clocks);
+        EnumMap<ChessPieceColor, ChessClockView> clockPanels = clockPanelFactory.createPanels(clocks);
 
         ChessGameFrame frame = ChessGameFrameFactory.create(chessboardView, clockPanels, toolbarController);
 

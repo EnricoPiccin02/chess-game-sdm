@@ -15,14 +15,24 @@ import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
 class ChessPieceSnapshotTest {
 
     @Test
-    @DisplayName("should store piece and moved state")
-    void shouldStorePieceAndMovedState() {
+    @DisplayName("should store piece")
+    void shouldStorePiece() {
         ChessPiece piece = new Pawn(ChessPieceColor.WHITE, ChessboardOrientation.WHITE_BOTTOM);
         piece.markAsMoved();
 
         ChessPieceSnapshot snapshot = new ChessPieceSnapshot(piece, piece.hasMoved());
 
         assertThat(snapshot.getPiece()).isSameAs(piece);
+    }
+
+    @Test
+    @DisplayName("should store moved state")
+    void shouldStoreMovedState() {
+        ChessPiece piece = new Pawn(ChessPieceColor.WHITE, ChessboardOrientation.WHITE_BOTTOM);
+        piece.markAsMoved();
+
+        ChessPieceSnapshot snapshot = new ChessPieceSnapshot(piece, piece.hasMoved());
+
         assertThat(snapshot.wasMoved()).isTrue();
     }
 }

@@ -1,5 +1,11 @@
 package unittest.chessgame.gamelogic.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.awt.Color;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -9,19 +15,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 
-import java.awt.Color;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 @DisplayName("ChessPieceColor")
 class ChessPieceColorTest {
 
-    @ParameterizedTest(name = "{0} should return name \''{1}\''")
+    @ParameterizedTest(name = "{0} should have name descriptor \''{1}\''")
     @MethodSource("colorNameProvider")
-    @DisplayName("should return correct name")
-    void shouldReturnCorrectName(ChessPieceColor color, String expectedName) {
+    @DisplayName("should have correct name descriptor")
+    void shouldHaveCorrectNameDescriptor(ChessPieceColor color, String expectedName) {
         assertEquals(expectedName, color.toString());
     }
 
@@ -34,8 +34,8 @@ class ChessPieceColorTest {
 
     @ParameterizedTest(name = "{0} opponent should be {1}")
     @MethodSource("opponentProvider")
-    @DisplayName("should return correct opponent color")
-    void shouldReturnCorrectOpponent(ChessPieceColor color, ChessPieceColor expectedOpponent) {
+    @DisplayName("should associate correct opponent color")
+    void shouldAssociateCorrectOpponent(ChessPieceColor color, ChessPieceColor expectedOpponent) {
         assertEquals(expectedOpponent, color.opponent());
     }
 
@@ -47,18 +47,18 @@ class ChessPieceColorTest {
     }
 
     @Nested
-    @DisplayName("getEncodedColor()")
-    class EncodedColorTests {
+    @DisplayName("encoded color association")
+    class EncodedColorAssociation {
 
         @Test
-        @DisplayName("should return Color.WHITE for WHITE")
-        void shouldReturnEncodedWhiteColor() {
+        @DisplayName("should associate white color for WHITE")
+        void shouldAssociateWhiteColorForWhite() {
             assertEquals(Color.WHITE, ChessPieceColor.WHITE.getEncodedColor());
         }
 
         @Test
-        @DisplayName("should return Color.BLACK for BLACK")
-        void shouldReturnEncodedBlackColor() {
+        @DisplayName("should associate black color for BLACK")
+        void shouldAssociateBlackColorForBlack() {
             assertEquals(Color.BLACK, ChessPieceColor.BLACK.getEncodedColor());
         }
     }

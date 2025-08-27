@@ -10,4 +10,4 @@ public record BoardAssembly(
     MoveExecutor executor,
     LegalMoveFinder moveFinder,
     GameOutcomeEvaluator outcome
-) { }
+) {}

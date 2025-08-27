@@ -32,29 +32,29 @@ class CastlingSideTest {
     class KingAndRookPositions {
 
         @Test
-        @DisplayName("should return correct king destination for KING_SIDE")
-        void shouldReturnCorrectKingDestinationForKingSide() {
+        @DisplayName("should provide correct king destination for Kingside castling")
+        void shouldProvideCorrectKingDestinationForKingSide() {
             ChessboardPosition result = CastlingSide.KING_SIDE.getKingTo(kingFromE1);
             assertThat(result).isEqualTo(new ChessboardPosition(ChessboardFile.G, ChessboardRank.ONE));
         }
 
         @Test
-        @DisplayName("should return correct king destination for QUEEN_SIDE")
-        void shouldReturnCorrectKingDestinationForQueenSide() {
+        @DisplayName("should provide correct king destination for Queenside castling")
+        void shouldProvideCorrectKingDestinationForQueenSide() {
             ChessboardPosition result = CastlingSide.QUEEN_SIDE.getKingTo(kingFromE8);
             assertThat(result).isEqualTo(new ChessboardPosition(ChessboardFile.C, ChessboardRank.EIGHT));
         }
 
         @Test
-        @DisplayName("should return correct rook origin for KING_SIDE")
-        void shouldReturnCorrectRookOriginForKingSide() {
+        @DisplayName("should provide correct rook origin for Kingside castling")
+        void shouldProvideCorrectRookOriginForKingSide() {
             ChessboardPosition result = CastlingSide.KING_SIDE.getRookFrom(kingFromE1);
             assertThat(result).isEqualTo(new ChessboardPosition(ChessboardFile.H, ChessboardRank.ONE));
         }
 
         @Test
-        @DisplayName("should return correct rook destination for QUEEN_SIDE")
-        void shouldReturnCorrectRookDestinationForQueenSide() {
+        @DisplayName("should provide correct rook destination for Queenside castling")
+        void shouldProvideCorrectRookDestinationForQueenSide() {
             ChessboardPosition result = CastlingSide.QUEEN_SIDE.getRookTo(kingFromE8);
             assertThat(result).isEqualTo(new ChessboardPosition(ChessboardFile.D, ChessboardRank.EIGHT));
         }
@@ -65,8 +65,8 @@ class CastlingSideTest {
     class KingPath {
 
         @Test
-        @DisplayName("should return correct path squares for KING_SIDE")
-        void shouldReturnCorrectPathSquaresForKingSide() {
+        @DisplayName("should supply correct path squares for Kingside castling")
+        void shouldSupplyCorrectPathSquaresForKingSide() {
             List<ChessboardPosition> result = CastlingSide.KING_SIDE.getKingPath(kingFromE1);
             assertThat(result)
                 .containsExactly(
@@ -76,8 +76,8 @@ class CastlingSideTest {
         }
 
         @Test
-        @DisplayName("should return correct path squares for QUEEN_SIDE")
-        void shouldReturnCorrectPathSquaresForQueenSide() {
+        @DisplayName("should supply correct path squares for Queenside castling")
+        void shouldSupplyCorrectPathSquaresForQueenSide() {
             List<ChessboardPosition> result = CastlingSide.QUEEN_SIDE.getKingPath(kingFromE8);
             assertThat(result)
                 .containsExactly(
@@ -88,26 +88,26 @@ class CastlingSideTest {
     }
 
     @Nested
-    @DisplayName("fromRookFile")
-    class FromRookFile {
+    @DisplayName("castling side from rook file")
+    class CastlingSideFromRookFile {
 
         @Test
-        @DisplayName("should return KING_SIDE for rook file H")
-        void shouldReturnKingSideForFileH() {
+        @DisplayName("should recognize Kingside castling when rook file is H")
+        void shouldRecognizeKingSideForFileH() {
             Optional<CastlingSide> result = CastlingSide.fromRookFile(ChessboardFile.H);
             assertThat(result).contains(CastlingSide.KING_SIDE);
         }
 
         @Test
-        @DisplayName("should return QUEEN_SIDE for rook file A")
-        void shouldReturnQueenSideForFileA() {
+        @DisplayName("should recognize Queenside castling when rook file is A")
+        void shouldRecognizeQueenSideForFileA() {
             Optional<CastlingSide> result = CastlingSide.fromRookFile(ChessboardFile.A);
             assertThat(result).contains(CastlingSide.QUEEN_SIDE);
         }
 
         @Test
-        @DisplayName("should return empty when file does not match a rook position")
-        void shouldReturnEmptyForNonRookFile() {
+        @DisplayName("should not recognize any valid castling side when file does not match a rook position")
+        void shouldNotRecognizeAnyValidCastlingSideWhenNoMatch() {
             Optional<CastlingSide> result = CastlingSide.fromRookFile(ChessboardFile.B);
             assertThat(result).isEmpty();
         }

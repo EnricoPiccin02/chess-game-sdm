@@ -44,7 +44,6 @@ public class EnPassantPattern implements SpecialMovePattern<EnPassantCandidate> 
     }
 
     private boolean isDiagonalMove(ChessboardPosition from, ChessboardPosition to) {
-        return Math.abs(from.file().distance(to.file()).orElse(0)) == 1 &&
-            Math.abs(from.rank().distance(to.rank()).orElse(0)) == 1;
+        return from.isDiagonalTo(to);
     }
 }

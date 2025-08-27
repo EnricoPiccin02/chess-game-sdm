@@ -33,6 +33,8 @@ class CastlingMoveFactoryTest {
     private ChessboardPosition kingTo;
     private ChessboardPosition rookFrom;
     private ChessboardPosition rookTo;
+    private CastlingCandidate candidate;
+    private ReversibleMove move;
 
     @BeforeEach
     void setUp() {
@@ -49,63 +51,104 @@ class CastlingMoveFactoryTest {
 
         board.putPieceAt(kingFrom, king);
         board.putPieceAt(rookFrom, rook);
+
+        candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo, king, rook);
+        move = factory.create(candidate);
     }
 
     @Nested
-    @DisplayName("when creating a castling move")
-    class WhenCreatingCastlingMove {
+    @DisplayName("when executing a castling move")
+    class ExecuteCastlingMove {
 
         @Test
-        @DisplayName("should create a CastlingMove that moves both king and rook")
-        void shouldCreateCastlingMoveThatMovesBothKingAndRook() {
-            CastlingCandidate candidate = new CastlingCandidate(
-                kingFrom, kingTo,
-                rookFrom, rookTo,
-                king, rook
-            );
-
-            ReversibleMove move = factory.create(candidate);
+        @DisplayName("should not result in a capture")
+        void shouldNotResultInCapture() {
             CaptureResult result = move.executeOn(board);
-
             assertThat(result.isCapture()).isFalse();
-            assertThat(board.wasRemoveCalledWith(kingFrom)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should move the king to target square")
+        void shouldMoveKingToTargetSquare() {
+            move.executeOn(board);
             assertThat(board.wasPutCalledWith(kingTo, king)).isTrue();
-            assertThat(board.wasRemoveCalledWith(rookFrom)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should remove the king from original square")
+        void shouldRemoveKingFromOriginalSquare() {
+            move.executeOn(board);
+            assertThat(board.wasRemoveCalledWith(kingFrom)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should move the rook to target square")
+        void shouldMoveRookToTargetSquare() {
+            move.executeOn(board);
             assertThat(board.wasPutCalledWith(rookTo, rook)).isTrue();
         }
 
         @Test
-        @DisplayName("should undo castling by restoring both king and rook to original positions")
-        void shouldUndoCastlingByRestoringBothKingAndRook() {
-            CastlingCandidate candidate = new CastlingCandidate(
-                kingFrom, kingTo,
-                rookFrom, rookTo,
-                king, rook
-            );
-            ReversibleMove move = factory.create(candidate);
+        @DisplayName("should remove the rook from original square")
+        void shouldRemoveRookFromOriginalSquare() {
             move.executeOn(board);
+            assertThat(board.wasRemoveCalledWith(rookFrom)).isTrue();
+        }
+    }
 
+    @Nested
+    @DisplayName("when undoing a castling move")
+    class UndoCastlingMove {
+
+        @BeforeEach
+        void executeBeforeUndo() {
+            move.executeOn(board);
+        }
+
+        @Test
+        @DisplayName("should not result in a capture")
+        void shouldNotResultInCapture() {
             CaptureResult result = move.undoOn(board);
-
             assertThat(result.isCapture()).isFalse();
-            assertThat(board.wasRemoveCalledWith(kingTo)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should restore the king to original square")
+        void shouldRestoreKingToOriginalSquare() {
+            move.undoOn(board);
             assertThat(board.wasPutCalledWith(kingFrom, king)).isTrue();
-            assertThat(board.wasRemoveCalledWith(rookTo)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should remove the king from target square")
+        void shouldRemoveKingFromTargetSquare() {
+            move.undoOn(board);
+            assertThat(board.wasRemoveCalledWith(kingTo)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should restore the rook to original square")
+        void shouldRestoreRookToOriginalSquare() {
+            move.undoOn(board);
             assertThat(board.wasPutCalledWith(rookFrom, rook)).isTrue();
         }
 
         @Test
-        @DisplayName("should return king's primary move component")
-        void shouldReturnKingsPrimaryMoveComponent() {
-            CastlingCandidate candidate = new CastlingCandidate(
-                kingFrom, kingTo,
-                rookFrom, rookTo,
-                king, rook
-            );
-            ReversibleMove move = factory.create(candidate);
+        @DisplayName("should remove the rook from target square")
+        void shouldRemoveRookFromTargetSquare() {
+            move.undoOn(board);
+            assertThat(board.wasRemoveCalledWith(rookTo)).isTrue();
+        }
+    }
 
+    @Nested
+    @DisplayName("when inspecting castling move components")
+    class InspectMoveComponents {
+
+        @Test
+        @DisplayName("should expose king's primary move component")
+        void shouldProvideKingsPrimaryMoveComponent() {
             MoveComponent primary = move.getPrimaryMoveComponent();
-
             assertThat(primary.from()).isEqualTo(kingFrom);
             assertThat(primary.to()).isEqualTo(kingTo);
         }

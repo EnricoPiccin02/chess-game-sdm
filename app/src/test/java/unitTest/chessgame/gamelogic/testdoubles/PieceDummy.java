@@ -21,12 +21,12 @@ public class PieceDummy implements ChessPiece {
 
     @Override
     public void markAsMoved() {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for movement status");
+        throw new UnsupportedOperationException("Dummy should not be asked for 'markAsMoved'");
     }
 
     @Override
     public boolean hasMoved() {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for movement status");
+        throw new UnsupportedOperationException("Dummy should not be asked for 'hasMoved'");
     }
 
     @Override
@@ -41,21 +41,21 @@ public class PieceDummy implements ChessPiece {
 
     @Override
     public boolean isOpponentOf(ChessPieceColor color) {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for opponent validation");
+        throw new UnsupportedOperationException("Dummy should not be asked for 'isOpponentOf'");
     }
 
     @Override
     public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition from) {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for destinations");
+        throw new UnsupportedOperationException("Dummy should not be asked for 'getLegalDestinations'");
     }
 
     @Override
     public ChessPieceSnapshot createSnapshot() {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for snapshot creation");
+        throw new UnsupportedOperationException("Dummy should not be asked for 'createSnapshot'");
     }
 
     @Override
     public void restoreSnapshot(ChessPieceSnapshot snapshot) {
-        throw new UnsupportedOperationException("Dummy piece should not be asked for snapshot restoration");
+        throw new UnsupportedOperationException("Dummy should not be asked for 'restoreSnapshot'");
     }
 }

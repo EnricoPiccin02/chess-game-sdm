@@ -10,8 +10,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
@@ -36,40 +37,36 @@ class ChessboardSetupTest {
         setup = new ChessboardSetup(strategy);
     }
 
-    @Nested
-    @DisplayName("generate(orientation)")
-    class Generate {
+    @ParameterizedTest
+    @EnumSource(ChessPieceColor.class)
+    @DisplayName("should call placement strategy for both colors")
+    void shouldCallStrategyForBothColors(ChessPieceColor color) {
+        when(strategy.initialize(any(), any())).thenReturn(Map.of());
 
-        @Test
-        @DisplayName("should call placement strategy for both colors")
-        void shouldCallStrategyForBothColors() {
-            when(strategy.initialize(any(), any())).thenReturn(Map.of());
+        setup.generate(ChessboardOrientation.WHITE_BOTTOM);
 
-            setup.generate(ChessboardOrientation.WHITE_BOTTOM);
+        verify(strategy).initialize(eq(color), eq(ChessboardOrientation.WHITE_BOTTOM));
+    }
 
-            verify(strategy).initialize(eq(ChessPieceColor.WHITE), eq(ChessboardOrientation.WHITE_BOTTOM));
-            verify(strategy).initialize(eq(ChessPieceColor.BLACK), eq(ChessboardOrientation.WHITE_BOTTOM));
-        }
+    @Test
+    @DisplayName("should merge placements from both colors into the board")
+    void shouldMergePlacementsFromBothColors() {
+        Map<ChessboardPosition, ChessPiece> whitePieces = Map.of(
+            new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE),
+            new Rook(ChessPieceColor.WHITE)
+        );
+        Map<ChessboardPosition, ChessPiece> blackPieces = Map.of(
+            new ChessboardPosition(ChessboardFile.A, ChessboardRank.EIGHT),
+            new Rook(ChessPieceColor.BLACK)
+        );
 
-        @Test
-        @DisplayName("should merge placements from both colors into one board map")
-        void shouldMergePlacementsFromBothColors() {
-            Map<ChessboardPosition, ChessPiece> whitePieces = Map.of(
-                new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE),
-                new Rook(ChessPieceColor.WHITE)
-            );
-            Map<ChessboardPosition, ChessPiece> blackPieces = Map.of(
-                new ChessboardPosition(ChessboardFile.A, ChessboardRank.EIGHT),
-                new Rook(ChessPieceColor.BLACK)
-            );
+        when(strategy.initialize(ChessPieceColor.WHITE, ChessboardOrientation.WHITE_BOTTOM)).thenReturn(whitePieces);
+        when(strategy.initialize(ChessPieceColor.BLACK, ChessboardOrientation.WHITE_BOTTOM)).thenReturn(blackPieces);
 
-            when(strategy.initialize(ChessPieceColor.WHITE, ChessboardOrientation.WHITE_BOTTOM)).thenReturn(whitePieces);
-            when(strategy.initialize(ChessPieceColor.BLACK, ChessboardOrientation.WHITE_BOTTOM)).thenReturn(blackPieces);
+        Map<ChessboardPosition, ChessPiece> result = setup.generate(ChessboardOrientation.WHITE_BOTTOM);
 
-            Map<ChessboardPosition, ChessPiece> result = setup.generate(ChessboardOrientation.WHITE_BOTTOM);
-
-            assertThat(result).containsAllEntriesOf(whitePieces);
-            assertThat(result).containsAllEntriesOf(blackPieces);
-        }
+        assertThat(result)
+            .containsAllEntriesOf(whitePieces)
+            .containsAllEntriesOf(blackPieces);
     }
 }

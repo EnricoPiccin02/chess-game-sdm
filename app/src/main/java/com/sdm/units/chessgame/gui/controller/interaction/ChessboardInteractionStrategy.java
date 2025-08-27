@@ -6,9 +6,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 
 public interface ChessboardInteractionStrategy {
     
-    void enableSelectablePieces(Set<ChessboardPosition> selectablePositions);
-    
-    void enableLegalDestinations(Set<ChessboardPosition> destinations);
+    void enableSelectableSquares(Set<ChessboardPosition> selectablePositions);
     
     void clear();
 }

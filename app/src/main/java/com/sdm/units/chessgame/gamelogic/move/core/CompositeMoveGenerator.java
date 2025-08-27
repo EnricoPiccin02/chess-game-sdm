@@ -12,7 +12,7 @@ public class CompositeMoveGenerator implements MoveGenerator {
     private final List<MoveGenerator> rules;
 
     public CompositeMoveGenerator(List<? extends MoveGenerator> rules) {
-        this.rules = rules.stream().collect(Collectors.toList());
+        this.rules = rules.stream().collect(Collectors.toUnmodifiableList());
     }
 
     @Override
@@ -20,5 +20,5 @@ public class CompositeMoveGenerator implements MoveGenerator {
         return rules.stream()
             .flatMap(rule -> rule.generateMovesFrom(board, from, orientation).stream())
             .collect(Collectors.toList());
-    }   
+    }
 }

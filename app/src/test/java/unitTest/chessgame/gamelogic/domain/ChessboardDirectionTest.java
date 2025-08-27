@@ -1,5 +1,10 @@
 package unittest.chessgame.gamelogic.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -7,18 +12,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 @DisplayName("ChessboardDirection")
 class ChessboardDirectionTest {
 
-    @ParameterizedTest(name = "{0} should return file descriptor {1}")
+    @ParameterizedTest(name = "{0} should associate file descriptor {1}")
     @MethodSource("fileDescriptorProvider")
-    @DisplayName("should return correct directionFileDescriptor")
-    void shouldReturnCorrectFileDescriptor(ChessboardDirection direction, int expectedFileDelta) {
+    @DisplayName("should associate correct file descriptor")
+    void shouldAssociateCorrectFileDescriptor(ChessboardDirection direction, int expectedFileDelta) {
         assertEquals(expectedFileDelta, direction.directionFileDescriptor());
     }
 
@@ -35,10 +35,10 @@ class ChessboardDirectionTest {
         );
     }
 
-    @ParameterizedTest(name = "{0} should return rank descriptor {1}")
+    @ParameterizedTest(name = "{0} should associate rank descriptor {1}")
     @MethodSource("rankDescriptorProvider")
-    @DisplayName("should return correct directionRankDescriptor")
-    void shouldReturnCorrectRankDescriptor(ChessboardDirection direction, int expectedRankDelta) {
+    @DisplayName("should associate correct rank descriptor")
+    void shouldAssociateCorrectRankDescriptor(ChessboardDirection direction, int expectedRankDelta) {
         assertEquals(expectedRankDelta, direction.directionRankDescriptor());
     }
 
@@ -55,10 +55,10 @@ class ChessboardDirectionTest {
         );
     }
 
-    @ParameterizedTest(name = "{0} should return full descriptor [{1}, {2}]")
+    @ParameterizedTest(name = "{0} should associate full descriptor [{1}, {2}]")
     @MethodSource("fullDescriptorProvider")
-    @DisplayName("should return correct directionDescriptor")
-    void shouldReturnCorrectFullDescriptor(ChessboardDirection direction, int expectedFileDelta, int expectedRankDelta) {
+    @DisplayName("should associate correct full descriptor")
+    void shouldAssociateCorrectFullDescriptor(ChessboardDirection direction, int expectedFileDelta, int expectedRankDelta) {
         int[] actual = direction.directionDescriptor();
         assertEquals(expectedFileDelta, actual[0]);
         assertEquals(expectedRankDelta, actual[1]);

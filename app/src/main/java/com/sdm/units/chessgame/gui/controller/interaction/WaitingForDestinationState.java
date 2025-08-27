@@ -25,7 +25,7 @@ public class WaitingForDestinationState implements InteractionState {
     @Override
     public void onEnter() {
         interactionStrategy.clear();
-        interactionStrategy.enableLegalDestinations(moveQuery.legalDestinations(fromPosition));
+        interactionStrategy.enableSelectableSquares(moveQuery.legalDestinations(fromPosition));
     }
 
     @Override

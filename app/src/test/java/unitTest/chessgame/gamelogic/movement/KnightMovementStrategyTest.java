@@ -1,84 +1,84 @@
 package unittest.chessgame.gamelogic.movement;
 
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.B;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.C;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.D;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.E;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.F;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.FIVE;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.FOUR;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.SIX;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.THREE;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.TWO;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Set;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.Knight;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.*;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.*;
+
+import unittest.chessgame.gamelogic.testdoubles.ChessboardStub;
 
 @DisplayName("Knight Movement")
-public class KnightMovementStrategyTest {
+class KnightMovementStrategyTest {
 
-    private Chessboard board;
+    private ChessboardStub board;
     private Knight knight;
     private ChessboardPosition knightPosition;
 
     @BeforeEach
     void setUp() {
-        board = mock(Chessboard.class);
+        board = new ChessboardStub();
         knight = new Knight(ChessPieceColor.WHITE);
         knightPosition = new ChessboardPosition(D, FOUR);
-
-        when(board.getPieceAt(knightPosition)).thenReturn(Optional.of(knight));
+        board.placePiece(knight, knightPosition);
     }
 
-    @Nested
-    @DisplayName("getLegalMoves")
-    class GetLegalMoves {
+    @Test
+    @DisplayName("should move on all 8 L-shaped landing squares when board is empty")
+    void shouldMoveOnAllLShapedLandingSquaresWhenBoardIsEmpty() {
+        Set<ChessboardPosition> landingPositions = Set.of(
+            new ChessboardPosition(B, THREE),
+            new ChessboardPosition(B, FIVE),
+            new ChessboardPosition(C, TWO),
+            new ChessboardPosition(C, SIX),
+            new ChessboardPosition(E, TWO),
+            new ChessboardPosition(E, SIX),
+            new ChessboardPosition(F, THREE),
+            new ChessboardPosition(F, FIVE)
+        );
 
-        @Test
-        @DisplayName("should return all 8 L-shaped moves when board is empty")
-        void shouldReturnAllLShapedMoves() {
-            Set<ChessboardPosition> landingPositions = Set.of(
-                new ChessboardPosition(B, THREE),
-                new ChessboardPosition(B, FIVE),
-                new ChessboardPosition(C, TWO),
-                new ChessboardPosition(C, SIX),
-                new ChessboardPosition(E, TWO),
-                new ChessboardPosition(E, SIX),
-                new ChessboardPosition(F, THREE),
-                new ChessboardPosition(F, FIVE)
-            );
+        board.vacant(landingPositions.toArray(ChessboardPosition[]::new));
 
-            ChessboardMockUtils.mockVacantPositions(board, landingPositions);
+        Set<ChessboardPosition> moves = knight.getLegalDestinations(board, knightPosition);
 
-            Set<ChessboardPosition> legalDestinations = knight.getLegalDestinations(board, knightPosition);
+        assertThat(moves).containsExactlyInAnyOrderElementsOf(landingPositions);
+    }
 
-            assertThat(legalDestinations).containsExactlyInAnyOrderElementsOf(landingPositions);
-        }
+    @Test
+    @DisplayName("should exclude squares occupied by friendly pieces")
+    void shouldExcludeSquaresWithFriendlyPieces() {
+        ChessboardPosition friendPos = new ChessboardPosition(B, THREE);
+        board.placeFriendly(friendPos, ChessPieceColor.WHITE);
 
-        @Test
-        @DisplayName("should exclude squares with friendly pieces")
-        void shouldExcludeFriendlyPieces() {
-            ChessboardPosition friendPos = new ChessboardPosition(B, THREE);
-            ChessboardMockUtils.mockFriendlyPieceAt(board, friendPos, ChessPieceColor.WHITE);
+        Set<ChessboardPosition> moves = knight.getLegalDestinations(board, knightPosition);
 
-            Set<ChessboardPosition> legalDestinations = knight.getLegalDestinations(board, knightPosition);
+        assertThat(moves).doesNotContain(friendPos);
+    }
 
-            assertThat(legalDestinations).doesNotContain(friendPos);
-        }
+    @Test
+    @DisplayName("should include squares occupied by opponent pieces")
+    void shouldIncludeSquaresWithOpponentPieces() {
+        ChessboardPosition enemyPos = new ChessboardPosition(F, FIVE);
+        board.placeOpponent(enemyPos, ChessPieceColor.BLACK);
 
-        @Test
-        @DisplayName("should include squares with opponent pieces")
-        void shouldIncludeOpponentPieces() {
-            ChessboardPosition enemyPos = new ChessboardPosition(F, FIVE);
-            ChessboardMockUtils.mockOpponentPieceAt(board, enemyPos, ChessPieceColor.WHITE, ChessPieceColor.BLACK);
+        Set<ChessboardPosition> moves = knight.getLegalDestinations(board, knightPosition);
 
-            Set<ChessboardPosition> legalDestinations = knight.getLegalDestinations(board, knightPosition);
-
-            assertThat(legalDestinations).contains(enemyPos);
-        }
+        assertThat(moves).contains(enemyPos);
     }
 }

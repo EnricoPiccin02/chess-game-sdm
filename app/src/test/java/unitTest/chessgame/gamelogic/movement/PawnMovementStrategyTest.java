@@ -1,96 +1,82 @@
 package unittest.chessgame.gamelogic.movement;
 
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.D;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.E;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.FOUR;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.THREE;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.TWO;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Set;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.pieces.Knight;
 import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.*;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.*;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardStub;
 
 @DisplayName("Pawn Movement")
 class PawnMovementStrategyTest {
 
-    private Chessboard board;
+    private ChessboardStub board;
     private Pawn pawn;
     private ChessboardPosition pawnPosition;
 
     @BeforeEach
     void setUp() {
-        board = Mockito.mock(Chessboard.class);
+        board = new ChessboardStub();
         pawn = new Pawn(ChessPieceColor.WHITE, ChessboardOrientation.WHITE_BOTTOM);
         pawnPosition = new ChessboardPosition(D, TWO);
-        
-        when(board.getPieceAt(pawnPosition)).thenReturn(Optional.of(pawn));
+        board.placePiece(pawn, pawnPosition);
     }
 
-    @Nested
-    @DisplayName("getLegalMoves(board, position)")
-    class GetLegalMoves {
+    @Test
+    @DisplayName("should move one step forward if square is vacant")
+    void shouldMoveOneStepForwardIfVacant() {
+        ChessboardPosition forward = new ChessboardPosition(D, THREE);
+        board.vacant(forward);
 
-        @Test
-        @DisplayName("should move one step forward if square is empty")
-        void shouldMoveOneStepForwardIfVacant() {
-            ChessboardPosition forwardPosition = new ChessboardPosition(D, THREE);
-            when(board.isUnoccupiedSquare(forwardPosition)).thenReturn(true);
-            when(board.isOpponentAt(any(), any())).thenReturn(false);
-            
-            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
+        Set<ChessboardPosition> moves = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalDestinations).contains(forwardPosition);
-        }
+        assertThat(moves).containsExactly(forward);
+    }
 
-        @Test
-        @DisplayName("should move two steps forward if first move and both squares are empty")
-        void shouldMoveTwoStepsForwardIfFirstMove() {
-            ChessboardPosition forwardPosition = new ChessboardPosition(D, THREE);
-            ChessboardPosition forwardForwardPosition = new ChessboardPosition(D, FOUR);
-            when(board.isUnoccupiedSquare(forwardPosition)).thenReturn(true);
-            when(board.isUnoccupiedSquare(forwardForwardPosition)).thenReturn(true);
-            when(board.isOpponentAt(any(), any())).thenReturn(false);
+    @Test
+    @DisplayName("should move two steps forward if first move and both squares are vacant")
+    void shouldMoveTwoStepsForwardIfFirstMoveAndSquaresVacant() {
+        ChessboardPosition oneStep = new ChessboardPosition(D, THREE);
+        ChessboardPosition twoSteps = new ChessboardPosition(D, FOUR);
+        board.vacant(oneStep, twoSteps);
 
-            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
+        Set<ChessboardPosition> moves = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalDestinations).contains(forwardForwardPosition);
-        }
+        assertThat(moves).containsExactlyInAnyOrder(oneStep, twoSteps);
+    }
 
-        @Test
-        @DisplayName("should capture diagonally if opponent present")
-        void shouldCaptureDiagonallyIfOpponentPresent() {
-            ChessboardPosition target = new ChessboardPosition(E, THREE);
-            when(board.getPieceAt(target)).thenReturn(Optional.of(new Knight(ChessPieceColor.BLACK)));
-            when(board.isUnoccupiedSquare(target)).thenReturn(false);
-            when(board.isOpponentAt(ChessPieceColor.WHITE, target)).thenReturn(true);
+    @Test
+    @DisplayName("should capture diagonally if opponent is present")
+    void shouldCaptureDiagonallyIfOpponentPresent() {
+        ChessboardPosition target = new ChessboardPosition(E, THREE);
+        board.placeOpponent(target, ChessPieceColor.BLACK);
 
-            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
+        Set<ChessboardPosition> moves = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalDestinations).contains(target);
-        }
+        assertThat(moves).containsExactly(target);
+    }
 
-        @Test
-        @DisplayName("should not capture diagonally if no opponent present")
-        void shouldNotCaptureDiagonallyIfEmpty() {
-            ChessboardPosition target = new ChessboardPosition(E, THREE);
-            when(board.getPieceAt(target)).thenReturn(Optional.empty());
-            when(board.isUnoccupiedSquare(target)).thenReturn(true);
+    @Test
+    @DisplayName("should not capture diagonally if no opponent is present")
+    void shouldNotCaptureDiagonallyIfEmpty() {
+        ChessboardPosition target = new ChessboardPosition(E, THREE);
+        board.vacant(target);
 
-            Set<ChessboardPosition> legalDestinations = pawn.getLegalDestinations(board, pawnPosition);
+        Set<ChessboardPosition> moves = pawn.getLegalDestinations(board, pawnPosition);
 
-            assertThat(legalDestinations).doesNotContain(target);
-        }
+        assertThat(moves).doesNotContain(target);
     }
 }

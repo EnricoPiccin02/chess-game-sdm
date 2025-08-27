@@ -16,7 +16,7 @@ import com.sdm.units.chessgame.gui.board.square.HighlightColor;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
 import com.sdm.units.chessgame.gui.controller.interaction.ChessboardInteractionController;
 
-import guitest.chessgame.testdoubles.ChessboardViewSpy;
+import unittest.chessgame.gui.testdoubles.ChessboardViewSpy;
 
 @DisplayName("ChessboardInteractionController")
 class ChessboardInteractionControllerTest {
@@ -34,58 +34,63 @@ class ChessboardInteractionControllerTest {
     }
 
     @Nested
-    @DisplayName("when enabling selectable pieces")
-    class EnableSelectablePieces {
+    @DisplayName("when enabling selectable squares")
+    class EnableSelectableSquares {
+
+        private final Set<ChessboardPosition> positions = Set.of(
+            new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO),
+            new ChessboardPosition(ChessboardFile.D, ChessboardRank.FOUR)
+        );
 
         @Test
-        @DisplayName("should highlight and attach listener on given positions")
-        void shouldHighlightAndAttachListener() {
-            Set<ChessboardPosition> positions = Set.of(
-                new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO),
-                new ChessboardPosition(ChessboardFile.D, ChessboardRank.FOUR)
-            );
-
-            controller.enableSelectablePieces(positions);
+        @DisplayName("should highlight given squares")
+        void shouldHighlightGivenSquares() {
+            controller.enableSelectableSquares(positions);
 
             assertThat(viewSpy.getUpdatedSquares()).containsExactlyInAnyOrderElementsOf(positions);
-            assertThat(viewSpy.getLastHighlightType()).isEqualTo(HighlightColor.SELECTED);
-            assertThat(viewSpy.isListenerAttached()).isTrue();
         }
-    }
-
-    @Nested
-    @DisplayName("when enabling legal destinations")
-    class EnableLegalDestinations {
 
         @Test
-        @DisplayName("should highlight and attach listener on given destinations")
-        void shouldHighlightAndAttachListener() {
-            Set<ChessboardPosition> positions = Set.of(
-                new ChessboardPosition(ChessboardFile.A, ChessboardRank.THREE),
-                new ChessboardPosition(ChessboardFile.B, ChessboardRank.FOUR)
-            );
+        @DisplayName("should mark highlights as selected")
+        void shouldMarkHighlightsAsSelected() {
+            controller.enableSelectableSquares(positions);
 
-            controller.enableLegalDestinations(positions);
+            assertThat(viewSpy.getLastHighlightType()).isEqualTo(HighlightColor.SELECTABLE);
+        }
 
-            assertThat(viewSpy.getUpdatedSquares()).containsExactlyInAnyOrderElementsOf(positions);
-            assertThat(viewSpy.getLastHighlightType()).isEqualTo(HighlightColor.LEGAL_DESTINATION);
+        @Test
+        @DisplayName("should attach listener to squares")
+        void shouldAttachListenerToSquares() {
+            controller.enableSelectableSquares(positions);
+
             assertThat(viewSpy.isListenerAttached()).isTrue();
         }
     }
 
     @Nested
     @DisplayName("when clearing interaction")
-    class Clear {
+    class ClearInteraction {
 
-        @Test
-        @DisplayName("should clear highlight and remove listeners on all squares")
-        void shouldClearAllSquares() {
-            controller.enableSelectablePieces(Set.of(
+        @BeforeEach
+        void prepareBoard() {
+            controller.enableSelectableSquares(Set.of(
                 new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE)
             ));
+        }
+
+        @Test
+        @DisplayName("should clear all highlights")
+        void shouldClearAllHighlights() {
             controller.clear();
 
             assertThat(viewSpy.isUpdateAllCalled()).isTrue();
+        }
+
+        @Test
+        @DisplayName("should remove all listeners")
+        void shouldRemoveAllListeners() {
+            controller.clear();
+
             assertThat(viewSpy.isListenerRemoved()).isTrue();
         }
     }

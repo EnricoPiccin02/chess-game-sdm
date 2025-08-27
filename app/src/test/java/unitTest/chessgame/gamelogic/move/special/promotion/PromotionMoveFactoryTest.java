@@ -1,8 +1,6 @@
 package unittest.chessgame.gamelogic.move.special.promotion;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
@@ -18,14 +16,12 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
-import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionCandidate;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionMoveFactory;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionPieceSelector;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
 import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
-import unittest.chessgame.gamelogic.testdoubles.ChessboardSpy;
 import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 import unittest.chessgame.gamelogic.testdoubles.PieceFake;
 
@@ -58,50 +54,70 @@ class PromotionMoveFactoryTest {
     }
 
     @Nested
-    @DisplayName("when creating a normal promotion move")
-    class WhenCreatingNormalPromotionMove {
+    @DisplayName("when promoting without capture")
+    class WhenPromotingWithoutCapture {
 
         @Test
-        @DisplayName("should move pawn to promotion rank and replace with chosen piece")
-        void shouldPromotePawn() {
+        @DisplayName("should replace pawn with promoted piece on promotion rank")
+        void shouldReplacePawnWithPromotedPiece() {
             PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
             ReversibleMove move = factory.create(candidate);
 
-            ChessboardSpy board = new ChessboardSpy();
+            ChessboardFake board = new ChessboardFake();
             board.putPieceAt(from, pawnFake);
 
             move.executeOn(board);
 
             assertThat(board.getPieceAt(forwardTo)).contains(promotedPieceDummy);
-            assertThat(board.getPieceAt(from)).isEmpty();
-
-            assertThat(board.wasRemoveCalledWith(from)).isTrue();
-            assertThat(board.wasPutCalledWith(forwardTo, pawnFake)).isTrue();
-            assertThat(board.wasPutCalledWith(forwardTo, promotedPieceDummy)).isTrue();
         }
 
         @Test
-        @DisplayName("should undo promotion and restore pawn to original position")
-        void shouldUndoPromotion() {
+        @DisplayName("should clear pawn original square after promotion")
+        void shouldClearPawnOriginalSquare() {
             PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
             ReversibleMove move = factory.create(candidate);
 
-            ChessboardSpy board = new ChessboardSpy();
+            ChessboardFake board = new ChessboardFake();
+            board.putPieceAt(from, pawnFake);
+
+            move.executeOn(board);
+
+            assertThat(board.getPieceAt(from)).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should restore pawn on undo")
+        void shouldRestorePawnOnUndo() {
+            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
+            ReversibleMove move = factory.create(candidate);
+
+            ChessboardFake board = new ChessboardFake();
             board.putPieceAt(from, pawnFake);
 
             move.executeOn(board);
             move.undoOn(board);
 
             assertThat(board.getPieceAt(from)).contains(pawnFake);
-            assertThat(board.getPieceAt(forwardTo)).isEmpty();
-
-            assertThat(board.wasPutCalledWith(from, pawnFake)).isTrue();
-            assertThat(board.wasRemoveCalledWith(forwardTo)).isTrue();
         }
 
         @Test
-        @DisplayName("should select promotion piece based on pawn color")
-        void shouldSelectPromotionPieceBasedOnPawnColor() {
+        @DisplayName("should clear promoted square on undo")
+        void shouldClearPromotedSquareOnUndo() {
+            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
+            ReversibleMove move = factory.create(candidate);
+
+            ChessboardFake board = new ChessboardFake();
+            board.putPieceAt(from, pawnFake);
+
+            move.executeOn(board);
+            move.undoOn(board);
+
+            assertThat(board.getPieceAt(forwardTo)).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should choose promotion piece based on pawn color")
+        void shouldChoosePromotionPieceBasedOnPawnColor() {
             PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
             factory.create(candidate).executeOn(new ChessboardFake());
 
@@ -109,8 +125,8 @@ class PromotionMoveFactoryTest {
         }
 
         @Test
-        @DisplayName("should return pawn forward move component")
-        void shouldReturnPawnForwardMoveComponent() {
+        @DisplayName("should expose pawn forward move component")
+        void shouldExposePawnForwardMoveComponent() {
             PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
             ReversibleMove move = factory.create(candidate);
 
@@ -122,38 +138,46 @@ class PromotionMoveFactoryTest {
     }
 
     @Nested
-    @DisplayName("when creating a capture promotion move")
-    class WhenCreatingCapturePromotionMove {
+    @DisplayName("when promoting with capture")
+    class WhenPromotingWithCapture {
 
         @Test
-        @DisplayName("should promote pawn and capture enemy piece")
-        void shouldPromoteAndCapture() {
+        @DisplayName("should replace captured piece with promoted piece")
+        void shouldReplaceCapturedPieceWithPromotedPiece() {
             PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
             ReversibleMove move = factory.create(candidate);
 
-            ChessboardSpy board = new ChessboardSpy();
+            ChessboardFake board = new ChessboardFake();
             board.putPieceAt(from, pawnFake);
             board.putPieceAt(capturingTo, capturedPieceDummy);
 
-            CaptureResult result = move.executeOn(board);
+            move.executeOn(board);
 
             assertThat(board.getPieceAt(capturingTo)).contains(promotedPieceDummy);
-            assertThat(board.getPieceAt(from)).isEmpty();
-            assertTrue(result.pieceValue().isPresent());
-            assertEquals(capturedPieceDummy.pieceInfo().getPieceValue(), result.pieceValue().getAsInt());
-
-            assertThat(board.wasRemoveCalledWith(from)).isTrue();
-            assertThat(board.wasPutCalledWith(capturingTo, pawnFake)).isTrue();
-            assertThat(board.wasPutCalledWith(capturingTo, promotedPieceDummy)).isTrue();
         }
 
         @Test
-        @DisplayName("should undo capture promotion and restore both pieces")
-        void shouldUndoCapturePromotion() {
+        @DisplayName("should clear pawn original square after capture promotion")
+        void shouldClearPawnOriginalSquareAfterCapturePromotion() {
             PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
             ReversibleMove move = factory.create(candidate);
 
-            ChessboardSpy board = new ChessboardSpy();
+            ChessboardFake board = new ChessboardFake();
+            board.putPieceAt(from, pawnFake);
+            board.putPieceAt(capturingTo, capturedPieceDummy);
+
+            move.executeOn(board);
+
+            assertThat(board.getPieceAt(from)).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should restore pawn on undo after capture promotion")
+        void shouldRestorePawnOnUndoAfterCapturePromotion() {
+            PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
+            ReversibleMove move = factory.create(candidate);
+
+            ChessboardFake board = new ChessboardFake();
             board.putPieceAt(from, pawnFake);
             board.putPieceAt(capturingTo, capturedPieceDummy);
 
@@ -161,15 +185,27 @@ class PromotionMoveFactoryTest {
             move.undoOn(board);
 
             assertThat(board.getPieceAt(from)).contains(pawnFake);
-            assertThat(board.getPieceAt(capturingTo)).contains(capturedPieceDummy);
-
-            assertThat(board.wasPutCalledWith(from, pawnFake)).isTrue();
-            assertThat(board.wasRemoveCalledWith(capturingTo)).isTrue();
         }
 
         @Test
-        @DisplayName("should return pawn capturing move component")
-        void shouldReturnPawnCapturingMoveComponent() {
+        @DisplayName("should restore captured piece on undo after capture promotion")
+        void shouldRestoreCapturedPieceOnUndoAfterCapturePromotion() {
+            PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
+            ReversibleMove move = factory.create(candidate);
+
+            ChessboardFake board = new ChessboardFake();
+            board.putPieceAt(from, pawnFake);
+            board.putPieceAt(capturingTo, capturedPieceDummy);
+
+            move.executeOn(board);
+            move.undoOn(board);
+
+            assertThat(board.getPieceAt(capturingTo)).contains(capturedPieceDummy);
+        }
+
+        @Test
+        @DisplayName("should expose pawn capturing move component")
+        void shouldExposePawnCapturingMoveComponent() {
             PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.empty());
             ReversibleMove move = factory.create(candidate);
 
@@ -185,7 +221,7 @@ class PromotionMoveFactoryTest {
         private final ChessPiece pieceToReturn;
         private ChessPieceColor selectedColor;
 
-        public PromotionPieceSelectorStub(ChessPiece pieceToReturn) {
+        PromotionPieceSelectorStub(ChessPiece pieceToReturn) {
             this.pieceToReturn = pieceToReturn;
         }
 

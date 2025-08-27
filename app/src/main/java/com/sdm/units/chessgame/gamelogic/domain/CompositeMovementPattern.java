@@ -4,7 +4,7 @@ import static com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection.*;
 
 import java.util.List;
 
-public enum CompositeDirectionSet {
+public enum CompositeMovementPattern {
 
     L_SHAPED(List.of(
         List.of(LEFT, LEFT, DOWN),
@@ -19,8 +19,8 @@ public enum CompositeDirectionSet {
 
     private final List<List<ChessboardDirection>> compositeDirections;
 
-    CompositeDirectionSet(List<List<ChessboardDirection>> compositeDirections) {
-        this.compositeDirections = compositeDirections;
+    CompositeMovementPattern(List<List<ChessboardDirection>> compositeDirections) {
+        this.compositeDirections = List.copyOf(compositeDirections);
     }
 
     public List<List<ChessboardDirection>> getCompositeDirections() {

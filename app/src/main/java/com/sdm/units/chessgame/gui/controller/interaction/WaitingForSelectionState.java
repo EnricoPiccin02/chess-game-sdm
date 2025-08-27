@@ -24,7 +24,7 @@ public class WaitingForSelectionState implements InteractionState {
     @Override
     public void onEnter() {
         interactionStrategy.clear();
-        interactionStrategy.enableSelectablePieces(moveQuery.selectable());
+        interactionStrategy.enableSelectableSquares(moveQuery.selectable());
     }
 
     @Override

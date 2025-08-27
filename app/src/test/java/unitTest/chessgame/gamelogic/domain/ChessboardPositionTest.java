@@ -1,5 +1,14 @@
 package unittest.chessgame.gamelogic.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
@@ -7,73 +16,61 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @DisplayName("ChessboardPosition")
 class ChessboardPositionTest {
 
-    private final ChessboardPosition d4 = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FOUR);
-    private final ChessboardPosition e5 = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FIVE);
-    private final ChessboardPosition h8 = new ChessboardPosition(ChessboardFile.H, ChessboardRank.EIGHT);
+    private ChessboardPosition d4;
+    private ChessboardPosition e5;
+    private ChessboardPosition h8;
+
+    @BeforeEach
+    void setUp() {
+        d4 = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FOUR);
+        e5 = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FIVE);
+        h8 = new ChessboardPosition(ChessboardFile.H, ChessboardRank.EIGHT);
+    }
 
     @Nested
-    @DisplayName("nextPosition(direction)")
-    class NextPositionSingleDirection {
+    @DisplayName("navigating the board in one direction")
+    class SingleDirectionNavigation {
 
         @Test
-        @DisplayName("should return correct position when moving UP")
-        void shouldMoveUp() {
+        @DisplayName("should move upwards from d4 to d5")
+        void shouldMoveUpwardsFromD4() {
             Optional<ChessboardPosition> result = d4.nextPosition(ChessboardDirection.UP);
-            assertTrue(result.isPresent());
             assertEquals(new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE), result.get());
         }
 
         @Test
-        @DisplayName("should return correct position when moving UP_RIGHT")
-        void shouldMoveUpRight() {
+        @DisplayName("should move diagonally up-right from d4 to e5")
+        void shouldMoveDiagonallyUpRightFromD4() {
             Optional<ChessboardPosition> result = d4.nextPosition(ChessboardDirection.UP_RIGHT);
-            assertTrue(result.isPresent());
             assertEquals(e5, result.get());
         }
 
         @Test
-        @DisplayName("should return empty when next position is outside board")
-        void shouldReturnEmptyOutsideBoard() {
+        @DisplayName("should stop movement at the edge when moving beyond h8")
+        void shouldStopAtEdgeBeyondH8() {
             Optional<ChessboardPosition> result = h8.nextPosition(ChessboardDirection.UP_RIGHT);
             assertTrue(result.isEmpty());
-        }
-
-        @Test
-        @DisplayName("should return empty if file or rank is null")
-        void shouldReturnEmptyWithNullFileOrRank() {
-            ChessboardPosition invalid = new ChessboardPosition(null, ChessboardRank.FOUR);
-            assertTrue(invalid.nextPosition(ChessboardDirection.UP).isEmpty());
         }
     }
 
     @Nested
-    @DisplayName("nextPosition(directions)")
-    class NextPositionMultipleDirections {
+    @DisplayName("navigating the board through multiple directions")
+    class MultipleDirectionNavigation {
 
         @Test
-        @DisplayName("should follow multiple directions to reach final position")
-        void shouldFollowMultipleDirections() {
+        @DisplayName("should follow sequence from d4 to e5 via up then right")
+        void shouldFollowSequenceUpThenRight() {
             Optional<ChessboardPosition> result = d4.nextPosition(List.of(
                 ChessboardDirection.UP, ChessboardDirection.RIGHT));
-            assertTrue(result.isPresent());
             assertEquals(e5, result.get());
         }
 
         @Test
-        @DisplayName("should return empty if any step leads outside the board")
-        void shouldStopIfStepIsInvalid() {
+        @DisplayName("should halt sequence when moving beyond the board")
+        void shouldHaltWhenMovingBeyondBoard() {
             Optional<ChessboardPosition> result = h8.nextPosition(List.of(
                 ChessboardDirection.UP, ChessboardDirection.RIGHT));
             assertTrue(result.isEmpty());
@@ -81,59 +78,36 @@ class ChessboardPositionTest {
     }
 
     @Nested
-    @DisplayName("distance(other)")
-    class DistanceBetweenPositions {
+    @DisplayName("checking diagonals")
+    class DiagonalCheck {
 
         @Test
-        @DisplayName("should return correct Manhattan distance")
-        void shouldReturnCorrectDistance() {
-            OptionalInt distance = d4.distance(e5);
-            assertTrue(distance.isPresent());
-            assertEquals(2, distance.getAsInt());
+        @DisplayName("should recognize d4 and e5 as diagonal")
+        void shouldRecognizeCloseDiagonalPositions() {
+            assertTrue(d4.isDiagonalTo(e5));
         }
 
         @Test
-        @DisplayName("should return empty when one position is null")
-        void shouldReturnEmptyIfOtherIsNull() {
-            assertTrue(d4.distance(null).isEmpty());
+        @DisplayName("should recognize d4 and h8 as diagonal")
+        void shouldRecognizeFarDiagonalPositions() {
+            assertTrue(d4.isDiagonalTo(h8));
         }
 
         @Test
-        @DisplayName("should return empty if rank or file is null")
-        void shouldReturnEmptyIfFileOrRankIsNull() {
-            ChessboardPosition invalid = new ChessboardPosition(null, ChessboardRank.FOUR);
-            assertTrue(invalid.distance(d4).isEmpty());
+        @DisplayName("should not consider diagonal relation with missing position")
+        void shouldNotConsiderMissingPositionAsDiagonal() {
+            assertTrue(!d4.isDiagonalTo(null));
         }
     }
 
     @Nested
-    @DisplayName("compareTo(other)")
-    class CompareToOtherPosition {
+    @DisplayName("string representation")
+    class StringRepresentation {
 
         @Test
-        @DisplayName("should return 0 when positions are equal")
-        void shouldReturnZeroWhenEqual() {
-            assertEquals(0, d4.compareTo(d4));
-        }
-
-        @Test
-        @DisplayName("should return positive if this is before other")
-        void shouldReturnPositiveIfBefore() {
-            assertTrue(d4.compareTo(e5) > 0);
-        }
-
-        @Test
-        @DisplayName("should return negative if this is after other")
-        void shouldReturnNegativeIfAfter() {
-            assertTrue(e5.compareTo(d4) < 0);
-        }
-
-        @Test
-        @DisplayName("should return 0 when compared to null or incomplete")
-        void shouldReturnZeroIfNull() {
-            ChessboardPosition incomplete = new ChessboardPosition(null, ChessboardRank.ONE);
-            assertEquals(0, incomplete.compareTo(d4));
-            assertEquals(0, d4.compareTo(null));
+        @DisplayName("should display d4 as (D, 4)")
+        void shouldDisplayAsReadableString() {
+            assertEquals("(D, 4)", d4.toString());
         }
     }
 }

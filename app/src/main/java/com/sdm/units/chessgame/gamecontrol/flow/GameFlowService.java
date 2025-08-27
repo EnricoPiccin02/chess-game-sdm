@@ -71,7 +71,7 @@ public final class GameFlowService implements GameFlowController, ChessGameEvent
         fireEvent(notifier.playerWon(turns, winner, reason));
     }
 
-    public void onGameEnd() {
-        fireEvent(notifier.gameEnded());
+    public void onGameEnd(GameReason reason) {
+        fireEvent(notifier.gameEnded(reason));
     }
 }

@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +24,7 @@ import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
 import com.sdm.units.chessgame.gamelogic.pieces.Queen;
 
-@DisplayName("Chessboard")
+@DisplayName("BoardStateManager")
 class BoardStateManagerTest {
 
     private Chessboard board;
@@ -52,83 +51,86 @@ class BoardStateManagerTest {
     }
 
     @Nested
-    @DisplayName("getOccupiedSquaresOf(color)")
-    class GetOccupiedSquaresOf {
+    @DisplayName("retrieving occupied squares")
+    class RetrieveOccupiedSquares {
 
         @Test
-        @DisplayName("should return empty list when no pieces of that color are on the board")
-        void shouldReturnEmptyWhenNoPiecesOfColor() {
+        @DisplayName("should not get any square when no pieces of given color are on board")
+        void shouldNotGetAnySquareWhenNoPiecesOfGivenColorAreOnBoard() {
             assertThat(board.getOccupiedSquaresOf(ChessPieceColor.WHITE)).isEmpty();
         }
 
         @Test
-        @DisplayName("should return all squares occupied by given color")
-        void shouldReturnSquaresForColor() {
+        @DisplayName("should identify the only square occupied by color")
+        void shouldIdentifyTheOnlySquareOccupiedByColor() {
             board.putPieceAt(a1, whitePawn);
+            assertThat(board.getOccupiedSquaresOf(ChessPieceColor.WHITE)).containsExactly(a1);
+        }
+
+        @Test
+        @DisplayName("should not identify as occupied squares occupied by different color")
+        void shouldNotIdentifyAsOccupiedSquaresOccupiedByDifferentColor() {
             board.putPieceAt(h8, blackQueen);
-
-            Set<ChessboardPosition> whiteSquares = board.getOccupiedSquaresOf(ChessPieceColor.WHITE);
-
-            assertThat(whiteSquares).containsExactly(a1);
+            assertThat(board.getOccupiedSquaresOf(ChessPieceColor.WHITE)).isEmpty();
         }
     }
 
     @Nested
-    @DisplayName("isUnoccupiedSquare(position)")
-    class IsUnoccupiedSquare {
+    @DisplayName("checking unoccupied squares")
+    class CheckingUnoccupiedSquare {
 
         @Test
-        @DisplayName("should return true for empty square")
-        void shouldReturnTrueForEmptySquare() {
+        @DisplayName("should identify empty square")
+        void shouldIdentifyEmptySquare() {
             assertThat(board.isUnoccupiedSquare(a1)).isTrue();
         }
 
         @Test
-        @DisplayName("should return false for occupied square")
-        void shouldReturnFalseForOccupiedSquare() {
+        @DisplayName("should identify occupied square")
+        void shouldIdentifyOccupiedSquare() {
             board.putPieceAt(a1, whitePawn);
             assertThat(board.isUnoccupiedSquare(a1)).isFalse();
         }
     }
 
     @Nested
-    @DisplayName("getPieceAt(position)")
-    class GetPieceAt {
+    @DisplayName("retrieving pieces from board")
+    class RetrievingPiecesFromBoard {
 
         @Test
-        @DisplayName("should return empty optional when square is empty")
-        void shouldReturnEmptyWhenEmpty() {
+        @DisplayName("should not get any piece when square is vacant")
+        void shouldNotGetAnyPieceWhenSquareIsVacant() {
             assertThat(board.getPieceAt(a1)).isEmpty();
         }
 
         @Test
-        @DisplayName("should return piece when square is occupied")
-        void shouldReturnPieceWhenOccupied() {
+        @DisplayName("should get piece when square is occupied")
+        void shouldGetPieceWhenSquareIsOccupied() {
             board.putPieceAt(a1, whitePawn);
             assertThat(board.getPieceAt(a1)).contains(whitePawn);
         }
     }
 
     @Nested
-    @DisplayName("isOpponentAt(playerColor, position)")
-    class IsOpponentAt {
+    @DisplayName("checking opponent pieces")
+    class CheckingOpponentPieces {
 
         @Test
-        @DisplayName("should return false when square is empty")
-        void shouldReturnFalseWhenEmpty() {
+        @DisplayName("should not recognize an opponent when square is vacant")
+        void shouldNotRecognizeOpponentWhenSquareIsVacant() {
             assertThat(board.isOpponentAt(ChessPieceColor.WHITE, a1)).isFalse();
         }
 
         @Test
-        @DisplayName("should return false when piece is same color")
-        void shouldReturnFalseWhenFriendlyPiece() {
+        @DisplayName("should recognize friendly piece when piece is same color")
+        void shouldRecognizeFriendlyPieceWhenSameColor() {
             board.putPieceAt(a1, whitePawn);
             assertThat(board.isOpponentAt(ChessPieceColor.WHITE, a1)).isFalse();
         }
 
         @Test
-        @DisplayName("should return true when piece is opponent color")
-        void shouldReturnTrueWhenOpponentPiece() {
+        @DisplayName("should recognize opponent piece when piece is opponent color")
+        void shouldRecognizeOpponentPieceWhenOpponentColor() {
             board.putPieceAt(a1, blackQueen);
             assertThat(board.isOpponentAt(ChessPieceColor.WHITE, a1)).isTrue();
         }
@@ -139,15 +141,15 @@ class BoardStateManagerTest {
     class BoardMutations {
 
         @Test
-        @DisplayName("putPieceAt should place piece at given position")
-        void putPieceAtShouldPlacePiece() {
+        @DisplayName("should place piece on board")
+        void shouldPlacePieceOnBoard() {
             board.putPieceAt(a1, whitePawn);
             assertThat(board.getPieceAt(a1)).contains(whitePawn);
         }
 
         @Test
-        @DisplayName("removePieceAt should remove piece at given position")
-        void removePieceAtShouldRemovePiece() {
+        @DisplayName("should remove piece from board")
+        void shouldRemovePieceFromBoard() {
             board.putPieceAt(a1, whitePawn);
             board.removePieceAt(a1);
             assertThat(board.getPieceAt(a1)).isEmpty();
@@ -155,12 +157,13 @@ class BoardStateManagerTest {
     }
 
     @Nested
-    @DisplayName("resetBoard()")
+    @DisplayName("reset the board")
     class ResetBoard {
 
-        @Test
-        @DisplayName("should restore board to initial setup")
-        void shouldRestoreToInitialSetup() {
+        private Chessboard customBoard;
+
+        @BeforeEach
+        void setUpCustomBoard() {
             Map<ChessboardPosition, ChessPiece> initialSetup = Map.of(
                 a1, whitePawn,
                 h8, blackQueen
@@ -168,13 +171,22 @@ class BoardStateManagerTest {
             ChessboardSetup setup = Mockito.mock(ChessboardSetup.class);
             when(setup.generate(ChessboardOrientation.WHITE_BOTTOM)).thenReturn(initialSetup);
 
-            Chessboard customBoard = new BoardStateManager(ChessboardOrientation.WHITE_BOTTOM, setup);
+            customBoard = new BoardStateManager(ChessboardOrientation.WHITE_BOTTOM, setup);
+        }
 
+        @Test
+        @DisplayName("should restore white pawn at a1")
+        void shouldRestoreWhitePawnAtA1() {
             customBoard.removePieceAt(a1);
-
             customBoard.resetBoard();
-
             assertThat(customBoard.getPieceAt(a1)).contains(whitePawn);
+        }
+
+        @Test
+        @DisplayName("should restore black queen at h8")
+        void shouldRestoreBlackQueenAtH8() {
+            customBoard.removePieceAt(h8);
+            customBoard.resetBoard();
             assertThat(customBoard.getPieceAt(h8)).contains(blackQueen);
         }
     }

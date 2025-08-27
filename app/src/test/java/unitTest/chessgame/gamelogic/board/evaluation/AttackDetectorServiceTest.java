@@ -3,7 +3,6 @@ package unittest.chessgame.gamelogic.board.evaluation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,15 +42,14 @@ class AttackDetectorServiceTest {
     class KingPresent {
 
         @Test
-        @DisplayName("should return true if at least one opponent piece can attack the king")
-        void shouldReturnTrueIfOpponentCanAttackKing() {
+        @DisplayName("should detect the attack if at least one opponent piece can attack the king")
+        void shouldDetectAttackIfOpponentCanAttackKing() {
             ChessboardStub board = new ChessboardStub();
             ChessboardPosition kingPos = new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE);
             ChessboardPosition attackerPos = new ChessboardPosition(ChessboardFile.F, ChessboardRank.TWO);
 
-            board.putPieceAt(kingPos, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KING));
-            board.setOccupiedSquares(ChessPieceColor.WHITE, Set.of(kingPos));
-            board.setOccupiedSquares(ChessPieceColor.BLACK, Set.of(attackerPos));
+            board.placePiece(new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KING), kingPos);
+            board.placeOpponent(attackerPos, ChessPieceColor.BLACK);
 
             Mockito.when(moveValidator.validateAndCreate(board, attackerPos, kingPos, orientation))
                 .thenReturn(Optional.of(Mockito.mock(ReversibleMove.class)));
@@ -62,15 +60,14 @@ class AttackDetectorServiceTest {
         }
 
         @Test
-        @DisplayName("should return false if no opponent piece can attack the king")
-        void shouldReturnFalseIfNoOpponentCanAttackKing() {
+        @DisplayName("should not detect the attack if no opponent piece can attack the king")
+        void shouldNotDetectAttackIfNoOpponentCanAttackKing() {
             ChessboardStub board = new ChessboardStub();
             ChessboardPosition kingPos = new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE);
             ChessboardPosition attackerPos = new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO);
             
-            board.putPieceAt(kingPos, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KING));
-            board.setOccupiedSquares(ChessPieceColor.WHITE, Set.of(kingPos));
-            board.setOccupiedSquares(ChessPieceColor.BLACK, Set.of(attackerPos));
+            board.placePiece(new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KING), kingPos);
+            board.placeOpponent(attackerPos, ChessPieceColor.BLACK);
 
             Mockito.when(moveValidator.validateAndCreate(board, attackerPos, kingPos, orientation))
                 .thenReturn(Optional.empty());
@@ -86,11 +83,11 @@ class AttackDetectorServiceTest {
     class NoKingPresent {
 
         @Test
-        @DisplayName("should return false regardless of opponent pieces")
-        void shouldReturnFalseIfNoKingPresent() {
+        @DisplayName("should not detect the attack if no king is present")
+        void shouldNotDetectAttackIfNoKingPresent() {
             ChessboardStub board = new ChessboardStub();
             ChessboardPosition attackerPos = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
-            board.setOccupiedSquares(ChessPieceColor.BLACK, Set.of(attackerPos));
+            board.placeOpponent(attackerPos, ChessPieceColor.BLACK);
 
             Mockito.when(moveValidator.validateAndCreate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Optional.of(Mockito.mock(ReversibleMove.class)));

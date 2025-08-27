@@ -37,11 +37,10 @@ class KingLocatorTest {
     class NoKingPresent {
 
         @Test
-        @DisplayName("should return empty Optional")
-        void shouldReturnEmptyWhenNoKingOfColorPresent() {
+        @DisplayName("should not find king when no king of color present")
+        void shouldNotFindKingWhenNoKingOfColorPresent() {
             ChessboardPosition e4 = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FOUR);
-            board.putPieceAt(e4, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.QUEEN));
-            board.setOccupiedSquares(ChessPieceColor.WHITE, Set.of(e4));
+            board.placePiece(new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.QUEEN), e4);
 
             Optional<ChessboardPosition> result = locator.locateFirstOf(board, ChessPieceColor.WHITE);
 
@@ -57,8 +56,7 @@ class KingLocatorTest {
         @DisplayName("should locate king correctly")
         void shouldLocateKingOfGivenColorWhenPresent() {
             ChessboardPosition e1 = new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE);
-            board.putPieceAt(e1, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KING));
-            board.setOccupiedSquares(ChessPieceColor.WHITE, Set.of(e1));
+            board.placePiece(new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KING), e1);
 
             Optional<ChessboardPosition> result = locator.locateFirstOf(board, ChessPieceColor.WHITE);
 
@@ -75,10 +73,8 @@ class KingLocatorTest {
         void shouldLocateFirstKingWhenMultipleKingsPresent() {
             ChessboardPosition e1 = new ChessboardPosition(ChessboardFile.E, ChessboardRank.ONE);
             ChessboardPosition d4 = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FOUR);
-            board.putPieceAt(e1, new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KING));
-            board.putPieceAt(d4, new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KING));
-            board.setOccupiedSquares(ChessPieceColor.BLACK, Set.of(e1));
-            board.setOccupiedSquares(ChessPieceColor.BLACK, Set.of(d4));
+            board.placePiece(new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KING), e1);
+            board.placePiece(new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KING), d4);
 
             Optional<ChessboardPosition> result = locator.locateFirstOf(board, ChessPieceColor.BLACK);
 
@@ -92,11 +88,10 @@ class KingLocatorTest {
     class OpponentKingOnly {
 
         @Test
-        @DisplayName("should return empty for requested color")
-        void shouldNotLocateOpponentKing() {
+        @DisplayName("should not find king for requested color")
+        void shouldNotFindKingForRequestedColor() {
             ChessboardPosition e8 = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
-            board.putPieceAt(e8, new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KING));
-            board.setOccupiedSquares(ChessPieceColor.BLACK, Set.of(e8));
+            board.placePiece(new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.KING), e8);
 
             Optional<ChessboardPosition> result = locator.locateFirstOf(board, ChessPieceColor.WHITE);
 

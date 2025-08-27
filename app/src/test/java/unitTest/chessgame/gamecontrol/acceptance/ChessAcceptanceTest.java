@@ -95,7 +95,7 @@ public class ChessAcceptanceTest {
 
             closeGame()
                 .verifyClosed()
-                .expectMessage("Exiting...");
+                .expectMessage("Game has ended! Exiting...");
         }
     }
 

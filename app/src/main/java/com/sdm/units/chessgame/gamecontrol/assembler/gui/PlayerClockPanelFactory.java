@@ -6,6 +6,7 @@ import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gui.board.clock.ChessClock;
 import com.sdm.units.chessgame.gui.board.clock.ChessClockPanel;
+import com.sdm.units.chessgame.gui.board.clock.ChessClockView;
 import com.sdm.units.chessgame.gui.board.clock.ClockFormatter;
 import com.sdm.units.chessgame.gui.board.clock.DefaultClockFormatter;
 
@@ -17,13 +18,13 @@ public final class PlayerClockPanelFactory {
         this.controller = controller;
     }
 
-    public EnumMap<ChessPieceColor, ChessClockPanel> createPanels(EnumMap<ChessPieceColor, ChessClock> clocks) {
-        EnumMap<ChessPieceColor, ChessClockPanel> panels = new EnumMap<>(ChessPieceColor.class);
+    public EnumMap<ChessPieceColor, ChessClockView> createPanels(EnumMap<ChessPieceColor, ChessClock> clocks) {
+        EnumMap<ChessPieceColor, ChessClockView> panels = new EnumMap<>(ChessPieceColor.class);
 
         for (ChessPieceColor color : ChessPieceColor.values()) {
             ChessClock clock = clocks.get(color);
 
-            ChessClockPanel panel = new ChessClockPanel(color, clock);
+            ChessClockView panel = new ChessClockPanel(color, clock);
             ClockFormatter formatter = new DefaultClockFormatter();
 
             clock.setListener(new ClockDisplayAdapter(panel, formatter, controller, color));

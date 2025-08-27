@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
@@ -35,30 +34,25 @@ class InteractionContextTest {
         context = new InteractionContext(moveQuery, controller, boardUI);
     }
 
-    @Nested
-    @DisplayName("state management")
-    class StateManagement {
+    @Test
+    @DisplayName("should delegate square clicks to current state")
+    void shouldDelegateSquareClicksToCurrentState() {
+        InteractionState state = mock(InteractionState.class);
+        context.setState(state);
 
-        @Test
-        @DisplayName("should delegate square clicks to current state")
-        void shouldDelegateSquareClicksToCurrentState() {
-            InteractionState state = mock(InteractionState.class);
-            context.setState(state);
+        ChessboardPosition pos = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
+        context.handleSquareClick(pos);
 
-            ChessboardPosition pos = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
-            context.handleSquareClick(pos);
+        verify(state).onSquareClicked(pos);
+    }
 
-            verify(state).onSquareClicked(pos);
-        }
+    @Test
+    @DisplayName("should reset to the initial selection state")
+    void shouldResetToInitialSelectionState() {
+        context.resetToStartState();
 
-        @Test
-        @DisplayName("should reset to WaitingForSelectionState")
-        void shouldResetToWaitingForSelectionState() {
-            context.resetToStartState();
-
-            assertThat(context)
-                .extracting("currentState")
-                .isInstanceOf(WaitingForSelectionState.class);
-        }
+        assertThat(context)
+            .extracting("currentState")
+            .isInstanceOf(WaitingForSelectionState.class);
     }
 }

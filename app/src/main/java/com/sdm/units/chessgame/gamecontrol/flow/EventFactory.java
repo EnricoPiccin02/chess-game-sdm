@@ -17,5 +17,5 @@ public interface EventFactory {
 
     ChessGameEvent playerWon(TurnManager turns, ChessPieceColor winner, GameReason reason);
 
-    ChessGameEvent gameEnded();
+    ChessGameEvent gameEnded(GameReason reason);
 }
