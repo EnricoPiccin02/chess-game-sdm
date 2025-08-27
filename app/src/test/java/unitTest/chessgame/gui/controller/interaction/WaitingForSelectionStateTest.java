@@ -65,7 +65,7 @@ class WaitingForSelectionStateTest {
 
             state.onEnter();
 
-            verify(boardUI).enableSelectablePieces(positions);
+            verify(boardUI).enableSelectableSquares(positions);
         }
     }
 

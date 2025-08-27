@@ -12,27 +12,56 @@ public class ChessboardSquareHandlerSpy implements ChessboardSquareHandler {
     
     private final ChessboardViewSpy spy;
 
+    private HighlightColor appliedHighlight;
+    private boolean cleared = false;
+    private boolean clickHandlerAttached = false;
+    private boolean clickHandlerRemoved = false;
+
+    public ChessboardSquareHandlerSpy() {
+        this.spy = new ChessboardViewSpy();
+    }
+
     public ChessboardSquareHandlerSpy(ChessboardViewSpy spy) {
         this.spy = spy;
     }
 
+    public HighlightColor getAppliedHighlight() {
+        return appliedHighlight;
+    }
+
+    public boolean isCleared() {
+        return cleared;
+    }
+
+    public boolean isClickHandlerAttached() {
+        return clickHandlerAttached;
+    }
+
+    public boolean isClickHandlerRemoved() {
+        return clickHandlerRemoved;
+    }
+
     @Override
     public void highlight(HighlightColor type) {
+        appliedHighlight = type;
         spy.setLastHighlightType(type);
     }
 
     @Override
     public void attachClickHandler(SquareClickHandler clickHandler) {
+        clickHandlerAttached = true;
         spy.setListenerAttached(true);
     }
 
     @Override
     public void removeClickHandler() {
+        clickHandlerRemoved = true;
         spy.setListenerRemoved(true);
     }
 
     @Override
     public void clearHighlight() {
+        cleared = true;
         spy.setLastHighlightType(null);
     }
 

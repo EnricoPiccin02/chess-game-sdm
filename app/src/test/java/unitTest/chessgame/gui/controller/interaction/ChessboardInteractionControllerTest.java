@@ -34,8 +34,8 @@ class ChessboardInteractionControllerTest {
     }
 
     @Nested
-    @DisplayName("when enabling selectable pieces")
-    class EnableSelectablePieces {
+    @DisplayName("when enabling selectable squares")
+    class EnableSelectableSquares {
 
         private final Set<ChessboardPosition> positions = Set.of(
             new ChessboardPosition(ChessboardFile.E, ChessboardRank.TWO),
@@ -43,9 +43,9 @@ class ChessboardInteractionControllerTest {
         );
 
         @Test
-        @DisplayName("should highlight given positions")
-        void shouldHighlightGivenPositions() {
-            controller.enableSelectablePieces(positions);
+        @DisplayName("should highlight given squares")
+        void shouldHighlightGivenSquares() {
+            controller.enableSelectableSquares(positions);
 
             assertThat(viewSpy.getUpdatedSquares()).containsExactlyInAnyOrderElementsOf(positions);
         }
@@ -53,49 +53,15 @@ class ChessboardInteractionControllerTest {
         @Test
         @DisplayName("should mark highlights as selected")
         void shouldMarkHighlightsAsSelected() {
-            controller.enableSelectablePieces(positions);
+            controller.enableSelectableSquares(positions);
 
-            assertThat(viewSpy.getLastHighlightType()).isEqualTo(HighlightColor.SELECTED);
+            assertThat(viewSpy.getLastHighlightType()).isEqualTo(HighlightColor.SELECTABLE);
         }
 
         @Test
-        @DisplayName("should attach listener to positions")
-        void shouldAttachListenerToPositions() {
-            controller.enableSelectablePieces(positions);
-
-            assertThat(viewSpy.isListenerAttached()).isTrue();
-        }
-    }
-
-    @Nested
-    @DisplayName("when enabling legal destinations")
-    class EnableLegalDestinations {
-
-        private final Set<ChessboardPosition> positions = Set.of(
-            new ChessboardPosition(ChessboardFile.A, ChessboardRank.THREE),
-            new ChessboardPosition(ChessboardFile.B, ChessboardRank.FOUR)
-        );
-
-        @Test
-        @DisplayName("should highlight given destinations")
-        void shouldHighlightGivenDestinations() {
-            controller.enableLegalDestinations(positions);
-
-            assertThat(viewSpy.getUpdatedSquares()).containsExactlyInAnyOrderElementsOf(positions);
-        }
-
-        @Test
-        @DisplayName("should mark highlights as legal destinations")
-        void shouldMarkHighlightsAsLegalDestinations() {
-            controller.enableLegalDestinations(positions);
-
-            assertThat(viewSpy.getLastHighlightType()).isEqualTo(HighlightColor.LEGAL_DESTINATION);
-        }
-
-        @Test
-        @DisplayName("should attach listener to destinations")
-        void shouldAttachListenerToDestinations() {
-            controller.enableLegalDestinations(positions);
+        @DisplayName("should attach listener to squares")
+        void shouldAttachListenerToSquares() {
+            controller.enableSelectableSquares(positions);
 
             assertThat(viewSpy.isListenerAttached()).isTrue();
         }
@@ -107,7 +73,7 @@ class ChessboardInteractionControllerTest {
 
         @BeforeEach
         void prepareBoard() {
-            controller.enableSelectablePieces(Set.of(
+            controller.enableSelectableSquares(Set.of(
                 new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE)
             ));
         }

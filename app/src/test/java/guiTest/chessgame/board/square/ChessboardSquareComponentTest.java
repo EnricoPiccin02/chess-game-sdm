@@ -105,15 +105,15 @@ class ChessboardSquareComponentTest {
         @Test
         @DisplayName("should apply a highlight with the given type")
         void shouldApplyHighlightWithGivenType() {
-            squareWithSpy.highlight(HighlightColor.SELECTED);
+            squareWithSpy.highlight(HighlightColor.SELECTABLE);
 
-            assertEquals(HighlightColor.SELECTED, highlightSpy.getLastApplied());
+            assertEquals(HighlightColor.SELECTABLE, highlightSpy.getLastApplied());
         }
 
         @Test
         @DisplayName("should override an existing highlight with a new one")
         void shouldOverrideExistingHighlight() {
-            squareWithSpy.highlight(HighlightColor.SELECTED);
+            squareWithSpy.highlight(HighlightColor.SELECTABLE);
             squareWithSpy.highlight(HighlightColor.HOVER);
 
             assertEquals(HighlightColor.HOVER, highlightSpy.getLastApplied());
@@ -122,7 +122,7 @@ class ChessboardSquareComponentTest {
         @Test
         @DisplayName("should clear the highlight when requested")
         void shouldClearHighlightWhenRequested() {
-            squareWithSpy.highlight(HighlightColor.SELECTED);
+            squareWithSpy.highlight(HighlightColor.SELECTABLE);
             squareWithSpy.clearHighlight();
 
             assertEquals(HighlightColor.NONE, highlightSpy.getLastApplied());

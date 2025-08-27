@@ -2,9 +2,7 @@ package com.sdm.units.chessgame.gui.board.square;
 
 import java.awt.Color;
 
-import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
-import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 
 public enum SquareColor {
     
@@ -22,10 +20,6 @@ public enum SquareColor {
     }
 
     public static SquareColor fromPosition(ChessboardPosition position) {
-        return fromCoordinates(position.file(), position.rank());
-    }
-
-    public static SquareColor fromCoordinates(ChessboardFile file, ChessboardRank rank) {
-        return (file.ordinal() + rank.ordinal()) % 2 != 0 ? DARK : LIGHT;
+        return (position.fileIndex() + position.rankIndex()) % 2 != 0 ? LIGHT : DARK;
     }
 }

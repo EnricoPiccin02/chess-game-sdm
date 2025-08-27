@@ -1,6 +1,7 @@
 package com.sdm.units.chessgame.gui.board.square;
 
 public enum HighlightStyle {
+
     NONE {
         @Override
         public void apply(ChessboardSquareHandler squareHandler, SquareClickHandler handler) {
@@ -11,14 +12,7 @@ public enum HighlightStyle {
     SELECTABLE {
         @Override
         public void apply(ChessboardSquareHandler squareHandler, SquareClickHandler handler) {
-            squareHandler.highlight(HighlightColor.SELECTED);
-            squareHandler.attachClickHandler(handler);
-        }
-    },
-    LEGAL_DESTINATION {
-        @Override
-        public void apply(ChessboardSquareHandler squareHandler, SquareClickHandler handler) {
-            squareHandler.highlight(HighlightColor.LEGAL_DESTINATION);
+            squareHandler.highlight(HighlightColor.SELECTABLE);
             squareHandler.attachClickHandler(handler);
         }
     },

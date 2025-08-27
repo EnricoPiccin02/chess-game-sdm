@@ -67,7 +67,7 @@ class WaitingForDestinationStateTest {
 
             state.onEnter();
 
-            verify(boardUI).enableLegalDestinations(moves);
+            verify(boardUI).enableSelectableSquares(moves);
         }
     }
 
