@@ -20,7 +20,7 @@ class TurnManagerTest {
     }
 
     @Test
-    @DisplayName("should start with WHITE to move")
+    @DisplayName("should start with white to move")
     void shouldStartWithWhite() {
         assertEquals(ChessPieceColor.WHITE, turns.current());
     }
@@ -33,7 +33,7 @@ class TurnManagerTest {
     }
 
     @Test
-    @DisplayName("should reset to WHITE on start()")
+    @DisplayName("should reset to white when restarting")
     void shouldResetToWhite() {
         turns.swap();
         turns.start();

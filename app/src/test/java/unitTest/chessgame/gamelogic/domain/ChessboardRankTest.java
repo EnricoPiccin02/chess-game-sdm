@@ -1,5 +1,13 @@
 package unittest.chessgame.gamelogic.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,20 +18,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 @DisplayName("ChessboardRank")
 class ChessboardRankTest {
 
     @ParameterizedTest(name = "rank {0} has numeric value {1}")
     @MethodSource("rankValueProvider")
-    @DisplayName("should return correct numeric value")
-    void shouldReturnCorrectValue(ChessboardRank rank, int expectedValue) {
+    @DisplayName("should associate correct numeric value")
+    void shouldAssociateCorrectValue(ChessboardRank rank, int expectedValue) {
         assertEquals(expectedValue, rank.value());
     }
 
@@ -41,19 +42,19 @@ class ChessboardRankTest {
     }
 
     @Nested
-    @DisplayName("nextRank()")
-    class NextRankTests {
+    @DisplayName("next rank computation")
+    class NextRankComputation {
 
         @Test
-        @DisplayName("should return empty when direction is null")
-        void shouldReturnEmptyWhenDirectionIsNull() {
+        @DisplayName("should produce no rank when direction is not valid")
+        void shouldProduceNoRankWhenDirectionIsNotValid() {
             assertTrue(ChessboardRank.ONE.nextRank(null).isEmpty());
         }
 
-        @ParameterizedTest(name = "{0} from rank ONE should return rank TWO")
+        @ParameterizedTest(name = "{0} from rank ONE should produce rank TWO")
         @MethodSource("validUpwardDirections")
-        @DisplayName("should return next rank when direction is valid")
-        void shouldReturnValidNextRank(ChessboardDirection direction) {
+        @DisplayName("should produce next rank when direction is valid")
+        void shouldProduceValidNextRank(ChessboardDirection direction) {
             Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
             assertEquals(Optional.of(ChessboardRank.TWO), result);
         }
@@ -66,10 +67,10 @@ class ChessboardRankTest {
             );
         }
 
-        @ParameterizedTest(name = "{0} from rank ONE should return rank ONE")
+        @ParameterizedTest(name = "{0} from rank ONE should produce rank ONE")
         @MethodSource("horizontalDirections")
-        @DisplayName("should return same rank when moving horizontally")
-        void shouldReturnSameRankWhenNoVerticalChange(ChessboardDirection direction) {
+        @DisplayName("should produce same rank when moving horizontally")
+        void shouldProduceSameRankWhenNoVerticalChange(ChessboardDirection direction) {
             Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
             assertEquals(Optional.of(ChessboardRank.ONE), result);
         }
@@ -81,10 +82,10 @@ class ChessboardRankTest {
             );
         }
 
-        @ParameterizedTest(name = "{0} from rank ONE should return empty")
+        @ParameterizedTest(name = "{0} from rank ONE should produce no rank")
         @MethodSource("invalidDownwardDirections")
-        @DisplayName("should return empty when moving off board")
-        void shouldReturnEmptyForOutOfBoundsDirections(ChessboardDirection direction) {
+        @DisplayName("should produce no rank when moving off board")
+        void shouldProduceNoRankForOutOfBoundsDirections(ChessboardDirection direction) {
             Optional<ChessboardRank> result = ChessboardRank.ONE.nextRank(direction);
             assertTrue(result.isEmpty());
         }
@@ -99,12 +100,12 @@ class ChessboardRankTest {
     }
 
     @Nested
-    @DisplayName("distance()")
-    class DistanceTests {
+    @DisplayName("distance between ranks")
+    class DistanceBetweenRanks {
 
         @Test
-        @DisplayName("should return empty when argument is null")
-        void shouldReturnEmptyForNullArgument() {
+        @DisplayName("should compute no distance when comparing rank is not valid")
+        void shouldComputeNoDistanceForInvalidRank() {
             assertTrue(ChessboardRank.THREE.distance(null).isEmpty());
         }
 
@@ -129,12 +130,12 @@ class ChessboardRankTest {
     }
 
     @Nested
-    @DisplayName("valueOf(Integer)")
-    class ValueOfIntegerTests {
+    @DisplayName("number to rank mapping")
+    class NumberToRankMapping {
 
-        @ParameterizedTest(name = "should parse integer {0} into rank {1}")
+        @ParameterizedTest(name = "should map integer {0} into rank {1}")
         @MethodSource("validRankNumberProvider")
-        @DisplayName("should map number to correct ChessboardRank")
+        @DisplayName("should map number to correct rank")
         void shouldMapNumberToCorrectRank(int value, ChessboardRank expectedRank) {
             Optional<ChessboardRank> result = ChessboardRank.valueOf(value);
             assertTrue(result.isPresent());
@@ -154,10 +155,10 @@ class ChessboardRankTest {
             );
         }
 
-        @ParameterizedTest(name = "should return empty for invalid rank {0}")
+        @ParameterizedTest(name = "should not map to any rank for invalid rank {0}")
         @MethodSource("invalidRankNumberProvider")
-        @DisplayName("should return empty for invalid numbers")
-        void shouldReturnEmptyForInvalidRankNumber(int invalidValue) {
+        @DisplayName("should not map to any rank for invalid numbers")
+        void shouldNotMapToAnyRankForInvalidRankNumber(int invalidValue) {
             Optional<ChessboardRank> result = ChessboardRank.valueOf(invalidValue);
             assertTrue(result.isEmpty());
         }

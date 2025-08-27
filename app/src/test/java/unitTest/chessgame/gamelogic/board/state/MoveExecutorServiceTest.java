@@ -36,22 +36,38 @@ class MoveExecutorServiceTest {
         board = new ChessboardFake();
     }
 
-
     @Nested
     @DisplayName("when executing a move")
     class ExecuteMove {
 
         @Test
-        @DisplayName("should execute move on board, record it, and return correct MoveResult")
-        void shouldExecuteMoveRecordItAndReturnResult() {
+        @DisplayName("should execute the move on the board")
+        void shouldExecuteMoveOnBoard() {
+            ReversibleMoveStub move = new ReversibleMoveStub(CaptureResult.none(), null);
+
+            executor.executeMove(board, move);
+
+            assertThat(move.wasExecuted()).isTrue();
+        }
+
+        @Test
+        @DisplayName("should record the move in history")
+        void shouldRecordMoveInHistory() {
+            ReversibleMoveStub move = new ReversibleMoveStub(CaptureResult.none(), null);
+
+            executor.executeMove(board, move);
+
+            verify(historyMock).pushMove(move);
+        }
+
+        @Test
+        @DisplayName("should provide the move result after execution")
+        void shouldProvideMoveResult() {
             ReversibleMoveStub move = new ReversibleMoveStub(CaptureResult.none(), null);
 
             MoveResult result = executor.executeMove(board, move);
 
-            assertThat(move.wasExecuted()).isTrue();
-            verify(historyMock).pushMove(move);
-            assertThat(result.move()).isEqualTo(move);
-            assertThat(result.captureResult()).isEqualTo(CaptureResult.none());
+            assertThat(result).isEqualTo(MoveResult.of(move, CaptureResult.none()));
         }
     }
 
@@ -60,26 +76,45 @@ class MoveExecutorServiceTest {
     class UndoMove {
 
         @Test
-        @DisplayName("should return empty when no moves to undo")
-        void shouldReturnEmptyWhenNoMovesInHistory() {
+        @DisplayName("should not extract any move when there are no moves to undo")
+        void shouldNotExtractAnyMoveWhenNoMovesExist() {
             when(historyMock.popMove()).thenReturn(Optional.empty());
 
             Optional<MoveResult> result = executor.undoLastMove(board);
 
             assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should retrieve last move from history when undoing")
+        void shouldRetrieveLastMoveFromHistory() {
+            ReversibleMoveStub move = new ReversibleMoveStub(CaptureResult.none(), null);
+            when(historyMock.popMove()).thenReturn(Optional.of(move));
+
+            executor.undoLastMove(board);
+
             verify(historyMock).popMove();
         }
 
         @Test
-        @DisplayName("should undo last move and return correct MoveResult")
-        void shouldUndoLastMoveAndReturnResult() {
+        @DisplayName("should undo the last move on the board")
+        void shouldUndoLastMoveOnBoard() {
+            ReversibleMoveStub move = new ReversibleMoveStub(CaptureResult.none(), null);
+            when(historyMock.popMove()).thenReturn(Optional.of(move));
+
+            executor.undoLastMove(board);
+
+            assertThat(move.wasUndone()).isTrue();
+        }
+
+        @Test
+        @DisplayName("should provide the move result after undoing")
+        void shouldProvideMoveResultAfterUndoing() {
             ReversibleMoveStub move = new ReversibleMoveStub(CaptureResult.none(), null);
             when(historyMock.popMove()).thenReturn(Optional.of(move));
 
             Optional<MoveResult> result = executor.undoLastMove(board);
 
-            assertThat(move.wasUndone()).isTrue();
-            verify(historyMock).popMove();
             assertThat(result).contains(MoveResult.of(move, CaptureResult.none()));
         }
     }

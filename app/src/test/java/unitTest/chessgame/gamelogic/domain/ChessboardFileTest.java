@@ -1,5 +1,13 @@
 package unittest.chessgame.gamelogic.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,20 +18,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 @DisplayName("ChessboardFile")
 public class ChessboardFileTest {
 
     @ParameterizedTest(name = "file {0} has character value \''{1}\''")
     @MethodSource("fileValueProvider")
-    @DisplayName("should return correct character value")
-    void shouldReturnCorrectValue(ChessboardFile file, char expectedChar) {
+    @DisplayName("should associate correct character value")
+    void shouldAssociateCorrectValue(ChessboardFile file, char expectedChar) {
         assertEquals(expectedChar, file.value());
     }
 
@@ -41,19 +42,19 @@ public class ChessboardFileTest {
     }
 
     @Nested
-    @DisplayName("nextFile()")
-    class NextFileTests {
+    @DisplayName("next file computation")
+    class NextFileComputation {
 
         @Test
-        @DisplayName("should return empty when direction is null")
-        void shouldReturnEmptyWhenDirectionIsNull() {
+        @DisplayName("should produce no file when direction is not valid")
+        void shouldReturnNoFileWhenDirectionIsNotValid() {
             assertTrue(ChessboardFile.A.nextFile(null).isEmpty());
         }
 
-        @ParameterizedTest(name = "{0} from file A should return file B")
+        @ParameterizedTest(name = "{0} from file A should produce file B")
         @MethodSource("validForwardDirections")
-        @DisplayName("should return next file when direction is valid")
-        void shouldReturnValidNextFile(ChessboardDirection direction) {
+        @DisplayName("should produce next file when direction is valid")
+        void shouldProduceValidNextFile(ChessboardDirection direction) {
             Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
             assertEquals(Optional.of(ChessboardFile.B), result);
         }
@@ -66,10 +67,10 @@ public class ChessboardFileTest {
             );
         }
 
-        @ParameterizedTest(name = "{0} from file A should return file A")
+        @ParameterizedTest(name = "{0} from file A should produce file A")
         @MethodSource("sameFileDirections")
-        @DisplayName("should return same file when moving vertically")
-        void shouldReturnSameFileWhenNoHorizontalChange(ChessboardDirection direction) {
+        @DisplayName("should produce same file when moving vertically")
+        void shouldProduceSameFileWhenNoHorizontalChange(ChessboardDirection direction) {
             Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
             assertEquals(Optional.of(ChessboardFile.A), result);
         }
@@ -81,10 +82,10 @@ public class ChessboardFileTest {
             );
         }
 
-        @ParameterizedTest(name = "{0} from file A should return empty")
+        @ParameterizedTest(name = "{0} from file A should produce no file")
         @MethodSource("invalidBackwardDirections")
-        @DisplayName("should return empty when moving off board")
-        void shouldReturnEmptyForOutOfBoundsDirections(ChessboardDirection direction) {
+        @DisplayName("should produce no file when moving off board")
+        void shouldProduceNoFileForOutOfBoundsDirections(ChessboardDirection direction) {
             Optional<ChessboardFile> result = ChessboardFile.A.nextFile(direction);
             assertTrue(result.isEmpty());
         }
@@ -99,12 +100,12 @@ public class ChessboardFileTest {
     }
 
     @Nested
-    @DisplayName("distance()")
-    class DistanceTests {
+    @DisplayName("distance between files")
+    class DistanceBetweenFiles {
 
         @Test
-        @DisplayName("should return empty when argument is null")
-        void shouldReturnEmptyForNullArgument() {
+        @DisplayName("should compute no distance when comparing file is not valid")
+        void shouldComputeNoDistanceForInvalidFile() {
             assertTrue(ChessboardFile.D.distance(null).isEmpty());
         }
 
@@ -129,12 +130,12 @@ public class ChessboardFileTest {
     }
 
     @Nested
-    @DisplayName("valueOf(Character)")
-    class ValueOfCharacterTests {
+    @DisplayName("character to file mapping")
+    class CharacterToFileMapping {
 
-        @ParameterizedTest(name = "should parse char \''{0}\'' into file {1}")
+        @ParameterizedTest(name = "should map character \''{0}\'' into file {1}")
         @MethodSource("validCharProvider")
-        @DisplayName("should map character to correct ChessboardFile")
+        @DisplayName("should map character to correct file")
         void shouldMapCharacterToCorrectFile(char inputChar, ChessboardFile expectedFile) {
             Optional<ChessboardFile> result = ChessboardFile.valueOf(inputChar);
             assertTrue(result.isPresent());
@@ -154,10 +155,10 @@ public class ChessboardFileTest {
             );
         }
 
-        @ParameterizedTest(name = "should return empty for invalid character \''{0}\''")
+        @ParameterizedTest(name = "should not map to any file for invalid character \''{0}\''")
         @MethodSource("invalidCharProvider")
-        @DisplayName("should return empty for invalid characters")
-        void shouldReturnEmptyForInvalidChar(char inputChar) {
+        @DisplayName("should not map to any file for invalid characters")
+        void shouldNotMapToAnyFileForInvalidCharacter(char inputChar) {
             Optional<ChessboardFile> result = ChessboardFile.valueOf(inputChar);
             assertTrue(result.isEmpty());
         }

@@ -1,100 +1,94 @@
 package unittest.chessgame.gamelogic.movement;
 
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.D;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.E;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.F;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.EIGHT;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.FIVE;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.FOUR;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.SEVEN;
+import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.SIX;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Set;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.Bishop;
 import com.sdm.units.chessgame.gamelogic.pieces.Queen;
 import com.sdm.units.chessgame.gamelogic.pieces.Rook;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardRank.*;
-import static com.sdm.units.chessgame.gamelogic.domain.ChessboardFile.*;
+import unittest.chessgame.gamelogic.testdoubles.ChessboardStub;
 
 @DisplayName("Sliding Movement")
 class SlidingMovementStrategyTest {
 
-    private Chessboard board;
+    private ChessboardStub board;
     private ChessboardPosition start;
 
     @BeforeEach
     void setUp() {
-        board = Mockito.mock(Chessboard.class);
+        board = new ChessboardStub();
         start = new ChessboardPosition(D, FOUR);
-
-        // By default, all positions are vacant (no piece)
-        when(board.getPieceAt(any())).thenReturn(Optional.empty());
-        when(board.isUnoccupiedSquare(any())).thenReturn(true);
-        when(board.isOpponentAt(any(), any())).thenReturn(false);
     }
 
-    @Nested
-    @DisplayName("getLegalMoves(board, position)")
-    class GetLegalMoves {
+    @Test
+    @DisplayName("should slide in direction until blocked")
+    void shouldSlideUntilBlocked() {
+        Queen queen = new Queen(ChessPieceColor.WHITE);
+        board.placePiece(queen, start);
 
-        @Test
-        @DisplayName("should slide in direction until blocked")
-        void shouldSlideUntilBlocked() {
-            Set<ChessboardPosition> subsetOfLandingPositions = Set.of(
-                new ChessboardPosition(D, FIVE),
-                new ChessboardPosition(D, SIX),
-                new ChessboardPosition(D, SEVEN),
-                new ChessboardPosition(D, EIGHT),
-                new ChessboardPosition(E, FOUR),
-                new ChessboardPosition(F, FOUR)
-            );
+        Set<ChessboardPosition> landingPositions = Set.of(
+            new ChessboardPosition(D, FIVE),
+            new ChessboardPosition(D, SIX),
+            new ChessboardPosition(D, SEVEN),
+            new ChessboardPosition(D, EIGHT),
+            new ChessboardPosition(E, FOUR),
+            new ChessboardPosition(F, FOUR)
+        );
 
-            ChessboardMockUtils.mockVacantPositions(board, subsetOfLandingPositions);
+        board.vacant(landingPositions.toArray(ChessboardPosition[]::new));
 
-            Queen queen = new Queen(ChessPieceColor.WHITE);
-            when(board.getPieceAt(start)).thenReturn(Optional.of(queen));
+        Set<ChessboardPosition> moves = queen.getLegalDestinations(board, start);
 
-            Set<ChessboardPosition> legalDestinations = queen.getLegalDestinations(board, start);
+        assertThat(moves).containsExactlyInAnyOrderElementsOf(landingPositions);
+    }
 
-            assertThat(legalDestinations).containsAll(subsetOfLandingPositions);
-        }
+    @Test
+    @DisplayName("should stop sliding when encountering friendly piece")
+    void shouldStopAtFriendlyPiece() {
+        Rook rook = new Rook(ChessPieceColor.WHITE);
+        board.placePiece(rook, start);
 
-        @Test
-        @DisplayName("should stop sliding when encountering friendly piece")
-        void shouldStopAtFriendlyPiece() {            
-            Rook rook = new Rook(ChessPieceColor.WHITE);
-            when(board.getPieceAt(start)).thenReturn(Optional.of(rook));
-            
-            ChessboardPosition beforeBlocker = new ChessboardPosition(D, FIVE);
-            ChessboardPosition blocker = new ChessboardPosition(D, SIX);
-            ChessboardMockUtils.mockFriendlyPieceAt(board, blocker, ChessPieceColor.WHITE);
+        ChessboardPosition beforeBlocker = new ChessboardPosition(D, FIVE);
+        ChessboardPosition blocker = new ChessboardPosition(D, SIX);
 
-            Set<ChessboardPosition> legalDestinations = rook.getLegalDestinations(board, start);
+        board.vacant(beforeBlocker);
+        board.placeFriendly(blocker, ChessPieceColor.WHITE);
 
-            assertThat(legalDestinations).doesNotContain(blocker);
-            assertThat(legalDestinations).contains(beforeBlocker);
-        }
+        Set<ChessboardPosition> moves = rook.getLegalDestinations(board, start);
 
-        @Test
-        @DisplayName("should allow capturing opponent and stop")
-        void shouldCaptureOpponentAndStop() {
-            Bishop bishop = new Bishop(ChessPieceColor.WHITE);
-            when(board.getPieceAt(start)).thenReturn(Optional.of(bishop));
+        assertThat(moves).containsExactly(beforeBlocker);
+    }
 
-            ChessboardPosition enemy = new ChessboardPosition(F, SIX);
-            ChessboardPosition afterEnemy = new ChessboardPosition(G, SEVEN);
-            ChessboardMockUtils.mockOpponentPieceAt(board, enemy, ChessPieceColor.WHITE, ChessPieceColor.BLACK);
-            
-            Set<ChessboardPosition> legalDestinations = bishop.getLegalDestinations(board, start);
+    @Test
+    @DisplayName("should allow capturing opponent and stop")
+    void shouldCaptureOpponentAndStop() {
+        Bishop bishop = new Bishop(ChessPieceColor.WHITE);
+        board.placePiece(bishop, start);
 
-            assertThat(legalDestinations).contains(enemy);
-            assertThat(legalDestinations).doesNotContain(afterEnemy);
-        }
+        ChessboardPosition mid = new ChessboardPosition(E, FIVE);
+        ChessboardPosition enemy = new ChessboardPosition(F, SIX);
+
+        board.vacant(mid);
+        board.placeOpponent(enemy, ChessPieceColor.BLACK);
+
+        Set<ChessboardPosition> moves = bishop.getLegalDestinations(board, start);
+
+        assertThat(moves).containsExactlyInAnyOrder(mid, enemy);
     }
 }

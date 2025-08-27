@@ -10,25 +10,26 @@ import javax.swing.JPanel;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gui.controller.interaction.ChessboardSquareMouseAdapter;
-import com.sdm.units.chessgame.gui.pieces.ChessPieceViewRegistry;
+import com.sdm.units.chessgame.gui.pieces.PieceViewFactory;
 
-public class ChessboardSquareComponent extends JPanel implements SquareRenderer {
+public class ChessboardSquareComponent extends JPanel implements ChessboardSquareHandler {
 
     private final ChessboardPosition position;
-    private final ChessPieceViewRegistry viewRegistry;
+    private final PieceViewFactory viewFactory;
     private final HighlightRenderer highlightRenderer;
     private JComponent pieceComponent;
     private MouseListener clickListener;
 
-    public ChessboardSquareComponent(ChessboardPosition position, ChessPieceViewRegistry viewRegistry, HighlightRenderer highlightRenderer) {
+    public ChessboardSquareComponent(ChessboardPosition position, PieceViewFactory viewFactory, HighlightRenderer highlightRenderer) {
         super(new BorderLayout());
         this.position = position;
-        this.viewRegistry = viewRegistry;
+        this.viewFactory = viewFactory;
         this.highlightRenderer = highlightRenderer;
 
         setBackground(SquareColor.fromPosition(position).getColor());
     }
 
+    @Override
     public ChessboardPosition getPosition() {
         return position;
     }
@@ -36,7 +37,7 @@ public class ChessboardSquareComponent extends JPanel implements SquareRenderer 
     @Override
     public void setPiece(Optional<ChessPiece> newPiece) {
         removeAll();
-        newPiece.map(viewRegistry::createComponentFor).ifPresent(c -> {
+        newPiece.map(viewFactory::createComponentFor).ifPresent(c -> {
             pieceComponent = c;
             add(pieceComponent, BorderLayout.CENTER);
         });

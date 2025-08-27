@@ -64,77 +64,74 @@ class CastlingPatternTest {
     }
 
     @Nested
-    @DisplayName("findCandidates")
+    @DisplayName("when finding castling candidates")
     class FindCandidates {
 
         @Test
-        @DisplayName("should return empty when king and rook are missing")
-        void shouldReturnEmptyWhenKingAndRookMissing() {
+        @DisplayName("should not find any candidate when king and rook are missing")
+        void shouldNotFindAnyCandidateWhenKingAndRookMissing() {
             List<CastlingCandidate> candidates = pattern.findCandidates(board, whiteKingFrom, ChessboardOrientation.WHITE_BOTTOM);
             assertThat(candidates).isEmpty();
         }
 
         @Test
-        @DisplayName("should return empty when king is missing")
-        void shouldReturnEmptyWhenKingMissing() {
+        @DisplayName("should not find any candidate when king is missing")
+        void shouldNotFindAnyCandidateWhenKingMissing() {
             board.putPieceAt(whiteRookFromKingside, whiteRookQueenside);
             List<CastlingCandidate> candidates = pattern.findCandidates(board, whiteKingFrom, ChessboardOrientation.WHITE_BOTTOM);
             assertThat(candidates).isEmpty();
         }
         
         @Test
-        @DisplayName("should return empty when rook is missing")
-        void shouldReturnEmptyWhenRookMissing() {
+        @DisplayName("should not find any candidate when rook is missing")
+        void shouldNotFindAnyCandidateWhenRookIsMissing() {
             board.putPieceAt(whiteKingFrom, whiteKing);
             List<CastlingCandidate> candidates = pattern.findCandidates(board, whiteKingFrom, ChessboardOrientation.WHITE_BOTTOM);
             assertThat(candidates).isEmpty();
         }
 
         @Test
-        @DisplayName("should return kingside castling candidate")
-        void shouldReturnKingsideCandidate() {
+        @DisplayName("should find kingside castling candidate")
+        void shouldFindKingsideCandidate() {
             board.putPieceAt(whiteKingFrom, whiteKing);
             board.putPieceAt(whiteRookFromKingside, whiteRookKingside);
 
             List<CastlingCandidate> candidates = pattern.findCandidates(board, whiteKingFrom, ChessboardOrientation.WHITE_BOTTOM);
 
-            assertThat(candidates).hasSize(1);
             assertThat(candidates).containsExactly(whiteCastlingKingside);
         }
 
         @Test
-        @DisplayName("should return queenside castling candidate")
-        void shouldReturnQueensideCandidate() {
+        @DisplayName("should find queenside castling candidate")
+        void shouldFindQueensideCandidate() {
             board.putPieceAt(whiteKingFrom, whiteKing);
             board.putPieceAt(whiteRookFromQueenside, whiteRookQueenside);
 
             List<CastlingCandidate> candidates = pattern.findCandidates(board, whiteKingFrom, ChessboardOrientation.WHITE_BOTTOM);
 
-            assertThat(candidates).hasSize(1);
             assertThat(candidates).containsExactly(whiteCastlingQeenside);
         }
 
         @Test
-        @DisplayName("should return both candidates when king and rook present in both sides")
-        void shouldReturnBothCandidatesWhenKingAndRookPresentBothSides() {
+        @DisplayName("should find both candidates when king and rook present in both sides")
+        void shouldFindBothCandidatesWhenKingAndRookPresentBothSides() {
             board.putPieceAt(whiteKingFrom, whiteKing);
             board.putPieceAt(whiteRookFromKingside, whiteRookKingside);
             board.putPieceAt(whiteRookFromQueenside, whiteRookQueenside);
     
             List<CastlingCandidate> candidates = pattern.findCandidates(board, whiteKingFrom, ChessboardOrientation.WHITE_BOTTOM);
     
-            assertThat(candidates).hasSize(2);
             assertThat(candidates).containsExactlyInAnyOrder(whiteCastlingKingside, whiteCastlingQeenside);
         }
     }
 
     @Nested
-    @DisplayName("buildCandidate")
+    @DisplayName("when building castling candidates")
     class BuildCandidate {
 
         @Test
-        @DisplayName("should return empty when no matching candidate")
-        void shouldReturnEmptyWhenNoMatchingCandidate() {
+        @DisplayName("should not build any candidate when there is no match")
+        void shouldNotBuildAnyCandidateWhenThereIsNoMatch() {
             board.putPieceAt(whiteKingFrom, whiteKing);
             board.putPieceAt(whiteRookFromQueenside, whiteRookQueenside);
 
@@ -145,8 +142,8 @@ class CastlingPatternTest {
         }
 
         @Test
-        @DisplayName("should return kingside candidate when kingTo matches")
-        void shouldReturnKingsideCandidateWhenKingToMatches() {
+        @DisplayName("should build correct kingside candidate when king landing position matches")
+        void shouldBuildKingsideCandidateWhenKingLandingPositionMatches() {
             board.putPieceAt(whiteKingFrom, whiteKing);
             board.putPieceAt(whiteRookFromKingside, whiteRookKingside);
 
@@ -158,8 +155,8 @@ class CastlingPatternTest {
         }
 
         @Test
-        @DisplayName("should return queenside candidate when kingTo matches")
-        void shouldReturnQueensideCandidateWhenKingToMatches() {
+        @DisplayName("should build correct queenside candidate when king landing position matches")
+        void shouldBuildQueensideCandidateWhenKingLandingPositionMatches() {
             board.putPieceAt(whiteKingFrom, whiteKing);
             board.putPieceAt(whiteRookFromQueenside, whiteRookQueenside);
 
@@ -172,20 +169,20 @@ class CastlingPatternTest {
     }
 
     @Nested
-    @DisplayName("kingPathSquares")
+    @DisplayName("king path squares for castling")
     class KingPathSquares {
 
         @Test
-        @DisplayName("should return empty list for invalid rook position")
-        void shouldReturnEmptyForInvalidRookPosition() {
+        @DisplayName("should supply no path for invalid rook position")
+        void shouldSupplyNoPathForInvalidRookPosition() {
             ChessboardPosition invalidRookPos = new ChessboardPosition(ChessboardFile.B, ChessboardRank.ONE);
             List<ChessboardPosition> path = pattern.kingPathSquares(whiteKingFrom, invalidRookPos);
             assertThat(path).isEmpty();
         }
 
         @Test
-        @DisplayName("should return correct path for kingside castling")
-        void shouldReturnCorrectPathForKingsideCastling() {
+        @DisplayName("should supply correct path for kingside castling")
+        void shouldSupplyCorrectPathForKingsideCastling() {
             List<ChessboardPosition> path = pattern.kingPathSquares(whiteKingFrom, whiteRookFromKingside);
             assertThat(path).isEqualTo(List.of(
                 new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE),
@@ -194,8 +191,8 @@ class CastlingPatternTest {
         }
 
         @Test
-        @DisplayName("should return correct path for queenside castling")
-        void shouldReturnCorrectPathForQueensideCastling() {
+        @DisplayName("should supply correct path for queenside castling")
+        void shouldSupplyCorrectPathForQueensideCastling() {
             List<ChessboardPosition> path = pattern.kingPathSquares(whiteKingFrom, whiteRookFromQueenside);
             assertThat(path).isEqualTo(List.of(
                 new ChessboardPosition(ChessboardFile.D, ChessboardRank.ONE),

@@ -1,7 +1,6 @@
 package unittest.chessgame.gamelogic.move.special.promotion;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,12 +38,12 @@ class PromotionPatternTest {
     }
 
     @Nested
-    @DisplayName("findCandidates")
+    @DisplayName("when finding promotion candidates")
     class FindCandidates {
 
         @Test
-        @DisplayName("should find promotion candidate when pawn has legal moveTo promotion rank")
-        void shouldFindPromotionCandidateWhenPawnHasLegalMoveToPromotionRank() {
+        @DisplayName("should detect promotion move when pawn advances into last rank")
+        void shouldDetectPromotionMoveWhenPawnAdvancesIntoLastRank() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
             ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
@@ -53,22 +52,73 @@ class PromotionPatternTest {
 
             List<PromotionCandidate> candidates = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
 
-            assertEquals(1, candidates.size());
-            PromotionCandidate candidate = candidates.get(0);
-            assertEquals(from, candidate.from());
-            assertEquals(to, candidate.to());
-            assertEquals(pawnStub, candidate.movingPawn());
-            assertTrue(candidate.capturedPiece().isEmpty());
+            assertThat(candidates).hasSize(1);
         }
 
         @Test
-        @DisplayName("should return empty when no piece at given position")
-        void shouldReturnEmptyWhenNoPieceAtGivenPosition() {
+        @DisplayName("should record source square of promotion candidate")
+        void shouldRecordSourceSquareOfPromotionCandidate() {
+            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
+            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
+
+            board.putPieceAt(from, pawnStub);
+
+            PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
+
+            assertThat(candidate.from()).isEqualTo(from);
+        }
+
+        @Test
+        @DisplayName("should record target square of promotion candidate")
+        void shouldRecordTargetSquareOfPromotionCandidate() {
+            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
+            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
+
+            board.putPieceAt(from, pawnStub);
+
+            PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
+
+            assertThat(candidate.to()).isEqualTo(to);
+        }
+
+        @Test
+        @DisplayName("should record moving pawn in promotion candidate")
+        void shouldRecordMovingPawnInPromotionCandidate() {
+            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
+            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
+
+            board.putPieceAt(from, pawnStub);
+
+            PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
+
+            assertThat(candidate.movingPawn()).isEqualTo(pawnStub);
+        }
+
+        @Test
+        @DisplayName("should not include captured piece when promotion is a quiet move")
+        void shouldNotIncludeCapturedPieceWhenPromotionIsQuietMove() {
+            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
+            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
+
+            board.putPieceAt(from, pawnStub);
+
+            PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
+
+            assertThat(candidate.capturedPiece()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should not find any candidates when no piece at given position")
+        void shouldNotFindAnyCandidatesWhenNoPieceAtGivenPosition() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
 
             List<PromotionCandidate> candidates = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
 
-            assertTrue(candidates.isEmpty());
+            assertThat(candidates).isEmpty();
         }
 
         @Test
@@ -82,21 +132,19 @@ class PromotionPatternTest {
             board.putPieceAt(from, pawnStub);
             board.putPieceAt(to, capturedDummy);
 
-            List<PromotionCandidate> candidates = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
+            PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
 
-            assertEquals(1, candidates.size());
-            assertTrue(candidates.get(0).capturedPiece().isPresent());
-            assertEquals(capturedDummy, candidates.get(0).capturedPiece().get());
+            assertThat(candidate.capturedPiece()).contains(capturedDummy);
         }
     }
 
     @Nested
-    @DisplayName("buildCandidate")
+    @DisplayName("when building promotion candidates")
     class BuildCandidate {
 
         @Test
-        @DisplayName("should build promotion candidate when piece exists at from")
-        void shouldBuildPromotionCandidateWhenPieceExistsAtFrom() {
+        @DisplayName("should build promotion candidate when there is a piece that can be promoted")
+        void shouldBuildPromotionCandidateWhenPromotingPieceExists() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
             ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
@@ -105,22 +153,18 @@ class PromotionPatternTest {
 
             Optional<PromotionCandidate> result = promotionPattern.buildCandidate(board, from, to);
 
-            assertTrue(result.isPresent());
-            PromotionCandidate candidate = result.get();
-            assertEquals(from, candidate.from());
-            assertEquals(to, candidate.to());
-            assertEquals(pawnStub, candidate.movingPawn());
+            assertThat(result).isPresent();
         }
 
         @Test
-        @DisplayName("shouldReturnEmptyWhenNoPieceAtFromPosition")
-        void shouldReturnEmptyWhenNoPieceAtFromPosition() {
+        @DisplayName("should not build any candidate when no piece at correct position")
+        void shouldNotBuildAnyCandidateWhenNoPieceAtCorrectPosition() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
 
             Optional<PromotionCandidate> result = promotionPattern.buildCandidate(board, from, to);
 
-            assertTrue(result.isEmpty());
+            assertThat(result).isEmpty();
         }
     }
 }

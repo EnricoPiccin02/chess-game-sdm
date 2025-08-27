@@ -43,18 +43,30 @@ class WaitingForSelectionStateTest {
         state = new WaitingForSelectionState(moveQuery, controller, transition, boardUI);
     }
 
-    @Test
-    @DisplayName("should enable selectable pieces on enter")
-    void shouldEnableSelectablePiecesOnEnter() {
-        Set<ChessboardPosition> positions = Set.of(
-            new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE)
-        );
-        when(moveQuery.selectable()).thenReturn(positions);
+    @Nested
+    @DisplayName("on enter")
+    class OnEnter {
 
-        state.onEnter();
+        @Test
+        @DisplayName("should remove previous highlights")
+        void shouldRemovePreviousHighlights() {
+            state.onEnter();
 
-        verify(boardUI).clear();
-        verify(boardUI).enableSelectablePieces(positions);
+            verify(boardUI).clear();
+        }
+
+        @Test
+        @DisplayName("should highlight selectable pieces")
+        void shouldHighlightSelectablePieces() {
+            Set<ChessboardPosition> positions = Set.of(
+                new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE)
+            );
+            when(moveQuery.selectable()).thenReturn(positions);
+
+            state.onEnter();
+
+            verify(boardUI).enableSelectablePieces(positions);
+        }
     }
 
     @Nested
@@ -62,13 +74,11 @@ class WaitingForSelectionStateTest {
     class OnSquareClicked {
 
         @Test
-        @DisplayName("should transition to WaitingForDestinationState if legal moves exist")
-        void shouldTransitionIfLegalMovesExist() {
+        @DisplayName("should move to destination selection when piece has moves")
+        void shouldMoveToDestinationSelectionWhenPieceHasMoves() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
             when(moveQuery.legalDestinations(from))
-                .thenReturn(Set.of(
-                    new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO)
-                ));
+                .thenReturn(Set.of(new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO)));
 
             state.onSquareClicked(from);
 
@@ -76,8 +86,8 @@ class WaitingForSelectionStateTest {
         }
 
         @Test
-        @DisplayName("should stay in current state if no legal moves")
-        void shouldStayIfNoLegalMoves() {
+        @DisplayName("should remain in selection when piece has no moves")
+        void shouldRemainInSelectionWhenPieceHasNoMoves() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
             when(moveQuery.legalDestinations(from)).thenReturn(Set.of());
 

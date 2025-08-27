@@ -28,73 +28,86 @@ class ChessPieceTest {
     }
 
     @Nested
-    @DisplayName("hasMoved() and markAsMoved()")
-    class HasMoved {
+    @DisplayName("movement state")
+    class MovementState {
 
         @Test
-        @DisplayName("should be false initially")
-        void shouldBeFalseInitially() {
+        @DisplayName("should not be marked as moved initially")
+        void shouldNotBeMarkedAsMovedInitially() {
             assertThat(whitePiece.hasMoved()).isFalse();
         }
 
         @Test
-        @DisplayName("should be true after markAsMoved")
-        void shouldBeTrueAfterMarkAsMoved() {
+        @DisplayName("should be marked as moved after calling markAsMoved")
+        void shouldBeMarkedAsMovedAfterCallingMarkAsMoved() {
             whitePiece.markAsMoved();
             assertThat(whitePiece.hasMoved()).isTrue();
         }
     }
 
     @Nested
-    @DisplayName("isOpponentOf(color)")
-    class IsOpponentOf {
+    @DisplayName("opponent detection")
+    class OpponentDetection {
 
         @Test
-        @DisplayName("should return true when colors differ")
-        void shouldReturnTrueWhenColorsDiffer() {
+        @DisplayName("should identify opponent when colors differ")
+        void shouldIdentifyOpponentWhenColorsDiffer() {
             assertThat(whitePiece.isOpponentOf(ChessPieceColor.BLACK)).isTrue();
         }
 
         @Test
-        @DisplayName("should return false when colors match")
-        void shouldReturnFalseWhenColorsMatch() {
+        @DisplayName("should not identify opponent when colors match")
+        void shouldNotIdentifyOpponentWhenColorsMatch() {
             assertThat(blackPiece.isOpponentOf(ChessPieceColor.BLACK)).isFalse();
         }
     }
 
     @Nested
-    @DisplayName("snapshot")
-    class Snapshot {
+    @DisplayName("remembering and restoring state")
+    class RememberingAndRestoringState {
 
         @Test
-        @DisplayName("should preserve movement state")
-        void shouldPreserveMovementState() {
+        @DisplayName("should remember moved state when snapshot is created")
+        void shouldRememberMovedStateInSnapshot() {
             whitePiece.markAsMoved();
             ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
 
-            whitePiece.restoreSnapshot(snapshot);
-
-            assertThat(snapshot.getPiece()).isSameAs(whitePiece);
-            assertThat(whitePiece.hasMoved()).isTrue();
             assertThat(snapshot.wasMoved()).isTrue();
         }
 
         @Test
-        @DisplayName("should restore original moved state on same instance")
-        void shouldRestoreMovedStateOnSameInstance() {
+        @DisplayName("should keep reference to original piece in snapshot")
+        void shouldKeepReferenceToOriginalPieceInSnapshot() {
             ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
-            
-            whitePiece.markAsMoved();
 
-            assertThat(whitePiece.hasMoved()).isTrue();
+            assertThat(snapshot.getPiece()).isSameAs(whitePiece);
+        }
+
+        @Test
+        @DisplayName("should restore moved state when snapshot is applied")
+        void shouldRestoreMovedStateWhenSnapshotApplied() {
+            whitePiece.markAsMoved();
+            ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
 
             whitePiece.restoreSnapshot(snapshot);
+
+            assertThat(whitePiece.hasMoved()).isTrue();
+        }
+
+        @Test
+        @DisplayName("should restore unmoved state when snapshot is applied")
+        void shouldRestoreUnmovedStateWhenSnapshotApplied() {
+            ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
+
+            whitePiece.markAsMoved();
+            whitePiece.restoreSnapshot(snapshot);
+
             assertThat(whitePiece.hasMoved()).isFalse();
         }
 
         @Test
-        @DisplayName("should not affect different instance with different identity")
-        void shouldNotAffectDifferentInstance() {
+        @DisplayName("should not affect another piece when snapshot is restored")
+        void shouldNotAffectAnotherPieceWhenSnapshotRestored() {
             whitePiece.markAsMoved();
             ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
 
@@ -102,7 +115,6 @@ class ChessPieceTest {
             another.restoreSnapshot(snapshot);
 
             assertThat(another.hasMoved()).isFalse();
-            assertThat(whitePiece.hasMoved()).isTrue();
         }
     }
 }

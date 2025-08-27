@@ -7,5 +7,5 @@ public interface InteractionState {
     
     void onSquareClicked(ChessboardPosition clickedPosition);
 
-    default void onEnter() { }
+    default void onEnter() {}
 }

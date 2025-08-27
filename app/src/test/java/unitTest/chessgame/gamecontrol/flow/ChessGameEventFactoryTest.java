@@ -42,11 +42,11 @@ class ChessGameEventFactoryTest {
     }
 
     @Nested
-    @DisplayName("gameStarted")
+    @DisplayName("when the game starts")
     class GameStarted {
 
         @Test
-        @DisplayName("should assemble a GameStartedEvent, UpdateChessboardEvent and ClockStartEvent")
+        @DisplayName("should assemble game starting events")
         void shouldAssembleStartEvents() {
             ChessGameEvent event = factory.gameStarted(ChessPieceColor.WHITE);
 
@@ -62,7 +62,7 @@ class ChessGameEventFactoryTest {
     }
 
     @Nested
-    @DisplayName("moveApplied")
+    @DisplayName("when a move is applied")
     class MoveApplied {
 
         private TurnManager dummyTurns;
@@ -79,7 +79,7 @@ class ChessGameEventFactoryTest {
         }
 
         @Test
-        @DisplayName("should assemble a record, update, stop clock and start clock events")
+        @DisplayName("should assemble move applied events")
         void shouldAssembleMoveAppliedEvents() {
             ChessGameEvent event = factory.moveApplied(result, dummyTurns, dummyScores);
 
@@ -96,11 +96,11 @@ class ChessGameEventFactoryTest {
     }
 
     @Nested
-    @DisplayName("moveRejected")
+    @DisplayName("when a move is rejected")
     class MoveRejected {
 
         @Test
-        @DisplayName("should assemble a GameMessageEvent with rejection reason")
+        @DisplayName("should assemble move rejected events")
         void shouldAssembleMoveRejectedEvent() {
             ChessGameEvent event = factory.moveRejected(GameReason.ILLEGAL_MOVE);
 
@@ -115,7 +115,7 @@ class ChessGameEventFactoryTest {
     }
 
     @Nested
-    @DisplayName("moveUndone")
+    @DisplayName("when a move is undone")
     class MoveUndone {
 
         private TurnManager dummyTurns;
@@ -132,7 +132,7 @@ class ChessGameEventFactoryTest {
         }
 
         @Test
-        @DisplayName("should assemble a record, update, stop clock and start clock events")
+        @DisplayName("should assemble move undone events")
         void shouldAssembleMoveUndoneEvents() {
             ChessGameEvent event = factory.moveUndone(result, dummyTurns, dummyScores);
 
@@ -149,7 +149,7 @@ class ChessGameEventFactoryTest {
     }
 
     @Nested
-    @DisplayName("playerWon")
+    @DisplayName("when a player wins")
     class PlayerWon {
 
         private TurnManager dummyTurns;
@@ -160,7 +160,7 @@ class ChessGameEventFactoryTest {
         }
 
         @Test
-        @DisplayName("should assemble update, stop all clocks and message events")
+        @DisplayName("should assemble player won events")
         void shouldAssemblePlayerWonEvents() {
             ChessGameEvent event = factory.playerWon(dummyTurns, ChessPieceColor.WHITE, GameReason.CHECKMATE);
 
@@ -177,11 +177,11 @@ class ChessGameEventFactoryTest {
     }
 
     @Nested
-    @DisplayName("gameEnded")
+    @DisplayName("when the game ends")
     class GameEnded {
 
         @Test
-        @DisplayName("should return a GameEndedEvent with exit message")
+        @DisplayName("should assemble game ended events with exit message")
         void shouldReturnGameEndedEvent() {
             ChessGameEvent event = factory.gameEnded();
 

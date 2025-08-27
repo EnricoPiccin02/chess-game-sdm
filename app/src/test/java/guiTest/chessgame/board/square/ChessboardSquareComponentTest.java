@@ -28,7 +28,7 @@ import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
 import com.sdm.units.chessgame.gui.board.square.SquareColor;
 
-import guitest.chessgame.testdoubles.ChessPieceViewRegistryStub;
+import guitest.chessgame.testdoubles.ChessPieceViewFactoryStub;
 import guitest.chessgame.testdoubles.HighlightRendererSpy;
 import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 
@@ -36,7 +36,7 @@ import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 class ChessboardSquareComponentTest {
 
     private ChessboardPosition position;
-    private ChessPieceViewRegistryStub registryStub;
+    private ChessPieceViewFactoryStub factoryStub;
     private JComponent fakePieceComponent;
     private ChessboardSquareComponent square;
 
@@ -44,37 +44,53 @@ class ChessboardSquareComponentTest {
     void setUp() {
         position = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
         fakePieceComponent = new JLabel("piece");
-        registryStub = new ChessPieceViewRegistryStub(fakePieceComponent);
-        square = new ChessboardSquareComponent(position, registryStub, Mockito.mock(HighlightRenderer.class));
+        factoryStub = new ChessPieceViewFactoryStub(fakePieceComponent);
+        square = new ChessboardSquareComponent(position, factoryStub, Mockito.mock(HighlightRenderer.class));
     }
 
     @Nested
-    @DisplayName("Piece rendering")
+    @DisplayName("when rendering pieces")
     class PieceRendering {
 
         @Test
-        @DisplayName("should create piece component using registry and add it to square")
-        void shouldCreatePieceComponentUsingRegistryAndAddItToSquare() {
+        @DisplayName("should display a piece component created by the factory")
+        void shouldDisplayPieceComponentCreatedByFactory() {
             ChessPiece piece = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
 
             square.setPiece(Optional.of(piece));
 
             assertEquals(fakePieceComponent, square.getPiece());
+        }
+
+        @Test
+        @DisplayName("should place the piece component inside the square")
+        void shouldPlacePieceComponentInsideSquare() {
+            ChessPiece piece = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
+
+            square.setPiece(Optional.of(piece));
+
             assertEquals(fakePieceComponent, square.getComponent(0));
         }
 
         @Test
-        @DisplayName("should remove piece when empty one is provided")
-        void shouldRemovePieceWhenEmptyGiven() {
+        @DisplayName("should remove the piece when no piece is given")
+        void shouldRemovePieceWhenNoPieceIsGiven() {
+            square.setPiece(Optional.empty());
+
+            assertNull(square.getPiece());
+        }
+
+        @Test
+        @DisplayName("should leave the square empty when no piece is given")
+        void shouldLeaveSquareEmptyWhenNoPieceIsGiven() {
             square.setPiece(Optional.empty());
 
             assertEquals(0, square.getComponentCount());
-            assertNull(square.getPiece());
         }
     }
 
     @Nested
-    @DisplayName("Highlighting")
+    @DisplayName("when highlighting the square")
     class Highlighting {
 
         private HighlightRendererSpy highlightSpy;
@@ -83,28 +99,29 @@ class ChessboardSquareComponentTest {
         @BeforeEach
         void setUp() {
             highlightSpy = new HighlightRendererSpy();
-            squareWithSpy = new ChessboardSquareComponent(position, registryStub, highlightSpy);
+            squareWithSpy = new ChessboardSquareComponent(position, factoryStub, highlightSpy);
         }
 
         @Test
-        @DisplayName("should apply highlight with given type")
+        @DisplayName("should apply a highlight with the given type")
         void shouldApplyHighlightWithGivenType() {
             squareWithSpy.highlight(HighlightColor.SELECTED);
+
             assertEquals(Optional.of(HighlightColor.SELECTED), highlightSpy.getLastApplied());
         }
 
         @Test
-        @DisplayName("should override existing highlight")
+        @DisplayName("should override an existing highlight with a new one")
         void shouldOverrideExistingHighlight() {
             squareWithSpy.highlight(HighlightColor.SELECTED);
             squareWithSpy.highlight(HighlightColor.HOVER);
-            
+
             assertEquals(Optional.of(HighlightColor.HOVER), highlightSpy.getLastApplied());
         }
 
         @Test
-        @DisplayName("should clear highlight and apply empty state")
-        void shouldClearHighlightAndApplyEmptyState() {
+        @DisplayName("should clear the highlight when requested")
+        void shouldClearHighlightWhenRequested() {
             squareWithSpy.highlight(HighlightColor.SELECTED);
             squareWithSpy.clearHighlight();
 
@@ -113,7 +130,7 @@ class ChessboardSquareComponentTest {
     }
 
     @Nested
-    @DisplayName("Click Handler")
+    @DisplayName("when attaching a click handler")
     class ClickHandler {
 
         private SquareClickHandler handler;
@@ -125,25 +142,44 @@ class ChessboardSquareComponentTest {
         }
 
         @Test
-        @DisplayName("should attach click handler and set listener")
-        void shouldAttachClickHandlerAndSetListener() {
+        @DisplayName("should store the attached click handler")
+        void shouldStoreAttachedClickHandler() {
             assertNotNull(square.getClickListener());
+        }
+
+        @Test
+        @DisplayName("should register the listener")
+        void shouldRegisterListener() {
             assertEquals(1, square.getMouseListeners().length);
         }
 
         @Test
-        @DisplayName("should remove click handler and listener")
-        void shouldRemoveClickHandlerAndListener() {
+        @DisplayName("should remove the click handler when requested")
+        void shouldRemoveClickHandlerWhenRequested() {
             square.removeClickHandler();
+
             assertNull(square.getClickListener());
+        }
+
+        @Test
+        @DisplayName("should remove the listener when click handler is removed")
+        void shouldRemoveListenerWhenClickHandlerIsRemoved() {
+            square.removeClickHandler();
+
             assertEquals(0, square.getMouseListeners().length);
         }
     }
 
-    @Test
-    @DisplayName("should set background color based on square position")
-    void shouldSetBackgroundColorBasedOnSquarePosition() {
-        Color expected = SquareColor.fromPosition(position).getColor();
-        assertEquals(expected, square.getBackground());
+    @Nested
+    @DisplayName("when setting background color")
+    class BackgroundColor {
+
+        @Test
+        @DisplayName("should use the color defined by its position")
+        void shouldUseColorDefinedByPosition() {
+            Color expected = SquareColor.fromPosition(position).getColor();
+
+            assertEquals(expected, square.getBackground());
+        }
     }
 }

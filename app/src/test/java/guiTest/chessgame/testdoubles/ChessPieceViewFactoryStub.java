@@ -3,14 +3,13 @@ package guitest.chessgame.testdoubles;
 import javax.swing.JComponent;
 
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
-import com.sdm.units.chessgame.gui.pieces.ChessPieceViewRegistry;
+import com.sdm.units.chessgame.gui.pieces.PieceViewFactory;
 
-public class ChessPieceViewRegistryStub extends ChessPieceViewRegistry {
+public class ChessPieceViewFactoryStub implements PieceViewFactory {
     
     private final JComponent fakeComponent;
 
-    public ChessPieceViewRegistryStub(JComponent fakeComponent) {
-        super(null, null);
+    public ChessPieceViewFactoryStub(JComponent fakeComponent) {
         this.fakeComponent = fakeComponent;
     }
 

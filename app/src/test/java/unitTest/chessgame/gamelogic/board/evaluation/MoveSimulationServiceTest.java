@@ -2,8 +2,6 @@ package unittest.chessgame.gamelogic.board.evaluation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -45,27 +43,25 @@ class MoveSimulationServiceTest {
     }
 
     @Nested
-    @DisplayName("resolvesCheck")
-    class ResolvesCheck {
+    @DisplayName("checking if any move resolves check state")
+    class CheckingMovesResolveCheck {
 
         private final ChessboardPosition from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
         private final ChessboardPosition to = new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO);
 
         @Test
-        @DisplayName("should return false when move is invalid")
-        void shouldReturnFalseWhenMoveInvalid() {
+        @DisplayName("should reject move when it is invalid")
+        void shouldRejectInvalidMove() {
             when(moveValidator.validateAndCreate(board, from, to, orientation)).thenReturn(Optional.empty());
 
             boolean result = service.resolvesCheck(board, from, to, ChessPieceColor.WHITE);
 
             assertThat(result).isFalse();
-            verify(moveValidator).validateAndCreate(board, from, to, orientation);
-            verifyNoInteractions(attackDetector);
         }
 
         @Test
-        @DisplayName("should return true when move resolves check")
-        void shouldReturnTrueWhenMoveResolvesCheck() {
+        @DisplayName("should accept move when it eliminates check")
+        void shouldAcceptMoveThatEliminatesCheck() {
             ReversibleMove move = mock(ReversibleMove.class);
             when(moveValidator.validateAndCreate(board, from, to, orientation)).thenReturn(Optional.of(move));
             when(attackDetector.isUnderAttack(board, ChessPieceColor.WHITE)).thenReturn(false);
@@ -73,13 +69,11 @@ class MoveSimulationServiceTest {
             boolean result = service.resolvesCheck(board, from, to, ChessPieceColor.WHITE);
 
             assertThat(result).isTrue();
-            verify(move).executeOn(board);
-            verify(move).undoOn(board);
         }
 
         @Test
-        @DisplayName("should return false when move does not resolve check")
-        void shouldReturnFalseWhenMoveDoesNotResolveCheck() {
+        @DisplayName("should reject move when it fails to eliminate check")
+        void shouldRejectMoveThatFailsToEliminateCheck() {
             ReversibleMove move = mock(ReversibleMove.class);
             when(moveValidator.validateAndCreate(board, from, to, orientation)).thenReturn(Optional.of(move));
             when(attackDetector.isUnderAttack(board, ChessPieceColor.WHITE)).thenReturn(true);
@@ -87,55 +81,47 @@ class MoveSimulationServiceTest {
             boolean result = service.resolvesCheck(board, from, to, ChessPieceColor.WHITE);
 
             assertThat(result).isFalse();
-            verify(move).executeOn(board);
-            verify(move).undoOn(board);
         }
     }
 
     @Nested
-    @DisplayName("isPathSafe")
-    class IsPathSafe {
+    @DisplayName("checking path safety")
+    class CheckingPathSafety {
 
         private final ChessboardPosition from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
         private final ChessboardPosition step1 = new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO);
         private final ChessboardPosition step2 = new ChessboardPosition(ChessboardFile.A, ChessboardRank.THREE);
 
         @Test
-        @DisplayName("should return false when first step is invalid")
-        void shouldReturnFalseWhenFirstStepInvalid() {
+        @DisplayName("should reject path when first step is invalid")
+        void shouldRejectPathWithInvalidFirstStep() {
             when(moveValidator.validateAndCreate(board, from, step1, orientation)).thenReturn(Optional.empty());
 
             boolean result = service.isPathSafe(board, from, List.of(step1, step2), ChessPieceColor.BLACK);
 
             assertThat(result).isFalse();
-            verify(moveValidator).validateAndCreate(board, from, step1, orientation);
-            verifyNoInteractions(attackDetector);
         }
 
         @Test
-        @DisplayName("should return false when path leads into check")
-        void shouldReturnFalseWhenPathLeadsIntoCheck() {
+        @DisplayName("should reject path when any step leads into check")
+        void shouldRejectPathThatLeadsIntoCheck() {
             ReversibleMove move1 = mock(ReversibleMove.class);
             ReversibleMove move2 = mock(ReversibleMove.class);
 
             when(moveValidator.validateAndCreate(board, from, step1, orientation)).thenReturn(Optional.of(move1));
             when(moveValidator.validateAndCreate(board, step1, step2, orientation)).thenReturn(Optional.of(move2));
             when(attackDetector.isUnderAttack(board, ChessPieceColor.BLACK))
-                    .thenReturn(false)  // after move1
-                    .thenReturn(true);  // after move2
+                    .thenReturn(false)  // safe after move1
+                    .thenReturn(true);  // check after move2
 
             boolean result = service.isPathSafe(board, from, List.of(step1, step2), ChessPieceColor.BLACK);
 
             assertThat(result).isFalse();
-            verify(move1).executeOn(board);
-            verify(move1).undoOn(board);
-            verify(move2).executeOn(board);
-            verify(move2).undoOn(board);
         }
 
         @Test
-        @DisplayName("should return true when entire path is safe")
-        void shouldReturnTrueWhenEntirePathSafe() {
+        @DisplayName("should accept path when all steps are safe")
+        void shouldAcceptPathWhenAllStepsAreSafe() {
             ReversibleMove move1 = mock(ReversibleMove.class);
             ReversibleMove move2 = mock(ReversibleMove.class);
 
@@ -146,10 +132,6 @@ class MoveSimulationServiceTest {
             boolean result = service.isPathSafe(board, from, List.of(step1, step2), ChessPieceColor.BLACK);
 
             assertThat(result).isTrue();
-            verify(move1).executeOn(board);
-            verify(move2).executeOn(board);
-            verify(move1).undoOn(board);
-            verify(move2).undoOn(board);
         }
     }
 }

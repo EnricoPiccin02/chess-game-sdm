@@ -1,5 +1,7 @@
 package unittest.chessgame.gamelogic.board.state;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,10 +10,6 @@ import org.mockito.Mockito;
 
 import com.sdm.units.chessgame.gamelogic.board.state.MoveHistory;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("MoveHistory")
 class MoveHistoryTest {
@@ -28,25 +26,22 @@ class MoveHistoryTest {
     class NoMoves {
 
         @Test
-        @DisplayName("should return empty for last move")
-        void shouldReturnEmptyForLastMoveWhenHistoryIsEmpty() {
-            Optional<ReversibleMove> result = history.getLastMove();
-            assertThat(result).isEmpty();
+        @DisplayName("should not get any move when asking for last move")
+        void shouldNotGetAnyMoveForLastMove() {
+            assertThat(history.getLastMove()).isEmpty();
         }
 
         @Test
-        @DisplayName("should return empty for pop move")
-        void shouldReturnEmptyForPopMoveWhenHistoryIsEmpty() {
-            Optional<ReversibleMove> result = history.popMove();
-            assertThat(result).isEmpty();
+        @DisplayName("should not extract any move")
+        void shouldNotExtractAnyMove() {
+            assertThat(history.popMove()).isEmpty();
         }
 
         @Test
-        @DisplayName("should return empty for clear move history")
-        void shouldReturnEmptyForClearMoveHistory() {
+        @DisplayName("should contain no moves after clearing")
+        void shouldContainNoMovesAfterClearing() {
             history.clear();
-            Optional<ReversibleMove> result = history.getLastMove();
-            assertThat(result).isEmpty();
+            assertThat(history.getLastMove()).isEmpty();
         }
     }
 
@@ -63,28 +58,29 @@ class MoveHistoryTest {
         }
 
         @Test
-        @DisplayName("should return that move as last move")
-        void shouldReturnLastMoveWhenOneMoveRecorded() {
-            Optional<ReversibleMove> result = history.getLastMove();
-            assertThat(result).contains(dummyMove);
+        @DisplayName("should get that move as last move")
+        void shouldGetLastMove() {
+            assertThat(history.getLastMove()).contains(dummyMove);
         }
 
         @Test
-        @DisplayName("should pop that move and then be empty")
-        void shouldPopMoveAndThenBeEmpty() {
-            Optional<ReversibleMove> popped = history.popMove();
-            assertThat(popped).contains(dummyMove);
-
-            Optional<ReversibleMove> after = history.getLastMove();
-            assertThat(after).isEmpty();
+        @DisplayName("should extract that move")
+        void shouldExtractThatMove() {
+            assertThat(history.popMove()).contains(dummyMove);
         }
 
         @Test
-        @DisplayName("should return empty for clear move history")
-        void shouldReturnEmptyForClearMoveHistory() {
+        @DisplayName("should be empty after extracting the move")
+        void shouldBeEmptyAfterExtracting() {
+            history.popMove();
+            assertThat(history.getLastMove()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should contain no moves after clearing")
+        void shouldContainNoMovesAfterClearing() {
             history.clear();
-            Optional<ReversibleMove> result = history.getLastMove();
-            assertThat(result).isEmpty();
+            assertThat(history.getLastMove()).isEmpty();
         }
     }
 
@@ -92,42 +88,54 @@ class MoveHistoryTest {
     @DisplayName("when multiple moves recorded")
     class MultipleMoves {
 
-        private ReversibleMove dummyMove1;
-        private ReversibleMove dummyMove2;
-        private ReversibleMove dummyMove3;
+        private ReversibleMove firstMove;
+        private ReversibleMove secondMove;
+        private ReversibleMove thirdMove;
 
         @BeforeEach
         void recordMultipleMoves() {
-            dummyMove1 = Mockito.mock(ReversibleMove.class);
-            dummyMove2 = Mockito.mock(ReversibleMove.class);
-            dummyMove3 = Mockito.mock(ReversibleMove.class);
-            history.pushMove(dummyMove1);
-            history.pushMove(dummyMove2);
-            history.pushMove(dummyMove3);
+            firstMove = Mockito.mock(ReversibleMove.class);
+            secondMove = Mockito.mock(ReversibleMove.class);
+            thirdMove = Mockito.mock(ReversibleMove.class);
+            history.pushMove(firstMove);
+            history.pushMove(secondMove);
+            history.pushMove(thirdMove);
         }
 
         @Test
-        @DisplayName("should return last pushed move as last move")
-        void shouldReturnLastPushedMove() {
-            Optional<ReversibleMove> result = history.getLastMove();
-            assertThat(result).contains(dummyMove3);
+        @DisplayName("should get last inserted move as last move")
+        void shouldGetLastInsertedMove() {
+            assertThat(history.getLastMove()).contains(thirdMove);
         }
 
         @Test
-        @DisplayName("should pop moves in reverse push order (LIFO)")
-        void shouldPopMovesInLifoOrder() {
-            assertThat(history.popMove()).contains(dummyMove3);
-            assertThat(history.popMove()).contains(dummyMove2);
-            assertThat(history.popMove()).contains(dummyMove1);
-            assertThat(history.popMove()).isEmpty();
+        @DisplayName("should extract last inserted move first")
+        void shouldExtractLastInsertedMoveFirst() {
+            assertThat(history.popMove()).contains(thirdMove);
         }
 
         @Test
-        @DisplayName("should return empty for clear move history")
-        void shouldReturnEmptyForClearMoveHistory() {
+        @DisplayName("should extract moves in reverse insertion order")
+        void shouldExtractMovesInReverseInsertionOrder() {
+            history.popMove();
+            assertThat(history.popMove()).contains(secondMove);
+            assertThat(history.popMove()).contains(firstMove);
+        }
+
+        @Test
+        @DisplayName("should contain no moves after all moves popped")
+        void shouldContainNoMovesAfterAllMovesPopped() {
+            history.popMove();
+            history.popMove();
+            history.popMove();
+            assertThat(history.getLastMove()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should contain no moves after clearing")
+        void shouldContainNoMovesAfterClearing() {
             history.clear();
-            Optional<ReversibleMove> result = history.getLastMove();
-            assertThat(result).isEmpty();
+            assertThat(history.getLastMove()).isEmpty();
         }
     }
 }

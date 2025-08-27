@@ -21,18 +21,19 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gui.board.square.ChessboardSquareComponent;
+import com.sdm.units.chessgame.gui.board.square.ChessboardSquareHandler;
 import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
 import com.sdm.units.chessgame.gui.board.square.SquareSize;
-import com.sdm.units.chessgame.gui.pieces.ChessPieceViewRegistry;
+import com.sdm.units.chessgame.gui.pieces.PieceViewFactory;
 
 public class ChessboardPanel extends JPanel implements ChessboardView {
 
-    private final ChessPieceViewRegistry viewRegistry;
+    private final PieceViewFactory viewFactory;
     private final HighlightRenderer highlightRenderer;
-    private final Map<ChessboardPosition, ChessboardSquareComponent> squareComponents = new HashMap<>();
+    private final Map<ChessboardPosition, ChessboardSquareHandler> squareComponents = new HashMap<>();
 
-    public ChessboardPanel(ChessPieceViewRegistry viewRegistry, HighlightRenderer highlightRenderer) {
-        this.viewRegistry = viewRegistry;
+    public ChessboardPanel(PieceViewFactory viewFactory, HighlightRenderer highlightRenderer) {
+        this.viewFactory = viewFactory;
         this.highlightRenderer = highlightRenderer;
         setLayout(new GridLayout(ChessboardRank.values().length, ChessboardFile.values().length));
         setPreferredSize(new Dimension(
@@ -50,7 +51,7 @@ public class ChessboardPanel extends JPanel implements ChessboardView {
                 ChessboardRank r = ChessboardRank.values()[rank];
                 ChessboardPosition position = new ChessboardPosition(f, r);
 
-                ChessboardSquareComponent square = new ChessboardSquareComponent(position, viewRegistry, highlightRenderer);
+                ChessboardSquareComponent square = new ChessboardSquareComponent(position, viewFactory, highlightRenderer);
                 square.setPreferredSize(new Dimension(SquareSize.SQUARE_WIDTH.getSize(), SquareSize.SQUARE_HEIGHT.getSize()));
                 add(square);
                 squareComponents.put(position, square);
@@ -58,15 +59,15 @@ public class ChessboardPanel extends JPanel implements ChessboardView {
         }
     }
 
-    public ChessboardSquareComponent getSquareAt(ChessboardPosition position) {
+    public ChessboardSquareHandler getSquareAt(ChessboardPosition position) {
         return squareComponents.get(position);
     }
 
-    public Collection<ChessboardSquareComponent> getAllSquares() {
+    public Collection<ChessboardSquareHandler> getAllSquares() {
         return squareComponents.values();
     }
 
-    public void replaceSquare(ChessboardPosition position, ChessboardSquareComponent newSquare) {
+    public void replaceSquare(ChessboardPosition position, ChessboardSquareHandler newSquare) {
         squareComponents.put(position, newSquare);
     }
 
@@ -80,7 +81,7 @@ public class ChessboardPanel extends JPanel implements ChessboardView {
     }
 
     @Override
-    public void updateSquaresAt(Set<ChessboardPosition> positions, Consumer<? super ChessboardSquareComponent> operation) {
+    public void updateSquaresAt(Set<ChessboardPosition> positions, Consumer<? super ChessboardSquareHandler> operation) {
         positions.stream()
             .map(squareComponents::get)
             .filter(Predicate.not(Objects::isNull))
@@ -88,7 +89,7 @@ public class ChessboardPanel extends JPanel implements ChessboardView {
     }
 
     @Override
-    public void updateAllSquares(Consumer<? super ChessboardSquareComponent> operation) {
+    public void updateAllSquares(Consumer<? super ChessboardSquareHandler> operation) {
         squareComponents.entrySet()
             .stream()
             .map(Entry::getValue)

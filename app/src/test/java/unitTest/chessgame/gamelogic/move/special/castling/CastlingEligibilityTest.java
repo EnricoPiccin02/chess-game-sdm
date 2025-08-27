@@ -1,6 +1,8 @@
 package unittest.chessgame.gamelogic.move.special.castling;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +37,7 @@ class CastlingEligibilityTest {
     private CastlingEligibility eligibility;
     private PathSafetySimulatorStub pathSafetySimulatorStub;
     private AttackDetectorStub attackDetectorStub;
-    private CastlingPatternStub patternStub;
+    private CastlingPattern patternMock;
 
     private ChessboardFake board;
     private ChessPiece whiteKing;
@@ -50,9 +52,9 @@ class CastlingEligibilityTest {
     void setUp() {
         pathSafetySimulatorStub = new PathSafetySimulatorStub();
         attackDetectorStub = new AttackDetectorStub();
-        patternStub = new CastlingPatternStub();
+        patternMock = mock(CastlingPattern.class);
 
-        eligibility = new CastlingEligibility(pathSafetySimulatorStub, attackDetectorStub, patternStub);
+        eligibility = new CastlingEligibility(pathSafetySimulatorStub, attackDetectorStub, patternMock);
 
         board = new ChessboardFake();
 
@@ -69,10 +71,11 @@ class CastlingEligibilityTest {
 
         candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo, whiteKing, whiteRook);
 
-        patternStub.setKingPath(List.of(
-            new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE),
-            kingTo
-        ));
+        when(patternMock.kingPathSquares(kingFrom, rookFrom))
+            .thenReturn(List.of(
+                new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE),
+                kingTo
+            ));
     }
 
     @Nested
@@ -80,8 +83,8 @@ class CastlingEligibilityTest {
     class WhenAllConditionsMet {
 
         @Test
-        @DisplayName("should return true for valid castling")
-        void shouldReturnTrueForValidCastling() {
+        @DisplayName("should recognize valid and eligible castling")
+        void shouldRecognizeValidCastling() {
             boolean result = eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM);
 
             assertThat(result).isTrue();
@@ -93,8 +96,8 @@ class CastlingEligibilityTest {
     class WhenAnyConditionFails {
 
         @Test
-        @DisplayName("should return false if king is not a king")
-        void shouldReturnFalseIfKingIsNotAKing() {
+        @DisplayName("should not allow castling if king is not a king")
+        void shouldNotAllowCastlingIfKingIsNotAKing() {
             candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo,
                 new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.QUEEN), whiteRook);
 
@@ -102,8 +105,8 @@ class CastlingEligibilityTest {
         }
 
         @Test
-        @DisplayName("should return false if rook is not a rook")
-        void shouldReturnFalseIfRookIsNotARook() {
+        @DisplayName("should not allow castling if rook is not a rook")
+        void shouldNotAllowCastlingIfRookIsNotARook() {
             candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo,
                 whiteKing, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.BISHOP));
 
@@ -111,8 +114,8 @@ class CastlingEligibilityTest {
         }
 
         @Test
-        @DisplayName("should return false if pieces have different colors")
-        void shouldReturnFalseIfPiecesHaveDifferentColors() {
+        @DisplayName("should not allow castling if pieces have different colors")
+        void shouldNotAllowCastlingIfPiecesHaveDifferentColors() {
             candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo,
                 whiteKing, new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.ROOK));
 
@@ -120,8 +123,8 @@ class CastlingEligibilityTest {
         }
 
         @Test
-        @DisplayName("should return false if either piece has moved")
-        void shouldReturnFalseIfEitherPieceHasMoved() {
+        @DisplayName("should not allow castling if either piece has moved")
+        void shouldNotAllowCastlingIfEitherPieceHasMoved() {
             ChessPiece movedKing = new PieceFake(ChessPieceColor.WHITE, ChessPieceInfo.KING);
             movedKing.markAsMoved();
             candidate = new CastlingCandidate(kingFrom, kingTo, rookFrom, rookTo, movedKing, whiteRook);
@@ -130,26 +133,24 @@ class CastlingEligibilityTest {
         }
 
         @Test
-        @DisplayName("should return false if king is in check")
-        void shouldReturnFalseIfKingIsInCheck() {
+        @DisplayName("should not allow castling if king is in check")
+        void shouldNotAllowCastlingIfKingIsInCheck() {
             attackDetectorStub.setUnderAttack(true);
 
             assertThat(eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM)).isFalse();
         }
 
         @Test
-        @DisplayName("should return false if path is not clear")
-        void shouldReturnFalseIfPathIsNotClear() {
+        @DisplayName("should not allow castling if path is not clear")
+        void shouldNotAllowCastlingIfPathIsNotClear() {
             board.putPieceAt(kingTo, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN));
 
             assertThat(eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM)).isFalse();
         }
 
         @Test
-        @DisplayName("should return false if any intermediate square is unsafe for king")
-        void shouldReturnFalseIfIntermediateSquareIsUnsafe() {
-            assertThat(eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM)).isTrue();
-
+        @DisplayName("should not allow castling if any intermediate square is unsafe for king")
+        void shouldNotAllowCastlingIfIntermediateSquareIsUnsafe() {
             pathSafetySimulatorStub.failOn(new ChessboardPosition(ChessboardFile.F, ChessboardRank.ONE));
 
             assertThat(eligibility.canExecute(board, candidate, ChessboardOrientation.WHITE_BOTTOM)).isFalse();
@@ -186,20 +187,6 @@ class CastlingEligibilityTest {
         @Override
         public boolean isUnderAttack(Chessboard board, ChessPieceColor color) {
             return underAttack;
-        }
-    }
-
-    private static class CastlingPatternStub extends CastlingPattern {
-        
-        private List<ChessboardPosition> path = List.of();
-
-        void setKingPath(List<ChessboardPosition> path) {
-            this.path = path;
-        }
-
-        @Override
-        public List<ChessboardPosition> kingPathSquares(ChessboardPosition kingFrom, ChessboardPosition rookFrom) {
-            return path;
         }
     }
 }

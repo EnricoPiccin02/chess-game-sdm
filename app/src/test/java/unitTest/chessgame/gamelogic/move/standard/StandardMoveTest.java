@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
@@ -14,7 +15,6 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.result.CaptureResult;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMove;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
@@ -47,49 +47,130 @@ class StandardMoveTest {
         move = new StandardMove(from, to, movingPieceFake, Optional.of(capturedPieceDummy));
     }
 
-    @Test
-    @DisplayName("should move the piece and mark it as moved")
-    void shouldMovePieceAndMarkAsMoved() {
-        move.executeOn(boardSpy);
+    @Nested
+    @DisplayName("when executed")
+    class WhenExecuted {
 
-        assertTrue(movingPieceFake.hasMoved());
-        assertEquals(movingPieceFake, boardSpy.getPieceAt(to).orElseThrow());
-        assertTrue(boardSpy.getPieceAt(from).isEmpty());
+        @Test
+        @DisplayName("should move the piece to target square")
+        void shouldMovePieceToTargetSquare() {
+            move.executeOn(boardSpy);
 
-        assertTrue(boardSpy.wasPutCalledWith(to, movingPieceFake));
-        assertTrue(boardSpy.wasRemoveCalledWith(from));
+            assertEquals(movingPieceFake, boardSpy.getPieceAt(to).orElseThrow());
+        }
+
+        @Test
+        @DisplayName("should remove the piece from original square")
+        void shouldRemovePieceFromOriginalSquare() {
+            move.executeOn(boardSpy);
+
+            assertTrue(boardSpy.getPieceAt(from).isEmpty());
+        }
+
+        @Test
+        @DisplayName("should mark the piece as moved")
+        void shouldMarkPieceAsMoved() {
+            move.executeOn(boardSpy);
+
+            assertTrue(movingPieceFake.hasMoved());
+        }
+
+        @Test
+        @DisplayName("should capture the opponent piece")
+        void shouldCaptureOpponentPiece() {
+            CaptureResult result = move.executeOn(boardSpy);
+
+            assertEquals(
+                capturedPieceDummy.pieceInfo().getPieceValue(),
+                result.pieceValue().orElseThrow()
+            );
+        }
+
+        @Test
+        @DisplayName("should delegate the board about piece placement")
+        void shouldDelegateBoardAboutPlacement() {
+            move.executeOn(boardSpy);
+
+            assertTrue(boardSpy.wasPutCalledWith(to, movingPieceFake));
+        }
+
+        @Test
+        @DisplayName("should delegate the board about piece removal")
+        void shouldDelegateBoardAboutRemoval() {
+            move.executeOn(boardSpy);
+
+            assertTrue(boardSpy.wasRemoveCalledWith(from));
+        }
     }
 
-    @Test
-    @DisplayName("should capture provided piece")
-    void shouldCaptureProvidedPiece() {
-        CaptureResult result = move.executeOn(boardSpy);
+    @Nested
+    @DisplayName("when undone")
+    class WhenUndone {
 
-        assertTrue(result.pieceValue().isPresent());
-        assertEquals(capturedPieceDummy.pieceInfo().getPieceValue(), result.pieceValue().getAsInt());
+        @BeforeEach
+        void executeMove() {
+            move.executeOn(boardSpy);
+        }
+
+        @Test
+        @DisplayName("should restore the moving piece to original square")
+        void shouldRestoreMovingPiece() {
+            move.undoOn(boardSpy);
+
+            assertEquals(movingPieceFake, boardSpy.getPieceAt(from).orElseThrow());
+        }
+
+        @Test
+        @DisplayName("should restore the captured piece to target square")
+        void shouldRestoreCapturedPiece() {
+            move.undoOn(boardSpy);
+
+            assertEquals(capturedPieceDummy, boardSpy.getPieceAt(to).orElseThrow());
+        }
+
+        @Test
+        @DisplayName("should delegate the board about restoring captured piece")
+        void shouldDelegateBoardAboutRestoringCapturedPiece() {
+            move.undoOn(boardSpy);
+
+            assertTrue(boardSpy.wasPutCalledWith(to, capturedPieceDummy));
+        }
+
+        @Test
+        @DisplayName("should delegate the board about restoring moving piece")
+        void shouldDelegateBoardAboutRestoringMovingPiece() {
+            move.undoOn(boardSpy);
+
+            assertTrue(boardSpy.wasPutCalledWith(from, movingPieceFake));
+        }
     }
 
-    @Test
-    @DisplayName("should restore the board to original state after undo")
-    void shouldRestoreBoardToOriginalStateWithCapture() {
-        move.executeOn(boardSpy);
-        move.undoOn(boardSpy);
+    @Nested
+    @DisplayName("when queried for positions")
+    class WhenQueriedForPositions {
 
-        assertEquals(movingPieceFake, boardSpy.getPieceAt(from).orElseThrow());
-        assertEquals(capturedPieceDummy, boardSpy.getPieceAt(to).orElseThrow());
+        @Test
+        @DisplayName("should provide origin square")
+        void shouldProvideOriginSquare() {
+            assertEquals(from, move.from());
+        }
 
-        assertTrue(boardSpy.wasPutCalledWith(to, capturedPieceDummy));
-        assertTrue(boardSpy.wasPutCalledWith(from, movingPieceFake));
-        assertTrue(boardSpy.wasRemoveCalledWith(from));
-    }
+        @Test
+        @DisplayName("should provide destination square")
+        void shouldProvideDestinationSquare() {
+            assertEquals(to, move.to());
+        }
 
-    @Test
-    @DisplayName("should return starting and landing positions")
-    void shouldReturnFromAndTo() {
-        MoveComponent components = move.getPrimaryMoveComponent();
-        assertEquals(from, components.from());
-        assertEquals(to, components.to());
-        assertEquals(from, move.from());
-        assertEquals(to, move.to());
+        @Test
+        @DisplayName("should expose origin through move component")
+        void shouldExposeOriginThroughComponent() {
+            assertEquals(from, move.getPrimaryMoveComponent().from());
+        }
+
+        @Test
+        @DisplayName("should expose destination through move component")
+        void shouldExposeDestinationThroughComponent() {
+            assertEquals(to, move.getPrimaryMoveComponent().to());
+        }
     }
 }

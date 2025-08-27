@@ -2,26 +2,16 @@ package guitest.chessgame.testdoubles;
 
 import java.util.Optional;
 
-import org.mockito.Mockito;
-
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
-import com.sdm.units.chessgame.gui.board.square.ChessboardSquareComponent;
+import com.sdm.units.chessgame.gui.board.square.ChessboardSquareHandler;
 import com.sdm.units.chessgame.gui.board.square.HighlightColor;
-import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
-import com.sdm.units.chessgame.gui.pieces.ChessPieceViewRegistry;
 
-public class ChessboardSquareComponentSpy extends ChessboardSquareComponent {
+public class ChessboardSquareComponentSpy implements ChessboardSquareHandler {
     
-    private final ChessboardViewSpy spy;
     private Optional<ChessPiece> lastPiece = Optional.empty();
     private int timesCalledSetPiece = 0;
-
-    public ChessboardSquareComponentSpy(ChessboardPosition position, ChessboardViewSpy spy) {
-        super(position, Mockito.mock(ChessPieceViewRegistry.class), Mockito.mock(HighlightRenderer.class));
-        this.spy = spy;
-    }
 
     @Override
     public void setPiece(Optional<ChessPiece> newPiece) {
@@ -38,17 +28,22 @@ public class ChessboardSquareComponentSpy extends ChessboardSquareComponent {
     }
 
     @Override
-    public void highlight(HighlightColor type) {
-        spy.setLastHighlightType(type);
-    }
+    public void highlight(HighlightColor type) {}
 
     @Override
-    public void attachClickHandler(SquareClickHandler clickHandler) {
-        spy.setListenerAttached(true);
-    }
+    public void attachClickHandler(SquareClickHandler clickHandler) {}
 
     @Override
-    public void removeClickHandler() {
-        spy.setListenerRemoved(true);
+    public void removeClickHandler() {}
+
+    @Override
+    public void clearHighlight() {}
+
+    @Override
+    public void refresh() {}
+
+    @Override
+    public ChessboardPosition getPosition() {
+        return null;
     }
 }

@@ -15,10 +15,10 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @DisplayName("ChessPieceInfo")
 class ChessPieceInfoTest {
 
-    @ParameterizedTest(name = "{0} should return name \''{1}\''")
+    @ParameterizedTest(name = "{0} should have name descriptor \''{1}\''")
     @MethodSource("nameProvider")
-    @DisplayName("should return correct name via toString()")
-    void shouldReturnCorrectName(ChessPieceInfo piece, String expectedName) {
+    @DisplayName("should have correct name descriptor")
+    void shouldHaveCorrectNameDescriptor(ChessPieceInfo piece, String expectedName) {
         assertEquals(expectedName, piece.toString());
     }
 
@@ -35,8 +35,8 @@ class ChessPieceInfoTest {
 
     @ParameterizedTest(name = "{0} should have value {1}")
     @MethodSource("valueProvider")
-    @DisplayName("should return correct piece value")
-    void shouldReturnCorrectValue(ChessPieceInfo piece, int expectedValue) {
+    @DisplayName("should associate correct piece value")
+    void shouldAssociateCorrectPieceValue(ChessPieceInfo piece, int expectedValue) {
         assertEquals(expectedValue, piece.getPieceValue());
     }
 
@@ -53,8 +53,8 @@ class ChessPieceInfoTest {
 
     @ParameterizedTest(name = "{0} should allow {1} piece(s)")
     @MethodSource("allowedCountProvider")
-    @DisplayName("should return correct number of allowed pieces")
-    void shouldReturnCorrectAllowedCount(ChessPieceInfo piece, int expectedCount) {
+    @DisplayName("should provide correct number of allowed pieces")
+    void shouldProvideCorrectAllowedCount(ChessPieceInfo piece, int expectedCount) {
         assertEquals(expectedCount, piece.getNumberOfAllowedPieces());
     }
 

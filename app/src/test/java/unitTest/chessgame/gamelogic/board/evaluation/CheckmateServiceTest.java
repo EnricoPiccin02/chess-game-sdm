@@ -3,7 +3,6 @@ package unittest.chessgame.gamelogic.board.evaluation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,8 +52,8 @@ class CheckmateServiceTest {
     class NotUnderAttack {
 
         @Test
-        @DisplayName("should return false")
-        void shouldReturnFalseWhenDefenderNotInCheck() {
+        @DisplayName("should not detect the attack if defender is not in check")
+        void shouldNotDetectAttackWhenDefenderNotInCheck() {
             Mockito.when(attackDetector.isUnderAttack(board, defender)).thenReturn(false);
 
             boolean result = service.isCheckmate(board, defender);
@@ -73,13 +72,13 @@ class CheckmateServiceTest {
 
         @BeforeEach
         void setUp() {
-            board.setOccupiedSquares(defender, Set.of(from));
+            board.placeFriendly(from, defender);
             Mockito.when(attackDetector.isUnderAttack(board, defender)).thenReturn(true);
         }
 
         @Test
-        @DisplayName("should return true if no legal moves are generated")
-        void shouldReturnTrueIfNoMovesGenerated() {
+        @DisplayName("should detect checkmate if no legal moves are generated")
+        void shouldDetectCheckmateIfNoLegalMovesGenerated() {
             Mockito.when(moveGenerator.generateMovesFrom(board, from, orientation)).thenReturn(List.of());
 
             boolean result = service.isCheckmate(board, defender);
@@ -88,8 +87,8 @@ class CheckmateServiceTest {
         }
 
         @Test
-        @DisplayName("should return true if moves exist but none resolve the check")
-        void shouldReturnTrueIfMovesDoNotResolveCheck() {
+        @DisplayName("should detect checkmate if moves exist but none resolve the check")
+        void shouldDetectCheckmateIfMovesDoNotResolveCheck() {
             MoveComponent component = new MoveComponent(from, escapeSquare);
             ReversibleMove moveStub = new ReversibleMoveStub(null, component);
 
@@ -102,8 +101,8 @@ class CheckmateServiceTest {
         }
 
         @Test
-        @DisplayName("should return false if a move resolves the check")
-        void shouldReturnFalseIfAnyMoveResolvesCheck() {
+        @DisplayName("should not detect checkmate if a move resolves the check")
+        void shouldNotDetectCheckmateIfAnyMoveResolvesCheck() {
             MoveComponent component = new MoveComponent(from, escapeSquare);
             ReversibleMove moveStub = new ReversibleMoveStub(null, component);
 

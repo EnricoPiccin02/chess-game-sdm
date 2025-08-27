@@ -26,14 +26,14 @@ class ChessClockPanelTest {
     }
 
     @Test
-    @DisplayName("should expose the clock it was constructed with")
+    @DisplayName("should expose the clock it was injected into")
     void shouldExposeInjectedClock() {
         assertSame(mockClock, panel.getClock());
     }
 
     @Test
-    @DisplayName("should update the label text when updateTime is called")
-    void shouldUpdateLabelWhenUpdateTimeIsCalled() {
+    @DisplayName("should update the displayed time when updateTime is called")
+    void shouldUpdateDisplayedTimeWhenUpdateTimeIsCalled() {
         panel.updateTime("5:00");
 
         assertEquals("5:00", panel.getTime());

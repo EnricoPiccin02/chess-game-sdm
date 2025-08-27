@@ -53,7 +53,7 @@ public class PieceFake implements ChessPiece {
 
     @Override
     public boolean isOpponentOf(ChessPieceColor color) {
-        return true;
+        return false;
     }
 
     @Override
@@ -62,5 +62,5 @@ public class PieceFake implements ChessPiece {
     }
 
     @Override
-    public void restoreSnapshot(ChessPieceSnapshot snapshot) { }
+    public void restoreSnapshot(ChessPieceSnapshot snapshot) {}
 }

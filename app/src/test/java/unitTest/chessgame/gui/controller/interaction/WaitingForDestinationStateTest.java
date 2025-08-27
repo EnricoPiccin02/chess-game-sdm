@@ -45,18 +45,30 @@ class WaitingForDestinationStateTest {
         state = new WaitingForDestinationState(moveQuery, controller, from, transition, boardUI);
     }
 
-    @Test
-    @DisplayName("should enable legal destinations on enter")
-    void shouldEnableLegalDestinationsOnEnter() {
-        Set<ChessboardPosition> moves = Set.of(
-            new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO)
-        );
-        when(moveQuery.legalDestinations(from)).thenReturn(moves);
+    @Nested
+    @DisplayName("on enter")
+    class OnEnter {
 
-        state.onEnter();
+        @Test
+        @DisplayName("should clear previous highlights")
+        void shouldClearPreviousHighlights() {
+            state.onEnter();
 
-        verify(boardUI).clear();
-        verify(boardUI).enableLegalDestinations(moves);
+            verify(boardUI).clear();
+        }
+
+        @Test
+        @DisplayName("should highlight available moves")
+        void shouldHighlightAvailableMoves() {
+            Set<ChessboardPosition> moves = Set.of(
+                new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO)
+            );
+            when(moveQuery.legalDestinations(from)).thenReturn(moves);
+
+            state.onEnter();
+
+            verify(boardUI).enableLegalDestinations(moves);
+        }
     }
 
     @Nested
@@ -64,23 +76,46 @@ class WaitingForDestinationStateTest {
     class OnSquareClicked {
 
         @Test
-        @DisplayName("should transition back if same square clicked")
-        void shouldTransitionBackIfSameSquareClicked() {
+        @DisplayName("should transition back when clicking origin again")
+        void shouldTransitionBackWhenClickingOriginAgain() {
             state.onSquareClicked(from);
 
             verify(transition).accept(any(WaitingForSelectionState.class));
+        }
+
+        @Test
+        @DisplayName("should not ask for moves again when clicking origin")
+        void shouldNotAskForMovesWhenClickingOrigin() {
+            state.onSquareClicked(from);
+
             verifyNoInteractions(moveQuery);
+        }
+
+        @Test
+        @DisplayName("should not request move execution when clicking origin")
+        void shouldNotRequestMoveExecutionWhenClickingOrigin() {
+            state.onSquareClicked(from);
+
             verifyNoInteractions(controller);
         }
 
         @Test
-        @DisplayName("should make move and transition to WaitingForSelectionState")
-        void shouldMakeMoveAndTransition() {
+        @DisplayName("should execute move when destination is chosen")
+        void shouldExecuteMoveWhenDestinationIsChosen() {
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO);
 
             state.onSquareClicked(to);
 
             verify(controller).makeMove(from, to);
+        }
+
+        @Test
+        @DisplayName("should transition to selection state after move")
+        void shouldTransitionToSelectionStateAfterMove() {
+            ChessboardPosition to = new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO);
+
+            state.onSquareClicked(to);
+
             verify(transition).accept(any(WaitingForSelectionState.class));
         }
     }

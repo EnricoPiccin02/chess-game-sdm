@@ -62,29 +62,41 @@ class GameStateHandlerTest {
     }
 
     @Nested
-    @DisplayName("start()")
-    class Start {
-        @Test
-        @DisplayName("should reset board, executor and notify flow controller")
-        void shouldResetBoardAndExecutorAndNotify() {
-            handler.start();
+    @DisplayName("when game starts")
+    class WhenGameStarts {
 
+        @Test
+        @DisplayName("should prepare the board for a new game")
+        void shouldPrepareBoardForNewGame() {
+            handler.start();
             verify(board).resetBoard();
+        }
+
+        @Test
+        @DisplayName("should clear move history")
+        void shouldClearMoveHistory() {
+            handler.start();
             assertTrue(executor.wasReset());
+        }
+
+        @Test
+        @DisplayName("should announce game start")
+        void shouldAnnounceGameStart() {
+            handler.start();
             verify(flowController).onGameStart();
         }
     }
 
     @Nested
-    @DisplayName("makeMove()")
-    class MakeMove {
+    @DisplayName("when a move is made")
+    class WhenMoveMade {
 
         private final ChessboardPosition from = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
         private final ChessboardPosition to = new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO);
 
         @Test
-        @DisplayName("should reject illegal move when finder returns empty")
-        void shouldRejectIllegalMove() {
+        @DisplayName("should reject move when not allowed")
+        void shouldRejectMoveWhenNotAllowed() {
             moveFinder.setMove(Optional.empty());
 
             handler.makeMove(from, to);
@@ -93,8 +105,8 @@ class GameStateHandlerTest {
         }
 
         @Test
-        @DisplayName("should apply move and notify flow controller when legal")
-        void shouldApplyLegalMove() {
+        @DisplayName("should apply a valid move")
+        void shouldApplyValidMove() {
             moveFinder.setMove(Optional.of(dummyMove));
 
             handler.makeMove(from, to);
@@ -103,20 +115,30 @@ class GameStateHandlerTest {
         }
 
         @Test
-        @DisplayName("should reject move if leaves mover in check")
-        void shouldRejectWhenInCheck() {
+        @DisplayName("should reject move that leaves player under attack")
+        void shouldRejectMoveThatLeavesPlayerUnderAttack() {
+            moveFinder.setMove(Optional.of(dummyMove));
+            outcomeEvaluator.setIllegalBecauseOfCheck(true);
+
+            handler.makeMove(from, to);
+
+            verify(flowController).onMoveRejected(GameReason.UNDER_ATTACK);
+        }
+
+        @Test
+        @DisplayName("should revert move when it leaves player under attack")
+        void shouldRevertMoveLeavingPlayerUnderAttack() {
             moveFinder.setMove(Optional.of(dummyMove));
             outcomeEvaluator.setIllegalBecauseOfCheck(true);
 
             handler.makeMove(from, to);
 
             assertTrue(executor.wasUndone());
-            verify(flowController).onMoveRejected(GameReason.UNDER_ATTACK);
         }
 
         @Test
         @DisplayName("should proclaim winner when move checkmates opponent")
-        void shouldProclaimWinnerOnCheckmate() {
+        void shouldProclaimWinnerWhenOpponentIsCheckmated() {
             moveFinder.setMove(Optional.of(dummyMove));
             outcomeEvaluator.setCheckmate(true);
 
@@ -127,11 +149,11 @@ class GameStateHandlerTest {
     }
 
     @Nested
-    @DisplayName("undoMove()")
-    class UndoMove {
+    @DisplayName("when a move is undone")
+    class WhenMoveUndone {
 
         @Test
-        @DisplayName("should undo last move and notify flow controller")
+        @DisplayName("should undo the last move")
         void shouldUndoLastMove() {
             executor.setUndoResult(Optional.of(result));
 
@@ -141,8 +163,8 @@ class GameStateHandlerTest {
         }
 
         @Test
-        @DisplayName("should reject when no undo is available")
-        void shouldRejectWhenNoUndo() {
+        @DisplayName("should reject undo when no moves are available")
+        void shouldRejectUndoWhenNoMovesAvailable() {
             executor.setUndoResult(Optional.empty());
 
             handler.undoMove();
@@ -152,11 +174,12 @@ class GameStateHandlerTest {
     }
 
     @Nested
-    @DisplayName("end()")
-    class End {
+    @DisplayName("when the game ends")
+    class WhenGameEnds {
+
         @Test
-        @DisplayName("should notify flow controller of game end")
-        void shouldNotifyOnEnd() {
+        @DisplayName("should announce game end")
+        void shouldAnnounceGameEnd() {
             handler.end();
             verify(flowController).onGameEnd();
         }

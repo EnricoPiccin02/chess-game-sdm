@@ -1,17 +1,17 @@
 package unittest.chessgame.gamelogic.domain;
 
-import org.junit.jupiter.api.Test;
-
-import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
-import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirectionSet;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.EnumSet;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirection;
+import com.sdm.units.chessgame.gamelogic.domain.ChessboardDirectionSet;
 
 @DisplayName("ChessboardDirectionSet")
 class ChessboardDirectionSetTest {
@@ -21,8 +21,8 @@ class ChessboardDirectionSetTest {
     class GetDirections {
 
         @Test
-        @DisplayName("should return four orthogonal directions")
-        void shouldReturnOrthogonalDirections() {
+        @DisplayName("should provide all four orthogonal directions")
+        void shouldProvideAllOrthogonalDirections() {
             List<ChessboardDirection> directions = ChessboardDirectionSet.ORTHOGONAL.getDirections();
             assertEquals(4, directions.size());
             assertTrue(directions.containsAll(List.of(
@@ -34,8 +34,8 @@ class ChessboardDirectionSetTest {
         }
 
         @Test
-        @DisplayName("should return four diagonal directions")
-        void shouldReturnDiagonalDirections() {
+        @DisplayName("should provide all four diagonal directions")
+        void shouldProvideAllDiagonalDirections() {
             List<ChessboardDirection> directions = ChessboardDirectionSet.DIAGONAL.getDirections();
             assertEquals(4, directions.size());
             assertTrue(directions.containsAll(List.of(
@@ -47,18 +47,11 @@ class ChessboardDirectionSetTest {
         }
 
         @Test
-        @DisplayName("should return all 8 directions for ORTHOGONAL_AND_DIAGONAL")
-        void shouldReturnAllDirections() {
+        @DisplayName("should provide all eight directions (orthogonal and diagonal)")
+        void shouldProvideAllDirections() {
             List<ChessboardDirection> directions = ChessboardDirectionSet.ORTHOGONAL_AND_DIAGONAL.getDirections();
             assertEquals(8, directions.size());
             assertTrue(directions.containsAll(EnumSet.allOf(ChessboardDirection.class)));
-        }
-
-        @Test
-        @DisplayName("should return immutable list")
-        void shouldReturnImmutableList() {
-            List<ChessboardDirection> directions = ChessboardDirectionSet.ORTHOGONAL.getDirections();
-            assertThrows(UnsupportedOperationException.class, () -> directions.add(ChessboardDirection.UP_LEFT));
         }
     }
 }

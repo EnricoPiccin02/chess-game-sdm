@@ -4,18 +4,18 @@ import com.sdm.units.chessgame.gamecontrol.state.GameReason;
 import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gui.board.clock.ChessClockListener;
-import com.sdm.units.chessgame.gui.board.clock.ChessClockPanel;
+import com.sdm.units.chessgame.gui.board.clock.ChessClockView;
 import com.sdm.units.chessgame.gui.board.clock.ClockFormatter;
 
 public final class ClockDisplayAdapter implements ChessClockListener {
 
-    private final ChessClockPanel panel;
+    private final ChessClockView clockView;
     private final ClockFormatter formatter;
     private final GameStateController controller;
     private final ChessPieceColor color;
 
-    public ClockDisplayAdapter(ChessClockPanel panel, ClockFormatter formatter, GameStateController controller, ChessPieceColor color) {
-        this.panel = panel;
+    public ClockDisplayAdapter(ChessClockView clockView, ClockFormatter formatter, GameStateController controller, ChessPieceColor color) {
+        this.clockView = clockView;
         this.formatter = formatter;
         this.controller = controller;
         this.color = color;
@@ -23,7 +23,7 @@ public final class ClockDisplayAdapter implements ChessClockListener {
 
     @Override
     public void onTimeUpdated(long remainingMillis) {
-        panel.updateTime(formatter.formatTime(remainingMillis));
+        clockView.updateTime(formatter.formatTime(remainingMillis));
     }
 
     @Override

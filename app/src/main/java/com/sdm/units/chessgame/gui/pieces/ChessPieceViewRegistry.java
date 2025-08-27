@@ -4,7 +4,7 @@ import javax.swing.JComponent;
 
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 
-public class ChessPieceViewRegistry {
+public class ChessPieceViewRegistry implements PieceViewFactory {
     
     private final SvgRenderer renderer;
     private final PieceResourceResolver resolver;
@@ -14,6 +14,7 @@ public class ChessPieceViewRegistry {
         this.resolver = resolver;
     }
 
+    @Override
     public JComponent createComponentFor(ChessPiece piece) {
         String path = resolver.resolvePath(piece);
         return new SvgImagePanel(path, renderer);

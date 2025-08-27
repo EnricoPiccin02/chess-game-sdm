@@ -15,7 +15,7 @@ public final class ChessGameControllerBuilder {
     private ChessboardOrientation orientation;
     private PromotionPieceSelector selector;
 
-    private ChessGameControllerBuilder() { }
+    private ChessGameControllerBuilder() {}
 
     public static ChessGameControllerBuilder create() {
         return new ChessGameControllerBuilder();
