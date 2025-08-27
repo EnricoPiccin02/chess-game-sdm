@@ -49,13 +49,13 @@ public class ChessboardSquareComponent extends JPanel implements ChessboardSquar
     }
 
     @Override
-    public void highlight(HighlightColor type) {
-        highlightRenderer.apply(this, Optional.ofNullable(type));
+    public void highlight(HighlightColor color) {
+        highlightRenderer.apply(this, color);
     }
 
     @Override
     public void clearHighlight() {
-        highlightRenderer.apply(this, Optional.empty());
+        highlightRenderer.apply(this, HighlightColor.NONE);
     }
 
     @Override

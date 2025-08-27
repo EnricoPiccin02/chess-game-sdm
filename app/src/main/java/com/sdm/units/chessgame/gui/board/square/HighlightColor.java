@@ -3,8 +3,8 @@ package com.sdm.units.chessgame.gui.board.square;
 import java.awt.Color;
 
 public enum HighlightColor {
-    
-    SELECTED, LEGAL_DESTINATION, CLICKED, HOVER;
+
+    SELECTED, LEGAL_DESTINATION, CLICKED, HOVER, NONE;
 
     public Color getColor() {
         return switch (this) {
@@ -12,6 +12,7 @@ public enum HighlightColor {
             case LEGAL_DESTINATION -> Color.GREEN;
             case CLICKED -> Color.RED;
             case HOVER -> Color.BLUE;
+            default -> null;
         };
     }
 }

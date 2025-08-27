@@ -107,7 +107,7 @@ class ChessboardSquareComponentTest {
         void shouldApplyHighlightWithGivenType() {
             squareWithSpy.highlight(HighlightColor.SELECTED);
 
-            assertEquals(Optional.of(HighlightColor.SELECTED), highlightSpy.getLastApplied());
+            assertEquals(HighlightColor.SELECTED, highlightSpy.getLastApplied());
         }
 
         @Test
@@ -116,7 +116,7 @@ class ChessboardSquareComponentTest {
             squareWithSpy.highlight(HighlightColor.SELECTED);
             squareWithSpy.highlight(HighlightColor.HOVER);
 
-            assertEquals(Optional.of(HighlightColor.HOVER), highlightSpy.getLastApplied());
+            assertEquals(HighlightColor.HOVER, highlightSpy.getLastApplied());
         }
 
         @Test
@@ -125,7 +125,7 @@ class ChessboardSquareComponentTest {
             squareWithSpy.highlight(HighlightColor.SELECTED);
             squareWithSpy.clearHighlight();
 
-            assertEquals(Optional.empty(), highlightSpy.getLastApplied());
+            assertEquals(HighlightColor.NONE, highlightSpy.getLastApplied());
         }
     }
 
