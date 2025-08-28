@@ -11,13 +11,14 @@ import org.junit.jupiter.api.Test;
 import com.sdm.units.chessgame.gui.controller.command.CommandFactory;
 import com.sdm.units.chessgame.gui.controller.command.GameCommand;
 import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionController;
+import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionStrategy;
 
 @DisplayName("ToolbarInteractionController")
 class ToolbarInteractionControllerTest {
 
     private GameCommand cmd;
     private CommandFactory commandFactory;
-    private ToolbarInteractionController toolbar;
+    private ToolbarInteractionStrategy toolbar;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +32,7 @@ class ToolbarInteractionControllerTest {
     void shouldDelegateUndoAndExecute() {
         when(commandFactory.createUndoCommand()).thenReturn(cmd);
 
-        toolbar.undoLastMove();
+        toolbar.undo();
 
         verify(cmd).execute();
     }
@@ -47,11 +48,11 @@ class ToolbarInteractionControllerTest {
     }
 
     @Test
-    @DisplayName("should delegate close command creation and then execute it")
-    void shouldDelegateCloseAndExecute() {
+    @DisplayName("should delegate exit command creation and then execute it")
+    void shouldDelegateExitAndExecute() {
         when(commandFactory.createEndGameCommand()).thenReturn(cmd);
 
-        toolbar.close();
+        toolbar.exit();
 
         verify(cmd).execute();
     }   

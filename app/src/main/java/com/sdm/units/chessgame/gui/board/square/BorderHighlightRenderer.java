@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 public class BorderHighlightRenderer implements HighlightRenderer {
     
     @Override
-    public void apply(JComponent component, HighlightColor type) {
+    public void render(JComponent component, HighlightColor type) {
         if (type == HighlightColor.NONE) {
             component.setBorder(BorderFactory.createEmptyBorder());
         } else {

@@ -4,13 +4,13 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JToolBar;
 
-import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionController;
+import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionStrategy;
 
 public class ChessGameToolbar extends JToolBar implements GameToolbarView {
 
-    private final ToolbarInteractionController interactionController;
+    private final ToolbarInteractionStrategy interactionController;
 
-    public ChessGameToolbar(ToolbarInteractionController interactionController) {
+    public ChessGameToolbar(ToolbarInteractionStrategy interactionController) {
         this.interactionController = interactionController;
 
         this.setFloatable(false);
@@ -35,11 +35,11 @@ public class ChessGameToolbar extends JToolBar implements GameToolbarView {
     }
 
     public void undo() {
-        interactionController.undoLastMove();
+        interactionController.undo();
     }
 
     public void exit() {
-        interactionController.close();
+        interactionController.exit();
     }
 
     @Override

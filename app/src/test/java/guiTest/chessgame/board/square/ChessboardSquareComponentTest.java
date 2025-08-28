@@ -27,6 +27,7 @@ import com.sdm.units.chessgame.gui.board.square.HighlightColor;
 import com.sdm.units.chessgame.gui.board.square.HighlightRenderer;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
 import com.sdm.units.chessgame.gui.board.square.SquareColor;
+import com.sdm.units.chessgame.gui.controller.interaction.SquareInteractionManager;
 
 import guitest.chessgame.testdoubles.ChessPieceViewFactoryStub;
 import guitest.chessgame.testdoubles.HighlightRendererSpy;
@@ -134,11 +135,14 @@ class ChessboardSquareComponentTest {
     class ClickHandler {
 
         private SquareClickHandler handler;
+        private SquareInteractionManager manager;
 
         @BeforeEach
         void setUp() {
             handler = Mockito.mock(SquareClickHandler.class);
-            square.attachClickHandler(handler);
+            manager = Mockito.mock(SquareInteractionManager.class);
+
+            square.setClickHandler(handler, manager);
         }
 
         @Test

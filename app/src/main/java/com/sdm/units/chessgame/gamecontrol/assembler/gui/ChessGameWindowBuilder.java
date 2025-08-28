@@ -18,8 +18,11 @@ import com.sdm.units.chessgame.gui.board.view.SwingDispatchingChessGameView;
 import com.sdm.units.chessgame.gui.controller.command.CommandFactory;
 import com.sdm.units.chessgame.gui.controller.events.ChessGameEventPublisher;
 import com.sdm.units.chessgame.gui.controller.interaction.ChessboardInteractionController;
+import com.sdm.units.chessgame.gui.controller.interaction.DefaultSquareInteractionManager;
 import com.sdm.units.chessgame.gui.controller.interaction.InteractionContext;
+import com.sdm.units.chessgame.gui.controller.interaction.SquareInteractionManager;
 import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionController;
+import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionStrategy;
 import com.sdm.units.chessgame.gui.pieces.ChessViewConfigurator;
 
 public final class ChessGameWindowBuilder {
@@ -45,17 +48,15 @@ public final class ChessGameWindowBuilder {
     }
     
     public ChessGameView build() {
-        ChessboardView chessboardView = new ChessboardPanel(
-            ChessViewConfigurator.createPieceViewFactory(),
-            new BorderHighlightRenderer()
-        );
+        ChessboardView chessboardView = new ChessboardPanel(ChessViewConfigurator.createPieceViewFactory(), new BorderHighlightRenderer());
+        SquareInteractionManager interactionManager = new DefaultSquareInteractionManager();
+        ChessboardInteractionController boardController = new ChessboardInteractionController(chessboardView, interactionManager);
 
-        ChessboardInteractionController boardController = new ChessboardInteractionController(chessboardView);
         interactionContext = new InteractionContext(moveQuery, controller, boardController);
         boardController.setClickHandler(interactionContext::handleSquareClick);
 
         CommandFactory commandFactory = new CommandFactory(interactionContext, controller);
-        ToolbarInteractionController toolbarController = new ToolbarInteractionController(commandFactory);
+        ToolbarInteractionStrategy toolbarController = new ToolbarInteractionController(commandFactory);
 
         PlayerClocksFactory clockFactory = new PlayerClocksFactory(CLOCK_TIME_LIMIT);
         EnumMap<ChessPieceColor, ChessClock> clocks = clockFactory.createClocks();

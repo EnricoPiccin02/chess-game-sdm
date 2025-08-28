@@ -1,6 +1,7 @@
 package unittest.chessgame.gui.controller.interaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -12,24 +13,26 @@ import org.junit.jupiter.api.Test;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gui.board.square.HighlightColor;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
 import com.sdm.units.chessgame.gui.controller.interaction.ChessboardInteractionController;
 
 import unittest.chessgame.gui.testdoubles.ChessboardViewSpy;
+import unittest.chessgame.gui.testdoubles.SquareInteractionManagerSpy;
 
 @DisplayName("ChessboardInteractionController")
 class ChessboardInteractionControllerTest {
 
-    private ChessboardViewSpy viewSpy;
+    private ChessboardViewSpy boardViewSpy;
     private ChessboardInteractionController controller;
     private SquareClickHandler dummyHandler;
+    private SquareInteractionManagerSpy interactionManagerSpy;
 
     @BeforeEach
     void setUp() {
-        viewSpy = new ChessboardViewSpy();
+        boardViewSpy = new ChessboardViewSpy();
+        interactionManagerSpy = new SquareInteractionManagerSpy();
         dummyHandler = pos -> {};
-        controller = new ChessboardInteractionController(viewSpy);
+        controller = new ChessboardInteractionController(boardViewSpy, interactionManagerSpy);
         controller.setClickHandler(dummyHandler);
     }
 
@@ -43,27 +46,20 @@ class ChessboardInteractionControllerTest {
         );
 
         @Test
-        @DisplayName("should highlight given squares")
-        void shouldHighlightGivenSquares() {
+        @DisplayName("should highlight only the given squares")
+        void shouldHighlightOnlyTheGivenSquares() {
             controller.enableSelectableSquares(positions);
 
-            assertThat(viewSpy.getUpdatedSquares()).containsExactlyInAnyOrderElementsOf(positions);
+            assertThat(boardViewSpy.getUpdatedSquares())
+                .containsExactlyInAnyOrderElementsOf(positions);
         }
 
         @Test
-        @DisplayName("should mark highlights as selected")
-        void shouldMarkHighlightsAsSelected() {
+        @DisplayName("should delegate interaction setup to manager")
+        void shouldDelegateInteractionSetupToManager() {
             controller.enableSelectableSquares(positions);
 
-            assertThat(viewSpy.getLastHighlightType()).isEqualTo(HighlightColor.SELECTABLE);
-        }
-
-        @Test
-        @DisplayName("should attach listener to squares")
-        void shouldAttachListenerToSquares() {
-            controller.enableSelectableSquares(positions);
-
-            assertThat(viewSpy.isListenerAttached()).isTrue();
+            assertTrue(interactionManagerSpy.isSelectableCalled());
         }
     }
 
@@ -79,19 +75,19 @@ class ChessboardInteractionControllerTest {
         }
 
         @Test
-        @DisplayName("should clear all highlights")
-        void shouldClearAllHighlights() {
+        @DisplayName("should clear all square highlights")
+        void shouldClearAllSquareHighlights() {
             controller.clear();
 
-            assertThat(viewSpy.isUpdateAllCalled()).isTrue();
+            assertThat(boardViewSpy.isUpdateAllCalled()).isTrue();
         }
 
         @Test
-        @DisplayName("should remove all listeners")
-        void shouldRemoveAllListeners() {
+        @DisplayName("should delegate clearing to manager")
+        void shouldDelegateClearingToManager() {
             controller.clear();
 
-            assertThat(viewSpy.isListenerRemoved()).isTrue();
+            assertTrue(interactionManagerSpy.isNoneCalled());
         }
     }
 }

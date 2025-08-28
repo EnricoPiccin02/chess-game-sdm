@@ -5,5 +5,5 @@ import javax.swing.JComponent;
 @FunctionalInterface
 public interface HighlightRenderer {
     
-    void apply(JComponent component, HighlightColor type);
+    void render(JComponent component, HighlightColor type);
 }

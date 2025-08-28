@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
+import com.sdm.units.chessgame.gui.controller.interaction.SquareInteractionManager;
 
 public interface ChessboardSquareHandler extends SquareRenderer {
 
@@ -11,7 +12,7 @@ public interface ChessboardSquareHandler extends SquareRenderer {
 
     void setPiece(Optional<ChessPiece> newPiece);
 
-    void attachClickHandler(SquareClickHandler handler);
+    void setClickHandler(SquareClickHandler handler, SquareInteractionManager manager);
 
     void removeClickHandler();
 }

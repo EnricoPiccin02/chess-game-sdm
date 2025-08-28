@@ -7,6 +7,7 @@ import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gui.board.square.ChessboardSquareHandler;
 import com.sdm.units.chessgame.gui.board.square.HighlightColor;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
+import com.sdm.units.chessgame.gui.controller.interaction.SquareInteractionManager;
 
 public class ChessboardSquareComponentSpy implements ChessboardSquareHandler {
     
@@ -31,7 +32,7 @@ public class ChessboardSquareComponentSpy implements ChessboardSquareHandler {
     public void highlight(HighlightColor type) {}
 
     @Override
-    public void attachClickHandler(SquareClickHandler clickHandler) {}
+    public void setClickHandler(SquareClickHandler clickHandler, SquareInteractionManager manager) {}
 
     @Override
     public void removeClickHandler() {}

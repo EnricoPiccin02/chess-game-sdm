@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
 import com.sdm.units.chessgame.gui.controller.interaction.ChessboardSquareMouseAdapter;
+import com.sdm.units.chessgame.gui.controller.interaction.SquareInteractionManager;
 import com.sdm.units.chessgame.gui.pieces.PieceViewFactory;
 
 public class ChessboardSquareComponent extends JPanel implements ChessboardSquareHandler {
@@ -50,20 +51,21 @@ public class ChessboardSquareComponent extends JPanel implements ChessboardSquar
 
     @Override
     public void highlight(HighlightColor color) {
-        highlightRenderer.apply(this, color);
+        highlightRenderer.render(this, color);
     }
 
     @Override
     public void clearHighlight() {
-        highlightRenderer.apply(this, HighlightColor.NONE);
+        highlightRenderer.render(this, HighlightColor.NONE);
     }
 
     @Override
-    public void attachClickHandler(SquareClickHandler handler) {
+    public void setClickHandler(SquareClickHandler handler, SquareInteractionManager manager) {
         removeClickHandler();
-        clickListener = new ChessboardSquareMouseAdapter(handler);
+        clickListener = new ChessboardSquareMouseAdapter(this, handler, manager);
         addMouseListener(clickListener);
     }
+
 
     @Override
     public void removeClickHandler() {
