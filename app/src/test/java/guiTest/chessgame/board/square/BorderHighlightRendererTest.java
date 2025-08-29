@@ -30,14 +30,14 @@ class BorderHighlightRendererTest {
     @Test
     @DisplayName("shouldRemoveHighlightWhenTypeIsNone")
     void shouldRemoveHighlightWhenTypeIsNone() {
-        renderer.apply(dummyComponent, HighlightColor.NONE);
+        renderer.render(dummyComponent, HighlightColor.NONE);
         assertTrue(dummyComponent.getBorder() instanceof EmptyBorder);
     }
 
     @Test
     @DisplayName("shouldApplyColoredHighlightWhenTypeIsSet")
     void shouldApplyColoredHighlightWhenTypeIsSet() {
-        renderer.apply(dummyComponent, HighlightColor.SELECTABLE);
+        renderer.render(dummyComponent, HighlightColor.SELECTABLE);
         assertTrue(dummyComponent.getBorder() instanceof LineBorder);
     }
 }

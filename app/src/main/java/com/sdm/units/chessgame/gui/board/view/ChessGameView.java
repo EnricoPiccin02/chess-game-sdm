@@ -5,7 +5,7 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 
 public interface ChessGameView {
     
-    void display();
+    void initialize();
 
     void setChessboard(Chessboard board);
 

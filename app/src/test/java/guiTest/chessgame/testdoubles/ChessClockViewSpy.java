@@ -3,22 +3,20 @@ package guitest.chessgame.testdoubles;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import com.sdm.units.chessgame.gui.board.clock.ChessClock;
-import com.sdm.units.chessgame.gui.board.clock.ChessClockListener;
 import com.sdm.units.chessgame.gui.board.clock.ChessClockView;
 
 public class ChessClockViewSpy implements ChessClockView {
-    
-    private boolean startClockCalled = false;
-    private boolean stopClockCalled = false;
+
+    private boolean startCalled = false;
+    private boolean stopCalled = false;
     private boolean resetCalled = false;
 
-    public boolean isStartClockCalled() {
-        return startClockCalled;
+    public boolean isStartCalled() {
+        return startCalled;
     }
 
-    public boolean isStopClockCalled() {
-        return stopClockCalled;
+    public boolean isStopCalled() {
+        return stopCalled;
     }
 
     public boolean isResetCalled() {
@@ -26,25 +24,13 @@ public class ChessClockViewSpy implements ChessClockView {
     }
 
     @Override
-    public ChessClock getClock() {
-        return new ChessClock() {
-            
-            @Override
-            public void start() {
-                startClockCalled = true;
-            }
+    public void start() {
+        startCalled = true;
+    }
 
-            @Override
-            public void stop() {
-                stopClockCalled = true;
-            }
-
-            @Override
-            public void reset() {}
-
-            @Override
-            public void setListener(ChessClockListener listener) {}
-        };
+    @Override
+    public void stop() {
+        stopCalled = true;
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.sdm.units.chessgame.gamelogic.board.state.MoveRecorder;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.initialization.ChessboardSetup;
 import com.sdm.units.chessgame.gamelogic.initialization.StandardChessPiecePlacement;
+import com.sdm.units.chessgame.gamelogic.move.SingleRuleFactory;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveRuleSet;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionPieceSelector;
@@ -37,9 +38,10 @@ public final class ChessDomainFactory {
 
     public BoardAssembly createChessboardComponents() {
         MoveRecorder<ReversibleMove> recorder = new MoveHistory();
+        
         EvaluatorsFactory evaluatorsFactory = new EvaluatorsFactory(orientation);
-
-        MoveRuleSet rules = new RulesFactory(recorder, selector, evaluatorsFactory).createCompleteRules();
+        SingleRuleFactory ruleFactory = new SingleRuleFactory(recorder, selector);
+        MoveRuleSet rules = new RulesFactory(ruleFactory, evaluatorsFactory).createCompleteRules();
 
         MoveExecutor executor = new MoveExecutorService(recorder);
         LegalMoveFinder moveFinder = new DefaultLegalMoveFinder(rules.asValidator(), rules.asGenerator(), orientation);

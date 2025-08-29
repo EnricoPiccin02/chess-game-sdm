@@ -11,7 +11,7 @@ public class GameStartedEvent extends ChessGameEvent {
     @Override
     public void handleOn(ChessGameView view) {
         view.reset();
-        view.display();
+        view.initialize();
         view.displayMessage(getMessage());
     }
 }

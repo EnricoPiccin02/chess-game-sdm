@@ -61,7 +61,7 @@ public class ChessAcceptanceTest {
         @DisplayName("Black wins by delivering checkmate with Queen in H4")
         void testBlackWinsByFoolsMate() {
             startGame()
-                .verifyShown()
+                .verifyInitialized()
                 .expectGameRestarted(1)
                 .expectBoard(factory.startingBoard())
                 .expectMessage("Game started! White begins!")
@@ -190,7 +190,7 @@ public class ChessAcceptanceTest {
         @DisplayName("Rejects illegal Knight move")
         void testIllegalMoveRejected() {
             startGame()
-                .verifyShown()
+                .verifyInitialized()
                 .expectBoard(factory.startingBoard())
                 .expectMessage("Game started! White begins!");
 
@@ -238,7 +238,7 @@ public class ChessAcceptanceTest {
         @DisplayName("White runs out of time, Black wins")
         void testTimeRunsOutForWhite() {
             startGame()
-                .verifyShown()
+                .verifyInitialized()
                 .expectGameRestarted(1)
                 .expectBoard(factory.startingBoard())
                 .expectMessage("Game started! White begins!")
@@ -256,7 +256,7 @@ public class ChessAcceptanceTest {
         @DisplayName("Black runs out of time, White wins")
         void testTimeRunsOutForBlack() {
             startGame()
-                .verifyShown()
+                .verifyInitialized()
                 .expectGameRestarted(1)
                 .expectBoard(factory.startingBoard())
                 .expectMessage("Game started! White begins!")
@@ -306,8 +306,8 @@ public class ChessAcceptanceTest {
         return this;
     }
 
-    private ChessAcceptanceTest verifyShown() {
-        assertTrue(viewSpy.isShown());
+    private ChessAcceptanceTest verifyInitialized() {
+        assertTrue(viewSpy.isInitialized());
         return this;
     }
 

@@ -4,22 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sdm.units.chessgame.gamelogic.board.evaluation.EvaluatorsFactory;
-import com.sdm.units.chessgame.gamelogic.board.state.MoveRecorder;
-import com.sdm.units.chessgame.gamelogic.move.MoveRuleFactory;
+import com.sdm.units.chessgame.gamelogic.move.SingleRuleFactory;
 import com.sdm.units.chessgame.gamelogic.move.core.ComposedMoveRule;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveRuleSet;
-import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.special.castling.CastlingRule;
-import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionPieceSelector;
 
-public final class RulesFactory {
+public class RulesFactory {
 
-    private final MoveRuleFactory ruleFactory;
+    private final SingleRuleFactory ruleFactory;
     private final EvaluatorsFactory evaluatorsFactory;
     private MoveRuleSet baseRules;
 
-    public RulesFactory(MoveRecorder<ReversibleMove> recorder, PromotionPieceSelector selector, EvaluatorsFactory evaluatorsFactory) {
-        this.ruleFactory = new MoveRuleFactory(recorder, selector);
+    public RulesFactory(SingleRuleFactory ruleFactory, EvaluatorsFactory evaluatorsFactory) {
+        this.ruleFactory = ruleFactory;
         this.evaluatorsFactory = evaluatorsFactory;
     }
 

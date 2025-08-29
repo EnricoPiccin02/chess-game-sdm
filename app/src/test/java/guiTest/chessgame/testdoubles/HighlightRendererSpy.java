@@ -10,7 +10,7 @@ public class HighlightRendererSpy implements HighlightRenderer {
     private HighlightColor lastApplied;
 
     @Override
-    public void apply(JComponent component, HighlightColor color) {
+    public void render(JComponent component, HighlightColor color) {
         this.lastApplied = color;
     }
 

@@ -8,9 +8,9 @@ import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import com.sdm.units.chessgame.gamelogic.move.result.MoveResult;
 
 public class MoveExecutorStub implements MoveExecutor {
-    
-    private boolean reset;
-    private boolean undone;
+
+    private boolean reset = false;
+    private boolean undone = false;
     private MoveResult nextResult;
     private Optional<MoveResult> undoResult = Optional.empty();
 

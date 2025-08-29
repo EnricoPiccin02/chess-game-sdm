@@ -4,41 +4,37 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import com.sdm.units.chessgame.gui.board.square.ChessboardSquareHandler;
-import com.sdm.units.chessgame.gui.board.square.HighlightStyle;
 import com.sdm.units.chessgame.gui.board.square.SquareClickHandler;
 
 public class ChessboardSquareMouseAdapter extends MouseAdapter {
 
+    private final ChessboardSquareHandler squareHandler;
     private final SquareClickHandler clickHandler;
+    private final SquareInteractionManager interactionManager;
 
-    public ChessboardSquareMouseAdapter(SquareClickHandler clickHandler) {
+    public ChessboardSquareMouseAdapter(ChessboardSquareHandler squareHandler, SquareClickHandler clickHandler, SquareInteractionManager interactionManager) {
+        this.squareHandler = squareHandler;
         this.clickHandler = clickHandler;
+        this.interactionManager = interactionManager;
     }
 
     @Override
     public void mouseClicked(MouseEvent event) {
-        if (!(event.getSource() instanceof ChessboardSquareHandler squareHandler)) return;
         clickHandler.handleClick(squareHandler.getPosition());
     }
 
     @Override
-    public void mouseEntered(MouseEvent event) {
-        if (event.getSource() instanceof ChessboardSquareHandler squareHandler) {
-            HighlightStyle.HOVER.apply(squareHandler, clickHandler);
-        }
+    public void mouseEntered(MouseEvent e) {
+        interactionManager.setHover(squareHandler);
     }
 
     @Override
-    public void mouseExited(MouseEvent event) {
-        if (event.getSource() instanceof ChessboardSquareHandler squareHandler) {
-            HighlightStyle.SELECTABLE.apply(squareHandler, clickHandler);
-        }
+    public void mouseExited(MouseEvent e) {
+        interactionManager.setSelectable(squareHandler, clickHandler);
     }
 
     @Override
-    public void mousePressed(MouseEvent event) {
-        if (event.getSource() instanceof ChessboardSquareHandler squareHandler) {
-            HighlightStyle.CLICKED.apply(squareHandler, clickHandler);
-        }
+    public void mousePressed(MouseEvent e) {
+        interactionManager.setClicked(squareHandler);
     }
 }

@@ -19,13 +19,13 @@ import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionPieceSe
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionRule;
 import com.sdm.units.chessgame.gamelogic.move.standard.StandardMoveRule;
 
-public final class MoveRuleFactory {
+public class SingleRuleFactory {
 
     private final MoveRecorder<ReversibleMove> recorder;
     private final PromotionPieceSelector selector;
     private final CastlingPattern castlingPattern;
 
-    public MoveRuleFactory(MoveRecorder<ReversibleMove> recorder, PromotionPieceSelector selector) {
+    public SingleRuleFactory(MoveRecorder<ReversibleMove> recorder, PromotionPieceSelector selector) {
         this.recorder = recorder;
         this.selector = selector;
         this.castlingPattern = new CastlingPattern();

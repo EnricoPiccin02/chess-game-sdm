@@ -20,6 +20,7 @@ public class ChessGameFrame extends JFrame implements ChessGameView, ChessGameEv
     private final EnumMap<ChessPieceColor, ChessClockView> clocks;
     private final ChessboardView chessboardView;
     private final MoveHistoryView moveHistoryArea;
+    private final GameToolbarView toolBar;
 
     public ChessGameFrame(String name, ChessboardView chessboardView, EnumMap<ChessPieceColor, ChessClockView> clocks, MoveHistoryView moveHistoryArea, GameToolbarView toolBar) {
         super(name);
@@ -29,11 +30,10 @@ public class ChessGameFrame extends JFrame implements ChessGameView, ChessGameEv
         this.chessboardView = chessboardView;
         this.clocks = clocks;
         this.moveHistoryArea = moveHistoryArea;
-
-        setContentPane(buildMainPanel(toolBar));
+        this.toolBar = toolBar;
     }
 
-    private JPanel buildMainPanel(GameToolbarView toolBar) {
+    private JPanel buildMainPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(toolBar.asComponent(), BorderLayout.NORTH);
         mainPanel.add(buildVerticalSplit(), BorderLayout.CENTER);
@@ -60,16 +60,17 @@ public class ChessGameFrame extends JFrame implements ChessGameView, ChessGameEv
     }
 
     @Override
-    public void display() {
-        this.pack();
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
+    public void initialize() {
+        setContentPane(buildMainPanel());
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     @Override
     public void setChessboard(Chessboard board) {
         chessboardView.renderChessboardState(board);
-        this.pack();
+        pack();
     }
 
     @Override
@@ -84,17 +85,17 @@ public class ChessGameFrame extends JFrame implements ChessGameView, ChessGameEv
 
     @Override
     public void startClock(ChessPieceColor color) {
-        clocks.get(color).getClock().start();
+        clocks.get(color).start();
     }
 
     @Override
     public void stopClock(ChessPieceColor color) {
-        clocks.get(color).getClock().stop();
+        clocks.get(color).stop();
     }
 
     @Override
     public void close() {
-        this.dispose();
+        dispose();
     }
 
     @Override

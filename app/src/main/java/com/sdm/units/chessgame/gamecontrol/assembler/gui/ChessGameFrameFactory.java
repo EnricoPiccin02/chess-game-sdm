@@ -10,11 +10,11 @@ import com.sdm.units.chessgame.gui.board.view.ChessboardView;
 import com.sdm.units.chessgame.gui.board.view.GameToolbarView;
 import com.sdm.units.chessgame.gui.board.view.MoveHistoryArea;
 import com.sdm.units.chessgame.gui.board.view.MoveHistoryView;
-import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionController;
+import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionStrategy;
 
 public final class ChessGameFrameFactory {
     
-    public static ChessGameFrame create(ChessboardView chessboardView, EnumMap<ChessPieceColor, ChessClockView> clocks, ToolbarInteractionController toolbarController) {        
+    public static ChessGameFrame create(ChessboardView chessboardView, EnumMap<ChessPieceColor, ChessClockView> clocks, ToolbarInteractionStrategy toolbarController) {        
         MoveHistoryView moveHistoryArea = new MoveHistoryArea();
         GameToolbarView toolBar = new ChessGameToolbar(toolbarController);
 

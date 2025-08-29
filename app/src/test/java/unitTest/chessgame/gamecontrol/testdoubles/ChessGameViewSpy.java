@@ -12,9 +12,9 @@ import com.sdm.units.chessgame.gui.controller.events.ChessGameEventListener;
 
 public class ChessGameViewSpy implements ChessGameView, ChessGameEventListener {
     
-    private boolean shown;
-    private boolean closed;
-    private int resetCount;
+    private boolean initialized = false;
+    private boolean closed = false;
+    private int resetCount = 0;
     private Deque<String> displayedMessages = new ArrayDeque<>();
     private String lastRecordedMessage;
     private Chessboard lastBoard;
@@ -22,8 +22,8 @@ public class ChessGameViewSpy implements ChessGameView, ChessGameEventListener {
     private EnumMap<ChessPieceColor, Boolean> lastClockStop = new EnumMap<>(ChessPieceColor.class);
     private ChessGameEvent lastEvent;
 
-    public boolean isShown() {
-        return shown;
+    public boolean isInitialized() {
+        return initialized;
     }
 
     public boolean isClosed() {
@@ -59,8 +59,8 @@ public class ChessGameViewSpy implements ChessGameView, ChessGameEventListener {
     }
 
     @Override
-    public void display() {
-        shown = true;
+    public void initialize() {
+        initialized = true;
     }
 
     @Override

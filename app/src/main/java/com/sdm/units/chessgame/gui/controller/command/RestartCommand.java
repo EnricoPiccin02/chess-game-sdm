@@ -16,6 +16,6 @@ public class RestartCommand implements GameCommand {
     @Override
     public void execute() {
         controller.start();
-        context.resetToStartState();
+        context.initialize();
     }
 }
