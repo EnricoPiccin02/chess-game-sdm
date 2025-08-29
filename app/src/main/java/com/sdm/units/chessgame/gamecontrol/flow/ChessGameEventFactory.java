@@ -25,8 +25,8 @@ public final class ChessGameEventFactory implements EventFactory {
     @Override
     public ChessGameEvent gameStarted(ChessPieceColor firstPlayer) {
         return new CompositeChessGameEvent(
-            new GameStartedEvent("Game started! " + firstPlayer + " begins!"),
             new UpdateChessboardEvent(board),
+            new GameStartedEvent("Game started! " + firstPlayer + " begins!"),
             new ClockStartEvent(firstPlayer)
         );
     }

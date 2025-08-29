@@ -54,8 +54,8 @@ class ChessGameEventFactoryTest {
             CompositeChessGameEvent composite = (CompositeChessGameEvent) event;
 
             assertThat(composite.events()).hasExactlyElementsOfTypes(
-                GameStartedEvent.class,
                 UpdateChessboardEvent.class,
+                GameStartedEvent.class,
                 ClockStartEvent.class
             );
         }

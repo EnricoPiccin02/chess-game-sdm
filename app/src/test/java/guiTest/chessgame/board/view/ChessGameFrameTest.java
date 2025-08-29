@@ -49,13 +49,13 @@ class ChessGameFrameTest {
     }
 
     @Nested
-    @DisplayName("when displaying the game frame")
-    class DisplayFrame {
+    @DisplayName("when initializing the game frame")
+    class InitializeFrame {
 
         @Test
         @DisplayName("should make the frame visible")
         void shouldMakeFrameVisible() {
-            frame.display();
+            frame.initialize();
             assertTrue(frame.isVisible());
         }
     }
@@ -137,7 +137,7 @@ class ChessGameFrameTest {
         void shouldStartWhiteClock() {
             frame.startClock(ChessPieceColor.WHITE);
 
-            assertTrue(((ChessClockViewSpy) fakeClocks.get(ChessPieceColor.WHITE)).isStartClockCalled());
+            assertTrue(((ChessClockViewSpy) fakeClocks.get(ChessPieceColor.WHITE)).isStartCalled());
         }
 
         @Test
@@ -145,7 +145,7 @@ class ChessGameFrameTest {
         void shouldStopBlackClock() {
             frame.stopClock(ChessPieceColor.BLACK);
 
-            assertTrue(((ChessClockViewSpy) fakeClocks.get(ChessPieceColor.BLACK)).isStopClockCalled());
+            assertTrue(((ChessClockViewSpy) fakeClocks.get(ChessPieceColor.BLACK)).isStopCalled());
         }
     }
 
@@ -156,7 +156,7 @@ class ChessGameFrameTest {
         @Test
         @DisplayName("should dispose the frame")
         void shouldDisposeFrame() {
-            frame.display();
+            frame.initialize();
             frame.close();
 
             assertFalse(frame.isDisplayable());

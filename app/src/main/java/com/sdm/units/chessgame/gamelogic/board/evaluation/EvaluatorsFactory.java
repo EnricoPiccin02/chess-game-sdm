@@ -6,7 +6,7 @@ import java.util.Map;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveRuleSet;
 
-public final class EvaluatorsFactory {
+public class EvaluatorsFactory {
     
     private final ChessboardOrientation orientation;
     private final Map<MoveRuleSet, AttackDetectorService> detectors = new HashMap<>();

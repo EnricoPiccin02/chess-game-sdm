@@ -13,7 +13,7 @@ import com.sdm.units.chessgame.gui.board.view.ChessboardView;
 
 public class ChessboardViewSpy implements ChessboardView {
     
-    private boolean updateAllCalled;
+    private boolean updateAllCalled = false;
     private Set<ChessboardPosition> updatedSquares = new HashSet<>();
 
     public boolean isUpdateAllCalled() {

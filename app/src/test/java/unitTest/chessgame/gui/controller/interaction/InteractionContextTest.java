@@ -49,7 +49,7 @@ class InteractionContextTest {
     @Test
     @DisplayName("should reset to the initial selection state")
     void shouldResetToInitialSelectionState() {
-        context.resetToStartState();
+        context.initialize();
 
         assertThat(context)
             .extracting("currentState")

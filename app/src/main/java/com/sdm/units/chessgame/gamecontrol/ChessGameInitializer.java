@@ -12,10 +12,11 @@ public final class ChessGameInitializer {
     
     public static void main(String[] args) {
         BuiltChessGame builtGame = defaultGame();
-        defaultView(builtGame);
+        ChessGameView gameView = defaultView(builtGame);
 
         GameStateController controller = builtGame.controller();
         controller.start();
+        gameView.initialize();
     }
 
     private static BuiltChessGame defaultGame() {

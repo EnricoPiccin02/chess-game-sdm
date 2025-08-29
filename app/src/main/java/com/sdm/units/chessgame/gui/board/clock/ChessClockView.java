@@ -4,8 +4,10 @@ import javax.swing.JComponent;
 
 public interface ChessClockView {
 
-    ChessClock getClock();
-
+    void start();
+    
+    void stop();
+    
     void reset();
 
     void updateTime(String time);

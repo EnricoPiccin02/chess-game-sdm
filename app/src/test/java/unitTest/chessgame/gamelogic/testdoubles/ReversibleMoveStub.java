@@ -9,8 +9,8 @@ public class ReversibleMoveStub implements ReversibleMove {
 
     private final CaptureResult result;
     private final MoveComponent component;
-    private boolean executed;
-    private boolean undone;
+    private boolean executed = false;
+    private boolean undone = false;
 
     public ReversibleMoveStub(CaptureResult result, MoveComponent component) {
         this.result = result;

@@ -1,15 +1,14 @@
-package guitest.chessgame.testdoubles;
+package unittest.chessgame.gamecontrol.testdoubles;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
+import com.sdm.units.chessgame.gui.board.clock.ChessClock;
+import com.sdm.units.chessgame.gui.board.clock.ChessClockListener;
 
-import com.sdm.units.chessgame.gui.board.clock.ChessClockView;
-
-public class ChessClockViewSpy implements ChessClockView {
+public class ChessClockSpy implements ChessClock {
 
     private boolean startCalled = false;
     private boolean stopCalled = false;
     private boolean resetCalled = false;
+    private boolean listenerSet = false;
 
     public boolean isStartCalled() {
         return startCalled;
@@ -21,6 +20,10 @@ public class ChessClockViewSpy implements ChessClockView {
 
     public boolean isResetCalled() {
         return resetCalled;
+    }
+
+    public boolean isListenerSet() {
+        return listenerSet;
     }
 
     @Override
@@ -39,15 +42,7 @@ public class ChessClockViewSpy implements ChessClockView {
     }
 
     @Override
-    public void updateTime(String time) {}
-
-    @Override
-    public String getTime() {
-        return "";
-    }
-
-    @Override
-    public JComponent asComponent() {
-        return new JPanel();
+    public void setListener(ChessClockListener listener) {
+        listenerSet = true;
     }
 }

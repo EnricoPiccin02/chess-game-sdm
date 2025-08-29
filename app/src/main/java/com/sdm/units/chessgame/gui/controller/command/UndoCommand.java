@@ -16,6 +16,6 @@ public class UndoCommand implements GameCommand {
     @Override
     public void execute() {
         controller.undoMove();
-        context.resetToStartState();
+        context.initialize();
     }
 }

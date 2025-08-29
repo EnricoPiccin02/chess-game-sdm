@@ -24,8 +24,13 @@ public class ChessClockPanel extends JPanel implements ChessClockView {
     }
 
     @Override
-    public ChessClock getClock() {
-        return clock;
+    public void start() {
+        clock.start();
+    }
+
+    @Override
+    public void stop() {
+        clock.stop();
     }
 
     @Override

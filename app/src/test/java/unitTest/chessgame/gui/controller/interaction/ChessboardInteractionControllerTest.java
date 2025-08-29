@@ -1,7 +1,6 @@
 package unittest.chessgame.gui.controller.interaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -33,7 +32,7 @@ class ChessboardInteractionControllerTest {
         interactionManagerSpy = new SquareInteractionManagerSpy();
         dummyHandler = pos -> {};
         controller = new ChessboardInteractionController(boardViewSpy, interactionManagerSpy);
-        controller.setClickHandler(dummyHandler);
+        controller.addClickHandler(dummyHandler);
     }
 
     @Nested
@@ -59,7 +58,7 @@ class ChessboardInteractionControllerTest {
         void shouldDelegateInteractionSetupToManager() {
             controller.enableSelectableSquares(positions);
 
-            assertTrue(interactionManagerSpy.isSelectableCalled());
+            assertThat(interactionManagerSpy.isSelectableCalled()).isTrue();
         }
     }
 
@@ -87,7 +86,7 @@ class ChessboardInteractionControllerTest {
         void shouldDelegateClearingToManager() {
             controller.clear();
 
-            assertTrue(interactionManagerSpy.isNoneCalled());
+            assertThat(interactionManagerSpy.isNoneCalled()).isTrue();
         }
     }
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamecontrol.flow.ScoreKeeper;
@@ -22,51 +23,90 @@ import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 @DisplayName("ScoreKeeper")
 class ScoreKeeperTest {
 
-    private ScoreKeeper scores;
+    private ScoreKeeper scoreKeeper;
     private ReversibleMove dummyMove;
-    private ChessPiece dummyPiece;
-    private MoveResult result;
+    private ChessPiece capturedPawn;
+    private MoveResult captureResult;
 
     @BeforeEach
     void setUp() {
-        scores = new ScoreKeeper();
+        scoreKeeper = new ScoreKeeper();
         dummyMove = mock(ReversibleMove.class);
-        dummyPiece = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
-
-        result = new MoveResult(dummyMove, new CaptureResult(Optional.of(dummyPiece)));
+        capturedPawn = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
+        captureResult = new MoveResult(dummyMove, new CaptureResult(Optional.of(capturedPawn)));
     }
 
-    @Test
-    @DisplayName("should start by resetting the scores for all players")
-    void shouldStartResettingScores() {
-        assertEquals(0, scores.scoreOf(ChessPieceColor.WHITE));
-        assertEquals(0, scores.scoreOf(ChessPieceColor.BLACK));
+    @Nested
+    @DisplayName("Initialization")
+    class Initialization {
+
+        @Test
+        @DisplayName("should start with zero scores for white player")
+        void shouldStartWithZeroScoreForWhite() {
+            assertEquals(0, scoreKeeper.scoreOf(ChessPieceColor.WHITE));
+        }
+
+        @Test
+        @DisplayName("should start with zero scores for black player")
+        void shouldStartWithZeroScoreForBlack() {
+            assertEquals(0, scoreKeeper.scoreOf(ChessPieceColor.BLACK));
+        }
     }
 
-    @Test
-    @DisplayName("should add captured piece value on apply")
-    void shouldApplyCapturedScore() {
-        scores.apply(result, ChessPieceColor.WHITE);
+    @Nested
+    @DisplayName("Applying a capture")
+    class ApplyCapture {
 
-        assertEquals(1, scores.scoreOf(ChessPieceColor.WHITE));
+        @Test
+        @DisplayName("should increase the score of the capturing player by captured piece value")
+        void shouldIncreaseScoreOnCapture() {
+            scoreKeeper.apply(captureResult, ChessPieceColor.WHITE);
+
+            assertEquals(1, scoreKeeper.scoreOf(ChessPieceColor.WHITE));
+        }
     }
 
-    @Test
-    @DisplayName("should subtract captured piece value on revert")
-    void shouldRevertCapturedScore() {
-        scores.apply(result, ChessPieceColor.BLACK);
-        scores.revert(result, ChessPieceColor.BLACK);
+    @Nested
+    @DisplayName("Reverting a capture")
+    class RevertCapture {
 
-        assertEquals(0, scores.scoreOf(ChessPieceColor.BLACK));
+        @BeforeEach
+        void setUp() {
+            scoreKeeper.apply(captureResult, ChessPieceColor.BLACK);
+        }
+
+        @Test
+        @DisplayName("should restore score to previous value when reverted")
+        void shouldRestoreScoreOnRevert() {
+            scoreKeeper.revert(captureResult, ChessPieceColor.BLACK);
+
+            assertEquals(0, scoreKeeper.scoreOf(ChessPieceColor.BLACK));
+        }
     }
 
-    @Test
-    @DisplayName("should reset scores for both players")
-    void shouldResetScores() {
-        scores.apply(result, ChessPieceColor.WHITE);
-        scores.reset();
+    @Nested
+    @DisplayName("Resetting scores")
+    class ResetScores {
 
-        assertEquals(0, scores.scoreOf(ChessPieceColor.WHITE));
-        assertEquals(0, scores.scoreOf(ChessPieceColor.BLACK));
+        @BeforeEach
+        void setUp() {
+            scoreKeeper.apply(captureResult, ChessPieceColor.WHITE);
+        }
+
+        @Test
+        @DisplayName("should reset white player's score to zero")
+        void shouldResetWhiteScore() {
+            scoreKeeper.reset();
+
+            assertEquals(0, scoreKeeper.scoreOf(ChessPieceColor.WHITE));
+        }
+
+        @Test
+        @DisplayName("should reset black player's score to zero")
+        void shouldResetBlackScore() {
+            scoreKeeper.reset();
+
+            assertEquals(0, scoreKeeper.scoreOf(ChessPieceColor.BLACK));
+        }
     }
 }

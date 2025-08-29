@@ -4,13 +4,16 @@ import javax.swing.SwingUtilities;
 
 import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
+import com.sdm.units.chessgame.gui.controller.interaction.InteractionContext;
 
 public class SwingDispatchingChessGameView implements ChessGameView {
 
     private final ChessGameView view;
+    private final InteractionContext interactionContext;
 
-    public SwingDispatchingChessGameView(ChessGameView view) {
+    public SwingDispatchingChessGameView(ChessGameView view, InteractionContext interactionContext) {
         this.view = view;
+        this.interactionContext = interactionContext;
     }
 
     private void invoke(Runnable task) {
@@ -19,8 +22,9 @@ public class SwingDispatchingChessGameView implements ChessGameView {
     }
 
     @Override
-    public void display() {
-        invoke(view::display);
+    public void initialize() {
+        invoke(view::initialize);
+        interactionContext.initialize();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.sdm.units.chessgame.gui.controller.interaction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
@@ -10,21 +12,25 @@ public class ChessboardInteractionController implements ChessboardInteractionStr
 
     private final ChessboardView chessboardView;
     private final SquareInteractionManager interactionManager;
-    private SquareClickHandler clickHandler;
+    private final List<SquareClickHandler> handlers = new ArrayList<>();
 
     public ChessboardInteractionController(ChessboardView chessboardView, SquareInteractionManager interactionManager) {
         this.chessboardView = chessboardView;
         this.interactionManager = interactionManager;
     }
 
-    public void setClickHandler(SquareClickHandler handler) {
-        this.clickHandler = handler;
+    public void addClickHandler(SquareClickHandler handler) {
+        handlers.add(handler);
+    }
+
+    private void fireClick(ChessboardPosition pos) {
+        handlers.forEach(h -> h.handleClick(pos));
     }
 
     @Override
     public void enableSelectableSquares(Set<ChessboardPosition> positions) {
         chessboardView.updateSquaresAt(positions,
-            square -> interactionManager.setSelectable(square, clickHandler));
+            square -> interactionManager.setSelectable(square, this::fireClick));
     }
 
     @Override
