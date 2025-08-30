@@ -92,14 +92,14 @@ class CastlingSideTest {
     class CastlingSideFromRookFile {
 
         @Test
-        @DisplayName("should recognize Kingside castling when rook file is H")
+        @DisplayName("should recognize Kingside castling when rook is in correct file")
         void shouldRecognizeKingSideForFileH() {
             Optional<CastlingSide> result = CastlingSide.fromRookFile(ChessboardFile.H);
             assertThat(result).contains(CastlingSide.KING_SIDE);
         }
 
         @Test
-        @DisplayName("should recognize Queenside castling when rook file is A")
+        @DisplayName("should recognize Queenside castling when rook is in correct file")
         void shouldRecognizeQueenSideForFileA() {
             Optional<CastlingSide> result = CastlingSide.fromRookFile(ChessboardFile.A);
             assertThat(result).contains(CastlingSide.QUEEN_SIDE);

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
@@ -27,7 +28,7 @@ public abstract class SpecialMoveRuleTest<CandidateT> {
     protected SpecialMoveEligibilityStub<CandidateT> eligibilityStub;
     protected SpecialMoveFactoryStub<CandidateT> factoryStub;
     protected SpecialMoveRule<CandidateT> rule;
-    protected ChessboardFake board;
+    protected Chessboard board;
     protected ReversibleMove dummyMove;
 
     @BeforeEach

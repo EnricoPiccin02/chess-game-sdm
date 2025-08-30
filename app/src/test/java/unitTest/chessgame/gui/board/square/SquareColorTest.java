@@ -14,15 +14,15 @@ import com.sdm.units.chessgame.gui.board.square.SquareColor;
 class SquareColorTest {
 
     @Test
-    @DisplayName("should be light on odd file and rank sum")
-    void shouldBeLightOnOddFileAndRankSum() {
+    @DisplayName("should be light on alternate squares")
+    void shouldBeLightOnAlternateSquares() {
         ChessboardPosition B1 = new ChessboardPosition(ChessboardFile.B, ChessboardRank.ONE);
         assertEquals(SquareColor.LIGHT, SquareColor.fromPosition(B1));
     }
 
     @Test
-    @DisplayName("should be dark on even file and rank sum")
-    void shouldBeDarkOnEvenFileAndRankSum() {
+    @DisplayName("should be dark on alternate squares")
+    void shouldBeDarkOnAlternateSquares() {
         ChessboardPosition B2 = new ChessboardPosition(ChessboardFile.B, ChessboardRank.TWO);
         assertEquals(SquareColor.DARK, SquareColor.fromPosition(B2));
     }

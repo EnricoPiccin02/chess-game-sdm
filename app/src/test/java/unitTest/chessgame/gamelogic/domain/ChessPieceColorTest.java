@@ -51,13 +51,13 @@ class ChessPieceColorTest {
     class EncodedColorAssociation {
 
         @Test
-        @DisplayName("should associate white color for WHITE")
+        @DisplayName("should associate white color for white")
         void shouldAssociateWhiteColorForWhite() {
             assertEquals(Color.WHITE, ChessPieceColor.WHITE.getEncodedColor());
         }
 
         @Test
-        @DisplayName("should associate black color for BLACK")
+        @DisplayName("should associate black color for black")
         void shouldAssociateBlackColorForBlack() {
             assertEquals(Color.BLACK, ChessPieceColor.BLACK.getEncodedColor());
         }

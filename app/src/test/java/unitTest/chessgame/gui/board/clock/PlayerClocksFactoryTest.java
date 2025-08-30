@@ -41,8 +41,8 @@ class PlayerClocksFactoryTest {
     }
 
     @Test
-    @DisplayName("should assign two clocks in total")
-    void shouldAssignTwoClocksInTotal() {
+    @DisplayName("should create two clocks in total")
+    void shouldCreateTwoClocksInTotal() {
         assertEquals(2, clocks.size());
     }
 }

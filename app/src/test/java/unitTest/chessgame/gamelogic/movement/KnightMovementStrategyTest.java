@@ -40,7 +40,7 @@ class KnightMovementStrategyTest {
     }
 
     @Test
-    @DisplayName("should move on all 8 L-shaped landing squares when board is empty")
+    @DisplayName("should move on all L-shaped landing squares when board is empty")
     void shouldMoveOnAllLShapedLandingSquaresWhenBoardIsEmpty() {
         Set<ChessboardPosition> landingPositions = Set.of(
             new ChessboardPosition(B, THREE),

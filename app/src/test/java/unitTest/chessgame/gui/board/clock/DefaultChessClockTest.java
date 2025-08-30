@@ -16,6 +16,7 @@ import unittest.chessgame.gui.testdoubles.ClockListenerSpy;
 class DefaultChessClockTest {
 
     private static final long FIVE_SECONDS = 5000L;
+    private static final long FOUR_SECONDS = 4000L;
 
     private DefaultChessClock clock;
     private ClockListenerSpy listenerSpy;
@@ -37,7 +38,7 @@ class DefaultChessClockTest {
             clock.start();
             clock.tick();
 
-            assertEquals(4000, listenerSpy.getLastUpdated());
+            assertEquals(FOUR_SECONDS, listenerSpy.getLastUpdated());
         }
 
         @Test

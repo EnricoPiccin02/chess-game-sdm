@@ -38,6 +38,7 @@ class EnPassantEligibilityTest {
 
     private ChessboardPosition from;
     private ChessboardPosition to;
+    private ChessboardPosition fromCapture;
     private ChessboardPosition capturingPos;
 
     @BeforeEach
@@ -52,6 +53,8 @@ class EnPassantEligibilityTest {
 
         from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FIVE);
         to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SIX);
+
+        fromCapture = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SEVEN);
         capturingPos = new ChessboardPosition(ChessboardFile.F, ChessboardRank.FIVE);
     }
 
@@ -60,13 +63,11 @@ class EnPassantEligibilityTest {
     class WhenAllConditionsMet {
 
         @Test
-        @DisplayName("should allow when target is opponent pawn, landing square vacant, and last move is valid two-square pawn advance")
-        void shouldAllowWhenConditionsAreMet() {
+        @DisplayName("should recognize valid and eligible en passant")
+        void shouldRecognizeValidEnPassant() {
             board.putPieceAt(capturingPos, blackPawnFake);
 
-            ChessboardPosition lastFrom = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SEVEN);
-            ChessboardPosition lastTo = new ChessboardPosition(ChessboardFile.F, ChessboardRank.FIVE);
-            moveRecorderStub.setLastMove(new StandardMove(lastFrom, lastTo, blackPawnFake, Optional.empty()));
+            moveRecorderStub.setLastMove(fromCapture, capturingPos, blackPawnFake);
 
             EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, blackPawnFake);
 
@@ -86,7 +87,7 @@ class EnPassantEligibilityTest {
             ChessPiece nonPawn = new PieceFake(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
             board.putPieceAt(capturingPos, nonPawn);
 
-            moveRecorderStub.setLastMove(dummyLastMove(nonPawn));
+            moveRecorderStub.setDummyLastMove(nonPawn);
 
             EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, nonPawn);
 
@@ -101,7 +102,7 @@ class EnPassantEligibilityTest {
             ChessPiece sameColorPawn = new PieceFake(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
             board.putPieceAt(capturingPos, sameColorPawn);
 
-            moveRecorderStub.setLastMove(dummyLastMove(sameColorPawn));
+            moveRecorderStub.setDummyLastMove(sameColorPawn);
 
             EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, sameColorPawn);
 
@@ -116,7 +117,7 @@ class EnPassantEligibilityTest {
             board.putPieceAt(capturingPos, blackPawnFake);
             board.putPieceAt(to, new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.KNIGHT));
 
-            moveRecorderStub.setLastMove(validTwoSquarePawnMove(blackPawnFake));
+            moveRecorderStub.setLastMove(fromCapture, capturingPos, blackPawnFake);
 
             EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, blackPawnFake);
 
@@ -130,9 +131,7 @@ class EnPassantEligibilityTest {
         void shouldDenyWhenLastMoveIsNotTwoSquarePawnMove() {
             board.putPieceAt(capturingPos, blackPawnFake);
 
-            ChessboardPosition lastFrom = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SIX);
-            ChessboardPosition lastTo = new ChessboardPosition(ChessboardFile.F, ChessboardRank.FIVE);
-            moveRecorderStub.setLastMove(new StandardMove(lastFrom, lastTo, blackPawnFake, Optional.empty()));
+            moveRecorderStub.setDummyLastMove(blackPawnFake);
 
             EnPassantCandidate candidate = new EnPassantCandidate(from, to, capturingPos, whitePawnFake, blackPawnFake);
 
@@ -144,15 +143,24 @@ class EnPassantEligibilityTest {
     
     private static class MoveRecorderStub implements MoveRecorder<ReversibleMove> {
         
-        private Optional<ReversibleMove> lastMove = Optional.empty();
+        private ReversibleMove lastMove;
 
         @Override
         public Optional<ReversibleMove> getLastMove() {
-            return lastMove;
+            return Optional.of(lastMove);
         }
 
-        public void setLastMove(ReversibleMove move) {
-            this.lastMove = Optional.of(move);
+        public void setLastMove(ChessboardPosition from, ChessboardPosition to, ChessPiece piece) {
+            this.lastMove = new StandardMove(from, to, piece, Optional.empty());
+        }
+
+        public void setDummyLastMove(ChessPiece dummyPiece) {
+            this.lastMove = new StandardMove(
+                new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO),
+                new ChessboardPosition(ChessboardFile.A, ChessboardRank.THREE),
+                dummyPiece,
+                Optional.empty()
+            );
         }
 
         @Override
@@ -165,16 +173,5 @@ class EnPassantEligibilityTest {
 
         @Override
         public void clear() {}
-    }
-
-    private ReversibleMove validTwoSquarePawnMove(ChessPiece pawn) {
-        ChessboardPosition lastFrom = new ChessboardPosition(ChessboardFile.F, ChessboardRank.SEVEN);
-        ChessboardPosition lastTo = new ChessboardPosition(ChessboardFile.F, ChessboardRank.FIVE);
-        return new StandardMove(lastFrom, lastTo, pawn, Optional.empty());
-    }
-
-    private ReversibleMove dummyLastMove(ChessPiece piece) {
-        return new StandardMove(new ChessboardPosition(ChessboardFile.A, ChessboardRank.TWO),
-                                new ChessboardPosition(ChessboardFile.A, ChessboardRank.THREE), piece, Optional.empty());
     }
 }

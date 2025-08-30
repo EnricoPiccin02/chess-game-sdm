@@ -38,8 +38,8 @@ class ChessPieceTest {
         }
 
         @Test
-        @DisplayName("should be marked as moved after calling markAsMoved")
-        void shouldBeMarkedAsMovedAfterCallingMarkAsMoved() {
+        @DisplayName("should be marked as moved on request")
+        void shouldBeMarkedAsMovedOnRequest() {
             whitePiece.markAsMoved();
             assertThat(whitePiece.hasMoved()).isTrue();
         }

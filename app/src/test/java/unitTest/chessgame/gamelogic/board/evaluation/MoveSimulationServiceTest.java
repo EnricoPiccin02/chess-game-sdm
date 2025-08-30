@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamelogic.board.evaluation.AttackDetector;
 import com.sdm.units.chessgame.gamelogic.board.evaluation.MoveSimulationService;
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
@@ -31,7 +32,7 @@ class MoveSimulationServiceTest {
     private AttackDetector attackDetector;
     private ChessboardOrientation orientation;
     private MoveSimulationService service;
-    private ChessboardFake board;
+    private Chessboard board;
 
     @BeforeEach
     void setUp() {

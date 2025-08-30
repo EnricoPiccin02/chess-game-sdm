@@ -1,6 +1,5 @@
 package unittest.chessgame.gamelogic.move.special.promotion;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +11,6 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.DefaultPromotionPieceSelector;
 import com.sdm.units.chessgame.gamelogic.move.special.promotion.PromotionPieceSelector;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
-import com.sdm.units.chessgame.gamelogic.pieces.Queen;
 
 import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 
@@ -31,7 +29,7 @@ class DefaultPromotionPieceSelectorTest {
     void shouldPromoteToQueenByDefault() {
         ChessPiece pawn = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
         ChessPiece promoted = selector.selectPromotionPiece(pawn.pieceColor());
-        assertThat(promoted).isInstanceOf(Queen.class);
+        assertEquals(ChessPieceInfo.QUEEN, promoted.pieceInfo());
     }
 
     @Test

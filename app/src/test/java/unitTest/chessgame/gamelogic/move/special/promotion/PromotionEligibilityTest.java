@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
@@ -28,7 +29,7 @@ import unittest.chessgame.gamelogic.testdoubles.PieceStub;
 class PromotionEligibilityTest {
 
     private PromotionEligibility eligibility;
-    private ChessboardFake board;
+    private Chessboard board;
     private ChessboardOrientation orientation;
 
     @BeforeEach
@@ -38,13 +39,13 @@ class PromotionEligibilityTest {
         orientation = ChessboardOrientation.WHITE_BOTTOM;
     }
 
-        @Nested
+    @Nested
     @DisplayName("when all conditions are met")
     class WhenAllConditionsMet {
 
         @Test
-        @DisplayName("should allow promotion for pawn moving forward one step to promotion rank")
-        void shouldAllowPromotionForValidPromotionMove() {
+        @DisplayName("should recognize valid and eligible promotion")
+        void shouldRecognizeValidPromotion() {
             ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
             ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
             ChessPiece pawn = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));

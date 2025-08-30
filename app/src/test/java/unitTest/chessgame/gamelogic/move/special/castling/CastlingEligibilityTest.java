@@ -39,7 +39,7 @@ class CastlingEligibilityTest {
     private AttackDetectorStub attackDetectorStub;
     private CastlingPattern patternMock;
 
-    private ChessboardFake board;
+    private Chessboard board;
     private ChessPiece whiteKing;
     private ChessPiece whiteRook;
     private ChessboardPosition kingFrom;

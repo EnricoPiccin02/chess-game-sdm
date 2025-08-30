@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.sdm.units.chessgame.gamecontrol.state.GameStateController;
 import com.sdm.units.chessgame.gui.controller.command.CommandFactory;
 import com.sdm.units.chessgame.gui.controller.command.EndGameCommand;
+import com.sdm.units.chessgame.gui.controller.command.GameCommand;
 import com.sdm.units.chessgame.gui.controller.command.RestartCommand;
 import com.sdm.units.chessgame.gui.controller.command.UndoCommand;
 import com.sdm.units.chessgame.gui.controller.interaction.InteractionContext;
@@ -31,18 +32,27 @@ class CommandFactoryTest {
     @Test
     @DisplayName("should create proper undo command")
     void shouldCreateProperUndoCommand() {
-        assertThat(commandFactory.createUndoCommand()).isInstanceOf(UndoCommand.class);
+        GameCommand command = commandFactory.createUndoCommand();
+
+        assertThat(command).isNotNull();
+        assertThat(command).isInstanceOf(UndoCommand.class);
     }
 
     @Test
     @DisplayName("should create proper end game command")
     void shouldCreateProperEndGameCommand() {
-        assertThat(commandFactory.createEndGameCommand()).isInstanceOf(EndGameCommand.class);
+        GameCommand command = commandFactory.createEndGameCommand();
+
+        assertThat(command).isNotNull();
+        assertThat(command).isInstanceOf(EndGameCommand.class);
     }
 
     @Test
     @DisplayName("should create proper restart command")
     void shouldCreateProperRestartCommand() {
-        assertThat(commandFactory.createRestartCommand()).isInstanceOf(RestartCommand.class);
+        GameCommand command = commandFactory.createRestartCommand();
+
+        assertThat(command).isNotNull();
+        assertThat(command).isInstanceOf(RestartCommand.class);
     }
 }

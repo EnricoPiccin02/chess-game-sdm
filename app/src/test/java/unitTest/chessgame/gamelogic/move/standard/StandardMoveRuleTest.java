@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
@@ -29,7 +30,7 @@ import unittest.chessgame.gamelogic.testdoubles.PieceStub;
 @DisplayName("StandardMoveRule")
 class StandardMoveRuleTest {
 
-    private ChessboardFake board;
+    private Chessboard board;
     private ChessboardOrientation orientation;
     private ChessboardPosition piecePosition;
     private ChessPiece pieceStub;
