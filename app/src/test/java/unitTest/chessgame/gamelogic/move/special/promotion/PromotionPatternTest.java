@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
@@ -29,7 +30,7 @@ import unittest.chessgame.gamelogic.testdoubles.PieceStub;
 class PromotionPatternTest {
 
     private PromotionPattern promotionPattern;
-    private ChessboardFake board;
+    private Chessboard board;
 
     @BeforeEach
     void setUp() {
@@ -41,13 +42,20 @@ class PromotionPatternTest {
     @DisplayName("when finding promotion candidates")
     class FindCandidates {
 
+        private ChessboardPosition from;
+        private ChessboardPosition to;
+        private ChessPiece pawnStub;
+
+        @BeforeEach
+        void setUp() {
+            from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
+            pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
+        }
+
         @Test
         @DisplayName("should detect promotion move when pawn advances into last rank")
         void shouldDetectPromotionMoveWhenPawnAdvancesIntoLastRank() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
-
             board.putPieceAt(from, pawnStub);
 
             List<PromotionCandidate> candidates = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
@@ -58,10 +66,6 @@ class PromotionPatternTest {
         @Test
         @DisplayName("should record source square of promotion candidate")
         void shouldRecordSourceSquareOfPromotionCandidate() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
-
             board.putPieceAt(from, pawnStub);
 
             PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
@@ -72,10 +76,6 @@ class PromotionPatternTest {
         @Test
         @DisplayName("should record target square of promotion candidate")
         void shouldRecordTargetSquareOfPromotionCandidate() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
-
             board.putPieceAt(from, pawnStub);
 
             PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
@@ -86,10 +86,6 @@ class PromotionPatternTest {
         @Test
         @DisplayName("should record moving pawn in promotion candidate")
         void shouldRecordMovingPawnInPromotionCandidate() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
-
             board.putPieceAt(from, pawnStub);
 
             PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
@@ -100,10 +96,6 @@ class PromotionPatternTest {
         @Test
         @DisplayName("should not include captured piece when promotion is a quiet move")
         void shouldNotIncludeCapturedPieceWhenPromotionIsQuietMove() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
-
             board.putPieceAt(from, pawnStub);
 
             PromotionCandidate candidate = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM).get(0);
@@ -114,7 +106,7 @@ class PromotionPatternTest {
         @Test
         @DisplayName("should not find any candidates when no piece at given position")
         void shouldNotFindAnyCandidatesWhenNoPieceAtGivenPosition() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
 
             List<PromotionCandidate> candidates = promotionPattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
 
@@ -124,9 +116,6 @@ class PromotionPatternTest {
         @Test
         @DisplayName("should include captured piece when promotion captures enemy")
         void shouldIncludeCapturedPieceWhenPromotionCapturesEnemy() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.F, ChessboardRank.EIGHT);
-            ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
             ChessPiece capturedDummy = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.ROOK);
 
             board.putPieceAt(from, pawnStub);
@@ -142,13 +131,19 @@ class PromotionPatternTest {
     @DisplayName("when building promotion candidates")
     class BuildCandidate {
 
+        private ChessboardPosition from;
+        private ChessboardPosition to;
+
+        @BeforeEach
+        void setUp() {
+            from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
+            to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
+        }
+
         @Test
         @DisplayName("should build promotion candidate when there is a piece that can be promoted")
         void shouldBuildPromotionCandidateWhenPromotingPieceExists() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
             ChessPiece pawnStub = new PieceStub(ChessPieceColor.WHITE, ChessPieceInfo.PAWN, Set.of(to));
-
             board.putPieceAt(from, pawnStub);
 
             Optional<PromotionCandidate> result = promotionPattern.buildCandidate(board, from, to);
@@ -159,9 +154,6 @@ class PromotionPatternTest {
         @Test
         @DisplayName("should not build any candidate when no piece at correct position")
         void shouldNotBuildAnyCandidateWhenNoPieceAtCorrectPosition() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.E, ChessboardRank.SEVEN);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.E, ChessboardRank.EIGHT);
-
             Optional<PromotionCandidate> result = promotionPattern.buildCandidate(board, from, to);
 
             assertThat(result).isEmpty();

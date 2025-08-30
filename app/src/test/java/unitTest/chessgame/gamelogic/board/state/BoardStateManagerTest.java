@@ -175,16 +175,16 @@ class BoardStateManagerTest {
         }
 
         @Test
-        @DisplayName("should restore white pawn at a1")
-        void shouldRestoreWhitePawnAtA1() {
+        @DisplayName("should restore white pawn to its starting position")
+        void shouldRestoreWhitePawn() {
             customBoard.removePieceAt(a1);
             customBoard.resetBoard();
             assertThat(customBoard.getPieceAt(a1)).contains(whitePawn);
         }
 
         @Test
-        @DisplayName("should restore black queen at h8")
-        void shouldRestoreBlackQueenAtH8() {
+        @DisplayName("should restore black queen to its starting position")
+        void shouldRestoreBlackQueen() {
             customBoard.removePieceAt(h8);
             customBoard.resetBoard();
             assertThat(customBoard.getPieceAt(h8)).contains(blackQueen);

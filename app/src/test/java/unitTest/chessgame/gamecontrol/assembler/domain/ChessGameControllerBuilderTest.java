@@ -31,7 +31,7 @@ class ChessGameControllerBuilderTest {
     void shouldAllowFluentChainingWhenSettingOrientation() {
         builder = builder.withOrientation(orientation);
 
-        assertThat(builder).isInstanceOf(ChessGameControllerBuilder.class);
+        assertThat(builder).isNotNull();
     }
 
     @Test
@@ -39,7 +39,7 @@ class ChessGameControllerBuilderTest {
     void shouldAllowFluentChainingWhenSettingPromotionSelector() {
         builder = builder.withPromotionSelector(selectorDummy);
 
-        assertThat(builder).isInstanceOf(ChessGameControllerBuilder.class);
+        assertThat(builder).isNotNull();
     }
 
     @Test

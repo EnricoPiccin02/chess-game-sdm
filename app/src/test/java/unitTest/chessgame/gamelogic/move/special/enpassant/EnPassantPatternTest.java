@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
@@ -27,7 +28,7 @@ import unittest.chessgame.gamelogic.testdoubles.PieceDummy;
 class EnPassantPatternTest {
 
     private EnPassantPattern pattern;
-    private ChessboardFake board;
+    private Chessboard board;
 
     private ChessPiece whitePawn;
     private ChessPiece blackPawn;
@@ -45,13 +46,19 @@ class EnPassantPatternTest {
     @DisplayName("when finding en passant candidates")
     class FindCandidates {
 
+        private ChessboardPosition from;
+        private ChessboardPosition captured;
+
+        @BeforeEach
+        void setUp() {
+            from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
+            captured = new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE);
+            board.putPieceAt(from, whitePawn);
+        }
+
         @Test
         @DisplayName("should allow capture of left adjacent pawn")
         void shouldAllowCaptureOfLeftAdjacentPawn() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
-            ChessboardPosition captured = new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE);
-
-            board.putPieceAt(from, whitePawn);
             board.putPieceAt(captured, blackPawn);
 
             List<EnPassantCandidate> candidates = pattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
@@ -63,10 +70,6 @@ class EnPassantPatternTest {
         @Test
         @DisplayName("should allow capture of right adjacent pawn")
         void shouldAllowCaptureOfRightAdjacentPawn() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
-            ChessboardPosition captured = new ChessboardPosition(ChessboardFile.E, ChessboardRank.FIVE);
-
-            board.putPieceAt(from, whitePawn);
             board.putPieceAt(captured, blackPawn);
 
             List<EnPassantCandidate> candidates = pattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
@@ -78,9 +81,6 @@ class EnPassantPatternTest {
         @Test
         @DisplayName("should not find any candidates when no pawn is adjacent")
         void shouldNotFindAnyCandidatesWhenNoPawnIsAdjacent() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
-            board.putPieceAt(from, whitePawn);
-
             List<EnPassantCandidate> candidates = pattern.findCandidates(board, from, ChessboardOrientation.WHITE_BOTTOM);
 
             assertThat(candidates).isEmpty();
@@ -91,14 +91,21 @@ class EnPassantPatternTest {
     @DisplayName("when building en passant candidate")
     class BuildCandidate {
 
+        private ChessboardPosition from;
+        private ChessboardPosition to;
+        private ChessboardPosition captured;
+
+        @BeforeEach
+        void setUp() {
+            from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
+            to = new ChessboardPosition(ChessboardFile.C, ChessboardRank.SIX);
+            captured = new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE);
+            board.putPieceAt(from, whitePawn);
+        }
+
         @Test
         @DisplayName("should create candidate when target landing position is vacant")
         void shouldCreateCandidateWhenTargetLandingPositionIsVacant() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.C, ChessboardRank.SIX);
-            ChessboardPosition captured = new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE);
-
-            board.putPieceAt(from, whitePawn);
             board.putPieceAt(captured, blackPawn);
 
             Optional<EnPassantCandidate> candidate = pattern.buildCandidate(board, from, to);
@@ -109,10 +116,6 @@ class EnPassantPatternTest {
         @Test
         @DisplayName("should not create candidate when target landing position is occupied")
         void shouldNotCreateCandidateWhenTargetLandingPositionIsOccupied() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.C, ChessboardRank.SIX);
-
-            board.putPieceAt(from, whitePawn);
             board.putPieceAt(to, new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.ROOK));
 
             Optional<EnPassantCandidate> candidate = pattern.buildCandidate(board, from, to);
@@ -123,11 +126,6 @@ class EnPassantPatternTest {
         @Test
         @DisplayName("should not create candidate when move is not diagonal")
         void shouldNotCreateCandidateWhenMoveIsNotDiagonal() {
-            ChessboardPosition from = new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE);
-            ChessboardPosition to = new ChessboardPosition(ChessboardFile.D, ChessboardRank.SIX);
-
-            board.putPieceAt(from, whitePawn);
-
             Optional<EnPassantCandidate> candidate = pattern.buildCandidate(board, from, to);
 
             assertThat(candidate).isEmpty();

@@ -53,8 +53,8 @@ class GameFlowServiceTest {
         }
 
         @Test
-        @DisplayName("should begin with White as the first player")
-        void shouldBeginWithWhiteAsFirstPlayer() {
+        @DisplayName("should initialize turns")
+        void shouldInitializeTurns() {
             service.onGameStart();
             verify(spyTurns).start();
         }
@@ -82,29 +82,29 @@ class GameFlowServiceTest {
     @DisplayName("when a move is applied")
     class WhenMoveApplied {
 
-        private MoveResult resultStub;
+        private MoveResult dummyResult;
 
         @BeforeEach
         void init() {
             ReversibleMove dummyMove = mock(ReversibleMove.class);
-            resultStub = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
+            dummyResult = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
             when(spyTurns.current()).thenReturn(ChessPieceColor.WHITE);
         }
 
         @Test
         @DisplayName("should update the score for the moving player")
         void shouldUpdateScoreForMovingPlayer() {
-            service.onMoveApplied(resultStub);
-            verify(spyScores).apply(resultStub, ChessPieceColor.WHITE);
+            service.onMoveApplied(dummyResult);
+            verify(spyScores).apply(dummyResult, ChessPieceColor.WHITE);
         }
 
         @Test
         @DisplayName("should announce that a move has been made")
         void shouldAnnounceMoveApplied() {
             ChessGameEvent event = mock(ChessGameEvent.class);
-            when(factory.moveApplied(resultStub, spyTurns, spyScores)).thenReturn(event);
+            when(factory.moveApplied(dummyResult, spyTurns, spyScores)).thenReturn(event);
 
-            service.onMoveApplied(resultStub);
+            service.onMoveApplied(dummyResult);
 
             verify(spyListener).onChessGameEvent(event);
         }
@@ -112,7 +112,7 @@ class GameFlowServiceTest {
         @Test
         @DisplayName("should give the turn to the opponent")
         void shouldGiveTurnToOpponent() {
-            service.onMoveApplied(resultStub);
+            service.onMoveApplied(dummyResult);
             verify(spyTurns).swap();
         }
     }
@@ -121,37 +121,37 @@ class GameFlowServiceTest {
     @DisplayName("when a move is undone")
     class WhenMoveUndone {
 
-        private MoveResult resultStub;
+        private MoveResult dummyResult;
 
         @BeforeEach
         void init() {
             ReversibleMove dummyMove = mock(ReversibleMove.class);
-            resultStub = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
+            dummyResult = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
             when(spyTurns.opponent()).thenReturn(ChessPieceColor.BLACK);
         }
 
         @Test
         @DisplayName("should restore the previous score state")
         void shouldRestorePreviousScoreState() {
-            service.onMoveUndone(resultStub);
-            verify(spyScores).revert(resultStub, ChessPieceColor.BLACK);
+            service.onMoveUndone(dummyResult);
+            verify(spyScores).revert(dummyResult, ChessPieceColor.BLACK);
         }
 
         @Test
         @DisplayName("should announce that a move was undone")
         void shouldAnnounceMoveUndone() {
             ChessGameEvent event = mock(ChessGameEvent.class);
-            when(factory.moveUndone(resultStub, spyTurns, spyScores)).thenReturn(event);
+            when(factory.moveUndone(dummyResult, spyTurns, spyScores)).thenReturn(event);
 
-            service.onMoveUndone(resultStub);
+            service.onMoveUndone(dummyResult);
 
             verify(spyListener).onChessGameEvent(event);
         }
 
         @Test
-        @DisplayName("should return the turn to the previous player")
-        void shouldReturnTurnToPreviousPlayer() {
-            service.onMoveUndone(resultStub);
+        @DisplayName("should give the turn to the previous player")
+        void shouldGiveTurnToPreviousPlayer() {
+            service.onMoveUndone(dummyResult);
             verify(spyTurns).swap();
         }
     }

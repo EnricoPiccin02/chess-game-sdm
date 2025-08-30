@@ -49,7 +49,7 @@ class ChessboardRankTest {
     @DisplayName("next rank computation")
     class NextRankComputation {
 
-        @ParameterizedTest(name = "{0} from rank ONE should advance to rank TWO")
+        @ParameterizedTest(name = "{0} from first rank should advance to upper rank")
         @MethodSource("upwardDirections")
         @DisplayName("should advance rank when moving upward")
         void shouldAdvanceRankWhenMovingUpward(ChessboardDirection direction) {
@@ -57,7 +57,7 @@ class ChessboardRankTest {
             assertEquals(Optional.of(ChessboardRank.TWO), result);
         }
 
-        @ParameterizedTest(name = "{0} from rank ONE should remain at rank ONE")
+        @ParameterizedTest(name = "{0} from first rank should remain at the same rank")
         @MethodSource("horizontalDirections")
         @DisplayName("should keep same rank when moving horizontally")
         void shouldKeepSameRankWhenMovingHorizontally(ChessboardDirection direction) {
@@ -65,7 +65,7 @@ class ChessboardRankTest {
             assertEquals(Optional.of(ChessboardRank.ONE), result);
         }
 
-        @ParameterizedTest(name = "{0} from rank ONE should move off the board")
+        @ParameterizedTest(name = "{0} from first rank should move off the board")
         @MethodSource("downwardDirections")
         @DisplayName("should not advance rank when moving off the board")
         void shouldNotAdvanceRankWhenMovingOffTheBoard(ChessboardDirection direction) {

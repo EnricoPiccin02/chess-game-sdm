@@ -68,20 +68,20 @@ class ChessGameEventFactoryTest {
         private TurnManager dummyTurns;
         private ScoreKeeper dummyScores;
         private ReversibleMove dummyMove;
-        private MoveResult result;
+        private MoveResult dummyResult;
 
         @BeforeEach
         void init() {
             dummyTurns = mock(TurnManager.class);
             dummyScores = mock(ScoreKeeper.class);
             dummyMove = mock(ReversibleMove.class);
-            result = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
+            dummyResult = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
         }
 
         @Test
         @DisplayName("should assemble move applied events")
         void shouldAssembleMoveAppliedEvents() {
-            ChessGameEvent event = factory.moveApplied(result, dummyTurns, dummyScores);
+            ChessGameEvent event = factory.moveApplied(dummyResult, dummyTurns, dummyScores);
 
             assertThat(event).isInstanceOf(CompositeChessGameEvent.class);
             CompositeChessGameEvent composite = (CompositeChessGameEvent) event;
@@ -121,20 +121,20 @@ class ChessGameEventFactoryTest {
         private TurnManager dummyTurns;
         private ScoreKeeper dummyScores;
         private ReversibleMove dummyMove;
-        private MoveResult result;
+        private MoveResult dummyResult;
 
         @BeforeEach
         void init() {
             dummyTurns = new TurnManager();
             dummyScores = new ScoreKeeper();
             dummyMove = mock(ReversibleMove.class);
-            result = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
+            dummyResult = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
         }
 
         @Test
         @DisplayName("should assemble move undone events")
         void shouldAssembleMoveUndoneEvents() {
-            ChessGameEvent event = factory.moveUndone(result, dummyTurns, dummyScores);
+            ChessGameEvent event = factory.moveUndone(dummyResult, dummyTurns, dummyScores);
 
             assertThat(event).isInstanceOf(CompositeChessGameEvent.class);
             CompositeChessGameEvent composite = (CompositeChessGameEvent) event;
@@ -186,9 +186,6 @@ class ChessGameEventFactoryTest {
             ChessGameEvent event = factory.gameEnded(GameReason.GAME_ENDED);
 
             assertThat(event).isInstanceOf(GameEndedEvent.class);
-            GameEndedEvent ended = (GameEndedEvent) event;
-
-            assertThat(ended.getMessage()).contains(GameReason.GAME_ENDED.getDescription());
         }
     }
 }

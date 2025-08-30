@@ -11,20 +11,20 @@ import com.sdm.units.chessgame.gamelogic.move.core.MoveRulePriority;
 class MoveRulePriorityTest {
 
     @Test
-    @DisplayName("should return 2 for low priority")
-    void shouldReturnTwoForLowPriority() {
+    @DisplayName("should associate appropriate priority for low priority")
+    void shouldAssociateAppropriatePriorityForLowPriority() {
         assertThat(MoveRulePriority.LOW_PRIORITY.getPriority()).isEqualTo(2);
     }
 
     @Test
-    @DisplayName("should return 1 for medium priority")
-    void shouldReturnOneForMediumPriority() {
+    @DisplayName("should associate appropriate priority for medium priority")
+    void shouldAssociateAppropriatePriorityForMediumPriority() {
         assertThat(MoveRulePriority.MEDIUM_PRIORITY.getPriority()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("should return 0 for high priority")
-    void shouldReturnZeroForHighPriority() {
+    @DisplayName("should associate appropriate priority for high priority")
+    void shouldAssociateAppropriatePriorityForHighPriority() {
         assertThat(MoveRulePriority.HIGH_PRIORITY.getPriority()).isEqualTo(0);
     }
 }

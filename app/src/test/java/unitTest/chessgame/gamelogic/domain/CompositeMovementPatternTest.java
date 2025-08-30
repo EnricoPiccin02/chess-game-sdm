@@ -22,7 +22,7 @@ class CompositeMovementPatternTest {
     }
 
     @Test
-    @DisplayName("each L-shaped direction should contain exactly 3 steps")
+    @DisplayName("each L-shaped direction should contain exactly three steps")
     void shouldContainThreeStepsEach() {
         List<List<ChessboardDirection>> compositeDirections = CompositeMovementPattern.L_SHAPED.getCompositeDirections();
         assertTrue(compositeDirections.stream().allMatch(list -> list.size() == 3));

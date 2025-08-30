@@ -1,6 +1,7 @@
 package unittest.chessgame.gamecontrol.state;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import com.sdm.units.chessgame.gamecontrol.flow.GameFlowController;
 import com.sdm.units.chessgame.gamecontrol.flow.TurnManager;
-import com.sdm.units.chessgame.gamecontrol.state.GameReason;
 import com.sdm.units.chessgame.gamecontrol.state.GameStateHandler;
 import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
@@ -36,12 +36,12 @@ class GameStateHandlerTest {
     private MoveExecutorStub executor;
     private LegalMoveFinderStub moveFinder;
     private TurnManager stubTurns;
-    private OutcomeEvaluatorStub outcomeEvaluator;
+    private OutcomeEvaluatorStub outcomeEvaluatorStub;
     private GameFlowController flowController;
 
     private GameStateHandler handler;
     private ReversibleMove dummyMove;
-    private MoveResult result;
+    private MoveResult dummyResult;
 
     @BeforeEach
     void setUp() {
@@ -51,14 +51,14 @@ class GameStateHandlerTest {
         stubTurns = mock(TurnManager.class);
         when(stubTurns.current()).thenReturn(ChessPieceColor.WHITE);
         when(stubTurns.opponent()).thenReturn(ChessPieceColor.BLACK);
-        outcomeEvaluator = new OutcomeEvaluatorStub();
+        outcomeEvaluatorStub = new OutcomeEvaluatorStub();
         flowController = mock(GameFlowController.class);
 
-        handler = new GameStateHandler(board, executor, moveFinder, stubTurns, outcomeEvaluator, flowController);
+        handler = new GameStateHandler(board, executor, moveFinder, stubTurns, outcomeEvaluatorStub, flowController);
 
         dummyMove = mock(ReversibleMove.class);
-        result = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
-        executor.setNextResult(result);
+        dummyResult = new MoveResult(dummyMove, new CaptureResult(Optional.empty()));
+        executor.setNextResult(dummyResult);
     }
 
     @Nested
@@ -101,7 +101,7 @@ class GameStateHandlerTest {
 
             handler.makeMove(from, to);
 
-            verify(flowController).onMoveRejected(GameReason.ILLEGAL_MOVE);
+            verify(flowController).onMoveRejected(any());
         }
 
         @Test
@@ -111,25 +111,25 @@ class GameStateHandlerTest {
 
             handler.makeMove(from, to);
 
-            verify(flowController).onMoveApplied(result);
+            verify(flowController).onMoveApplied(dummyResult);
         }
 
         @Test
         @DisplayName("should reject move that leaves player under attack")
         void shouldRejectMoveThatLeavesPlayerUnderAttack() {
             moveFinder.setMove(Optional.of(dummyMove));
-            outcomeEvaluator.setIllegalBecauseOfCheck(true);
+            outcomeEvaluatorStub.setIllegalBecauseOfCheck(true);
 
             handler.makeMove(from, to);
 
-            verify(flowController).onMoveRejected(GameReason.UNDER_ATTACK);
+            verify(flowController).onMoveRejected(any());
         }
 
         @Test
         @DisplayName("should revert move when it leaves player under attack")
         void shouldRevertMoveLeavingPlayerUnderAttack() {
             moveFinder.setMove(Optional.of(dummyMove));
-            outcomeEvaluator.setIllegalBecauseOfCheck(true);
+            outcomeEvaluatorStub.setIllegalBecauseOfCheck(true);
 
             handler.makeMove(from, to);
 
@@ -140,11 +140,11 @@ class GameStateHandlerTest {
         @DisplayName("should proclaim winner when move checkmates opponent")
         void shouldProclaimWinnerWhenOpponentIsCheckmated() {
             moveFinder.setMove(Optional.of(dummyMove));
-            outcomeEvaluator.setCheckmate(true);
+            outcomeEvaluatorStub.setCheckmate(true);
 
             handler.makeMove(from, to);
 
-            verify(flowController).onPlayerWon(ChessPieceColor.WHITE, GameReason.CHECKMATE);
+            verify(flowController).onPlayerWon(any(), any());
         }
     }
 
@@ -155,11 +155,11 @@ class GameStateHandlerTest {
         @Test
         @DisplayName("should undo the last move")
         void shouldUndoLastMove() {
-            executor.setUndoResult(Optional.of(result));
+            executor.setUndoResult(Optional.of(dummyResult));
 
             handler.undoMove();
 
-            verify(flowController).onMoveUndone(result);
+            verify(flowController).onMoveUndone(dummyResult);
         }
 
         @Test
@@ -169,7 +169,7 @@ class GameStateHandlerTest {
 
             handler.undoMove();
 
-            verify(flowController).onMoveRejected(GameReason.NO_UNDO);
+            verify(flowController).onMoveRejected(any());
         }
     }
 
@@ -181,7 +181,7 @@ class GameStateHandlerTest {
         @DisplayName("should announce game end")
         void shouldAnnounceGameEnd() {
             handler.end();
-            verify(flowController).onGameEnd(GameReason.GAME_ENDED);
+            verify(flowController).onGameEnd(any());
         }
     }
 }

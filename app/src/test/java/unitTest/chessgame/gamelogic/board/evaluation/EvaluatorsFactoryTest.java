@@ -69,7 +69,7 @@ class EvaluatorsFactoryTest {
 
     @Nested
     @DisplayName("move simulation service")
-    class MoveSimulationServiceTests {
+    class SimulationService {
 
         @Test
         @DisplayName("should create the required service on first request")
@@ -100,7 +100,7 @@ class EvaluatorsFactoryTest {
 
     @Nested
     @DisplayName("checkmate service")
-    class CheckmateServiceTests {
+    class CheckService {
 
         @Test
         @DisplayName("should create the required service on first request")
@@ -131,7 +131,7 @@ class EvaluatorsFactoryTest {
 
     @Nested
     @DisplayName("game outcome evaluator")
-    class GameOutcomeEvaluatorTests {
+    class OutcomeEvaluator {
 
         @Test
         @DisplayName("should create a new game outcome evaluator each time")

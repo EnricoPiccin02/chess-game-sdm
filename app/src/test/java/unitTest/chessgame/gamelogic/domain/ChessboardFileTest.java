@@ -49,7 +49,7 @@ class ChessboardFileTest {
     @DisplayName("next file computation")
     class NextFileComputation {
 
-        @ParameterizedTest(name = "{0} from file A should advance to file B")
+        @ParameterizedTest(name = "{0} from first file should advance to adjacent file")
         @MethodSource("forwardDirections")
         @DisplayName("should advance file when moving forward")
         void shouldAdvanceFileWhenMovingForward(ChessboardDirection direction) {
@@ -57,7 +57,7 @@ class ChessboardFileTest {
             assertEquals(Optional.of(ChessboardFile.B), result);
         }
 
-        @ParameterizedTest(name = "{0} from file A should remain at file A")
+        @ParameterizedTest(name = "{0} from first file should remain at the same file")
         @MethodSource("verticalDirections")
         @DisplayName("should keep same file when moving vertically")
         void shouldKeepSameFileWhenMovingVertically(ChessboardDirection direction) {
@@ -65,7 +65,7 @@ class ChessboardFileTest {
             assertEquals(Optional.of(ChessboardFile.A), result);
         }
 
-        @ParameterizedTest(name = "{0} from file A should move off the board")
+        @ParameterizedTest(name = "{0} from first file should move off the board")
         @MethodSource("backwardDirections")
         @DisplayName("should not advance file when moving off the board")
         void shouldNotAdvanceFileWhenMovingOffTheBoard(ChessboardDirection direction) {

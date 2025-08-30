@@ -19,13 +19,11 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
-import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveGenerator;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveValidator;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 
 import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
-import unittest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
 
 @DisplayName("LegalMoveFinder")
 class LegalMoveFinderTest {
@@ -38,8 +36,7 @@ class LegalMoveFinderTest {
 
     private ChessboardPosition from;
     private ChessboardPosition to;
-    MoveComponent component;
-    private ReversibleMoveStub moveStub;
+    private ReversibleMove dummyMove;
 
     @BeforeEach
     void setUp() {
@@ -52,9 +49,8 @@ class LegalMoveFinderTest {
 
         from = new ChessboardPosition(ChessboardFile.B, ChessboardRank.FOUR);
         to = new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE);
-        component = new MoveComponent(from, to);
 
-        moveStub = new ReversibleMoveStub(null, component);
+        dummyMove = Mockito.mock(ReversibleMove.class);
     }
 
     @Nested
@@ -65,11 +61,11 @@ class LegalMoveFinderTest {
         @DisplayName("should get correct move when validator approves")
         void shouldGetMoveWhenValidatorApproves() {
             Mockito.when(validatorMock.validateAndCreate(board, from, to, orientation))
-                .thenReturn(Optional.of(moveStub));
+                .thenReturn(Optional.of(dummyMove));
 
             Optional<ReversibleMove> result = finder.createIfValid(board, from, to);
 
-            assertThat(result).contains(moveStub);
+            assertThat(result).contains(dummyMove);
         }
 
         @Test
@@ -91,7 +87,7 @@ class LegalMoveFinderTest {
         @Test
         @DisplayName("should provide destination squares from generated moves")
         void shouldProvideDestinationSquaresFromGeneratedMoves() {
-            List<ReversibleMove> moves = List.of(moveStub);
+            List<ReversibleMove> moves = List.of(dummyMove);
             Mockito.when(generatorMock.generateMovesFrom(board, from, orientation)).thenReturn(moves);
 
             Set<ChessboardPosition> result = finder.findLegalDestinations(board, from);

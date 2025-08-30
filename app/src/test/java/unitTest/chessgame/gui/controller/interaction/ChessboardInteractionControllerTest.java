@@ -1,6 +1,7 @@
 package unittest.chessgame.gui.controller.interaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.Set;
 
@@ -30,7 +31,7 @@ class ChessboardInteractionControllerTest {
     void setUp() {
         boardViewSpy = new ChessboardViewSpy();
         interactionManagerSpy = new SquareInteractionManagerSpy();
-        dummyHandler = pos -> {};
+        dummyHandler = mock(SquareClickHandler.class);
         controller = new ChessboardInteractionController(boardViewSpy, interactionManagerSpy);
         controller.addClickHandler(dummyHandler);
     }

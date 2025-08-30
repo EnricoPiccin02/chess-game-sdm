@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.board.state.MoveExecutorService;
 import com.sdm.units.chessgame.gamelogic.board.state.MoveRecorder;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
@@ -26,7 +27,7 @@ class MoveExecutorServiceTest {
 
     private MoveRecorder<ReversibleMove> historyMock;
     private MoveExecutorService executor;
-    private ChessboardFake board;
+    private Chessboard board;
 
     @SuppressWarnings("unchecked")
     @BeforeEach

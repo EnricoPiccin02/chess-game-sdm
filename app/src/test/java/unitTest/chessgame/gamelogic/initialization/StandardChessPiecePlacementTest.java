@@ -12,17 +12,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 import com.sdm.units.chessgame.gamelogic.initialization.StandardChessPiecePlacement;
-import com.sdm.units.chessgame.gamelogic.pieces.Bishop;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
-import com.sdm.units.chessgame.gamelogic.pieces.King;
-import com.sdm.units.chessgame.gamelogic.pieces.Knight;
 import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
-import com.sdm.units.chessgame.gamelogic.pieces.Queen;
-import com.sdm.units.chessgame.gamelogic.pieces.Rook;
 
 @DisplayName("StandardChessPiecePlacement")
 class StandardChessPiecePlacementTest {
@@ -42,7 +38,7 @@ class StandardChessPiecePlacementTest {
     @DisplayName("should place correct number of pawns")
     void shouldPlaceCorrectNumberOfPawns(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-        assertEquals(8, countOf(pieces, Pawn.class));
+        assertEquals(8, countOf(pieces, ChessPieceInfo.PAWN));
     }
 
     @ParameterizedTest
@@ -50,7 +46,7 @@ class StandardChessPiecePlacementTest {
     @DisplayName("should place correct number of rooks")
     void shouldPlaceCorrectNumberOfRooks(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-        assertEquals(2, countOf(pieces, Rook.class));
+        assertEquals(2, countOf(pieces, ChessPieceInfo.ROOK));
     }
 
     @ParameterizedTest
@@ -58,7 +54,7 @@ class StandardChessPiecePlacementTest {
     @DisplayName("should place correct number of bishops")
     void shouldPlaceCorrectNumberOfBishops(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-        assertEquals(2, countOf(pieces, Bishop.class));
+        assertEquals(2, countOf(pieces, ChessPieceInfo.BISHOP));
     }
 
     @ParameterizedTest
@@ -66,7 +62,7 @@ class StandardChessPiecePlacementTest {
     @DisplayName("should place correct number of knights")
     void shouldPlaceCorrectNumberOfKnights(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-        assertEquals(2, countOf(pieces, Knight.class));
+        assertEquals(2, countOf(pieces, ChessPieceInfo.KNIGHT));
     }
 
     @ParameterizedTest
@@ -74,7 +70,7 @@ class StandardChessPiecePlacementTest {
     @DisplayName("should place correct number of queens")
     void shouldPlaceCorrectNumberOfQueens(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-        assertEquals(1, countOf(pieces, Queen.class));
+        assertEquals(1, countOf(pieces, ChessPieceInfo.QUEEN));
     }
 
     @ParameterizedTest
@@ -82,12 +78,12 @@ class StandardChessPiecePlacementTest {
     @DisplayName("should place correct number of kings")
     void shouldPlaceCorrectNumberOfKings(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
-        assertEquals(1, countOf(pieces, King.class));
+        assertEquals(1, countOf(pieces, ChessPieceInfo.KING));
     }
 
     @ParameterizedTest
     @EnumSource(ChessPieceColor.class)
-    @DisplayName("should place pawns on the orientation-aware pawn rank")
+    @DisplayName("should place pawns on the correct pawn rank")
     void shouldPlacePawnsOnPawnRank(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
 
@@ -96,14 +92,13 @@ class StandardChessPiecePlacementTest {
         assertTrue(
             pieces.entrySet().stream()
                 .filter(e -> e.getValue() instanceof Pawn)
-                .allMatch(e -> e.getKey().rank() == pawnRank),
-            () -> "Not all pawns are on the pawn rank for " + color
+                .allMatch(e -> e.getKey().rank() == pawnRank)
         );
     }
 
     @ParameterizedTest
     @EnumSource(ChessPieceColor.class)
-    @DisplayName("should place back rank pieces on the orientation-aware back rank")
+    @DisplayName("should place back rank pieces on the correct back rank")
     void shouldPlaceBackRankPiecesOnBackRank(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
 
@@ -112,8 +107,7 @@ class StandardChessPiecePlacementTest {
         assertTrue(
             pieces.entrySet().stream()
                 .filter(e -> !(e.getValue() instanceof Pawn))
-                .allMatch(e -> e.getKey().rank() == backRank),
-            () -> "Not all back rank pieces are on the back rank for " + color
+                .allMatch(e -> e.getKey().rank() == backRank)
         );
     }
 
@@ -125,7 +119,7 @@ class StandardChessPiecePlacementTest {
 
         Set<ChessboardPosition> uniquePositions = new HashSet<>(pieces.keySet());
 
-        assertEquals(pieces.size(), uniquePositions.size(), "There are duplicate positions");
+        assertEquals(pieces.size(), uniquePositions.size());
     }
 
     @ParameterizedTest
@@ -134,10 +128,7 @@ class StandardChessPiecePlacementTest {
     void shouldAssignCorrectColorToAllPieces(ChessPieceColor color) {
         Map<ChessboardPosition, ChessPiece> pieces = placement.initialize(color, ChessboardOrientation.WHITE_BOTTOM);
 
-        assertTrue(
-            pieces.values().stream().allMatch(p -> p.pieceColor() == color),
-            () -> "Not all pieces belong to " + color
-        );
+        assertTrue(pieces.values().stream().allMatch(p -> p.pieceColor() == color));
     }
 
     @ParameterizedTest
@@ -152,7 +143,7 @@ class StandardChessPiecePlacementTest {
         );
     }
 
-    private long countOf(Map<ChessboardPosition, ChessPiece> map, Class<? extends ChessPiece> type) {
-        return map.values().stream().filter(p -> type.isAssignableFrom(p.getClass())).count();
+    private long countOf(Map<ChessboardPosition, ChessPiece> map, ChessPieceInfo type) {
+        return map.values().stream().filter(p -> p.pieceInfo() == type).count();
     }
 }

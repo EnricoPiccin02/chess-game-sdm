@@ -103,8 +103,8 @@ class EnPassantMoveFactoryTest {
             ReversibleMove move = factory.create(candidate);
             ChessboardSpy board = new ChessboardSpy();
             board.putPieceAt(from, movingPawnFake);
+            
             move.executeOn(board);
-
             move.undoOn(board);
 
             assertThat(board.wasPutCalledWith(from, movingPawnFake)).isTrue();
@@ -116,8 +116,8 @@ class EnPassantMoveFactoryTest {
             ReversibleMove move = factory.create(candidate);
             ChessboardSpy board = new ChessboardSpy();
             board.putPieceAt(capturingPosition, capturedPawnDummy);
+            
             move.executeOn(board);
-
             move.undoOn(board);
 
             assertThat(board.wasPutCalledWith(capturingPosition, capturedPawnDummy)).isTrue();
@@ -128,8 +128,8 @@ class EnPassantMoveFactoryTest {
         void shouldClearTargetSquareWhenUndone() {
             ReversibleMove move = factory.create(candidate);
             ChessboardSpy board = new ChessboardSpy();
+            
             move.executeOn(board);
-
             move.undoOn(board);
 
             assertThat(board.wasRemoveCalledWith(to)).isTrue();

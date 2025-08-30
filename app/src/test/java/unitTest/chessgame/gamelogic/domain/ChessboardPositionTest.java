@@ -35,22 +35,22 @@ class ChessboardPositionTest {
     class SingleDirectionNavigation {
 
         @Test
-        @DisplayName("should move upwards from d4 to d5")
-        void shouldMoveUpwardsFromD4() {
+        @DisplayName("should move upwards")
+        void shouldMoveUpwards() {
             Optional<ChessboardPosition> result = d4.nextPosition(ChessboardDirection.UP);
             assertEquals(new ChessboardPosition(ChessboardFile.D, ChessboardRank.FIVE), result.get());
         }
 
         @Test
-        @DisplayName("should move diagonally up-right from d4 to e5")
-        void shouldMoveDiagonallyUpRightFromD4() {
+        @DisplayName("should move diagonally")
+        void shouldMoveDiagonally() {
             Optional<ChessboardPosition> result = d4.nextPosition(ChessboardDirection.UP_RIGHT);
             assertEquals(e5, result.get());
         }
 
         @Test
-        @DisplayName("should stop movement at the edge when moving beyond h8")
-        void shouldStopAtEdgeBeyondH8() {
+        @DisplayName("should stop movement at the edge when moving beyond it")
+        void shouldStopAtEdgeBeyondIt() {
             Optional<ChessboardPosition> result = h8.nextPosition(ChessboardDirection.UP_RIGHT);
             assertTrue(result.isEmpty());
         }
@@ -61,7 +61,7 @@ class ChessboardPositionTest {
     class MultipleDirectionNavigation {
 
         @Test
-        @DisplayName("should follow sequence from d4 to e5 via up then right")
+        @DisplayName("should follow sequence of directions")
         void shouldFollowSequenceUpThenRight() {
             Optional<ChessboardPosition> result = d4.nextPosition(List.of(
                 ChessboardDirection.UP, ChessboardDirection.RIGHT));
@@ -82,13 +82,13 @@ class ChessboardPositionTest {
     class DiagonalCheck {
 
         @Test
-        @DisplayName("should recognize d4 and e5 as diagonal")
+        @DisplayName("should recognize close diagonal positions as diagonal")
         void shouldRecognizeCloseDiagonalPositions() {
             assertTrue(d4.isDiagonalTo(e5));
         }
 
         @Test
-        @DisplayName("should recognize d4 and h8 as diagonal")
+        @DisplayName("should recognize far away diagonal positions as diagonal")
         void shouldRecognizeFarDiagonalPositions() {
             assertTrue(d4.isDiagonalTo(h8));
         }
@@ -105,7 +105,7 @@ class ChessboardPositionTest {
     class StringRepresentation {
 
         @Test
-        @DisplayName("should display d4 as (D, 4)")
+        @DisplayName("should display positions properly")
         void shouldDisplayAsReadableString() {
             assertEquals("(D, 4)", d4.toString());
         }

@@ -60,10 +60,10 @@ public class ChessboardStub extends ChessboardFake {
     @Override
     public Set<ChessboardPosition> getOccupiedSquaresOf(ChessPieceColor color) {
         return occupiedByColor.entrySet()
-                .stream()
-                .filter(e -> e.getValue() == color)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toUnmodifiableSet());
+            .stream()
+            .filter(e -> e.getValue() == color)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override

@@ -25,18 +25,22 @@ class DefaultPieceResourceResolverTest {
     }
     
     @Test
-    @DisplayName("shouldResolveWhitePawnPath")
+    @DisplayName("should resolve white pawn path")
     void shouldResolveWhitePawnPath() {
         ChessPiece whitePawn = new PieceDummy(ChessPieceColor.WHITE, ChessPieceInfo.PAWN);
+        
         String path = resolver.resolvePath(whitePawn);
+        
         assertEquals("images/pieces/white/pawn.svg", path);
     }
 
     @Test
-    @DisplayName("shouldResolveBlackQueenPath")
+    @DisplayName("should resolve black queen path")
     void shouldResolveBlackQueenPath() {
         ChessPiece blackQueen = new PieceDummy(ChessPieceColor.BLACK, ChessPieceInfo.QUEEN);
+        
         String path = resolver.resolvePath(blackQueen);
+        
         assertEquals("images/pieces/black/queen.svg", path);
     }
 }

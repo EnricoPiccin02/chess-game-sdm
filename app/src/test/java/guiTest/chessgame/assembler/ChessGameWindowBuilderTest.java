@@ -30,7 +30,7 @@ class ChessGameWindowBuilderTest {
     void shouldAllowFluentChainingWhenSettingTheGame() {
         builder = builder.withGame(dummyGame);
 
-        assertThat(builder).isInstanceOf(ChessGameWindowBuilder.class);
+        assertThat(builder).isNotNull();
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
@@ -57,15 +58,22 @@ class PromotionMoveFactoryTest {
     @DisplayName("when promoting without capture")
     class WhenPromotingWithoutCapture {
 
+        private PromotionCandidate candidate;
+        private ReversibleMove move;
+        private Chessboard board;
+
+        @BeforeEach
+        void setUp() {
+            candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
+            move = factory.create(candidate);
+
+            board = new ChessboardFake();
+            board.putPieceAt(from, pawnFake);
+        }
+
         @Test
         @DisplayName("should replace pawn with promoted piece on promotion rank")
         void shouldReplacePawnWithPromotedPiece() {
-            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-
             move.executeOn(board);
 
             assertThat(board.getPieceAt(forwardTo)).contains(promotedPieceDummy);
@@ -74,12 +82,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should clear pawn original square after promotion")
         void shouldClearPawnOriginalSquare() {
-            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-
             move.executeOn(board);
 
             assertThat(board.getPieceAt(from)).isEmpty();
@@ -88,12 +90,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should restore pawn on undo")
         void shouldRestorePawnOnUndo() {
-            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-
             move.executeOn(board);
             move.undoOn(board);
 
@@ -103,12 +99,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should clear promoted square on undo")
         void shouldClearPromotedSquareOnUndo() {
-            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-
             move.executeOn(board);
             move.undoOn(board);
 
@@ -118,8 +108,7 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should choose promotion piece based on pawn color")
         void shouldChoosePromotionPieceBasedOnPawnColor() {
-            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
-            factory.create(candidate).executeOn(new ChessboardFake());
+            move.executeOn(board);
 
             assertThat(selectorStub.selectedColor).isEqualTo(ChessPieceColor.WHITE);
         }
@@ -127,9 +116,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should expose pawn forward move component")
         void shouldExposePawnForwardMoveComponent() {
-            PromotionCandidate candidate = new PromotionCandidate(from, forwardTo, pawnFake, Optional.empty());
-            ReversibleMove move = factory.create(candidate);
-
             MoveComponent primary = move.getPrimaryMoveComponent();
 
             assertThat(primary.from()).isEqualTo(from);
@@ -141,16 +127,23 @@ class PromotionMoveFactoryTest {
     @DisplayName("when promoting with capture")
     class WhenPromotingWithCapture {
 
+        private PromotionCandidate candidate;
+        private ReversibleMove move;
+        private Chessboard board;
+
+        @BeforeEach
+        void setUp() {
+            candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
+            move = factory.create(candidate);
+
+            board = new ChessboardFake();
+            board.putPieceAt(from, pawnFake);
+            board.putPieceAt(capturingTo, capturedPieceDummy);
+        }
+
         @Test
         @DisplayName("should replace captured piece with promoted piece")
         void shouldReplaceCapturedPieceWithPromotedPiece() {
-            PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-            board.putPieceAt(capturingTo, capturedPieceDummy);
-
             move.executeOn(board);
 
             assertThat(board.getPieceAt(capturingTo)).contains(promotedPieceDummy);
@@ -159,13 +152,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should clear pawn original square after capture promotion")
         void shouldClearPawnOriginalSquareAfterCapturePromotion() {
-            PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-            board.putPieceAt(capturingTo, capturedPieceDummy);
-
             move.executeOn(board);
 
             assertThat(board.getPieceAt(from)).isEmpty();
@@ -174,13 +160,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should restore pawn on undo after capture promotion")
         void shouldRestorePawnOnUndoAfterCapturePromotion() {
-            PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-            board.putPieceAt(capturingTo, capturedPieceDummy);
-
             move.executeOn(board);
             move.undoOn(board);
 
@@ -190,13 +169,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should restore captured piece on undo after capture promotion")
         void shouldRestoreCapturedPieceOnUndoAfterCapturePromotion() {
-            PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.of(capturedPieceDummy));
-            ReversibleMove move = factory.create(candidate);
-
-            ChessboardFake board = new ChessboardFake();
-            board.putPieceAt(from, pawnFake);
-            board.putPieceAt(capturingTo, capturedPieceDummy);
-
             move.executeOn(board);
             move.undoOn(board);
 
@@ -206,9 +178,6 @@ class PromotionMoveFactoryTest {
         @Test
         @DisplayName("should expose pawn capturing move component")
         void shouldExposePawnCapturingMoveComponent() {
-            PromotionCandidate candidate = new PromotionCandidate(from, capturingTo, pawnFake, Optional.empty());
-            ReversibleMove move = factory.create(candidate);
-
             MoveComponent primary = move.getPrimaryMoveComponent();
 
             assertThat(primary.from()).isEqualTo(from);
