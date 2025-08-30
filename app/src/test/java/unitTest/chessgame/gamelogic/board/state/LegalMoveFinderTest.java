@@ -19,11 +19,13 @@ import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
+import com.sdm.units.chessgame.gamelogic.move.core.MoveComponent;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveGenerator;
 import com.sdm.units.chessgame.gamelogic.move.core.MoveValidator;
 import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 
 import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
 
 @DisplayName("LegalMoveFinder")
 class LegalMoveFinderTest {
@@ -50,7 +52,8 @@ class LegalMoveFinderTest {
         from = new ChessboardPosition(ChessboardFile.B, ChessboardRank.FOUR);
         to = new ChessboardPosition(ChessboardFile.C, ChessboardRank.FIVE);
 
-        dummyMove = Mockito.mock(ReversibleMove.class);
+        MoveComponent component = new MoveComponent(from, to);
+        dummyMove = new ReversibleMoveStub(null, component);
     }
 
     @Nested
