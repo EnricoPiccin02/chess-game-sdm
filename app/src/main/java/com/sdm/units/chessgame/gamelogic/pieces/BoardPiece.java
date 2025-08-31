@@ -24,7 +24,7 @@ public abstract class BoardPiece implements ChessPiece {
     }
 
     public void markAsMoved() {
-        this.hasMoved = true;
+        hasMoved = true;
     }
 
     public boolean hasMoved() {
@@ -37,6 +37,10 @@ public abstract class BoardPiece implements ChessPiece {
 
     public ChessPieceColor pieceColor() {
         return color;
+    }
+
+    public MovementStrategy getMovementStrategy() {
+        return movementStrategy;
     }
 
     public boolean isOpponentOf(ChessPieceColor color) {

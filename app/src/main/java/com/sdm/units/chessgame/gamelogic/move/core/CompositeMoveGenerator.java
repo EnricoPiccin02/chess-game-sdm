@@ -21,4 +21,8 @@ public class CompositeMoveGenerator implements MoveGenerator {
             .flatMap(rule -> rule.generateMovesFrom(board, from, orientation).stream())
             .collect(Collectors.toList());
     }
+
+    public List<MoveGenerator> rules() {
+        return rules;
+    }
 }

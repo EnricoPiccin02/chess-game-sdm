@@ -7,19 +7,27 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
+import com.sdm.units.chessgame.gamelogic.domain.ChessPieceInfo;
+import com.sdm.units.chessgame.gamelogic.domain.ChessboardFile;
 import com.sdm.units.chessgame.gamelogic.domain.ChessboardOrientation;
+import com.sdm.units.chessgame.gamelogic.domain.ChessboardPosition;
+import com.sdm.units.chessgame.gamelogic.domain.ChessboardRank;
 import com.sdm.units.chessgame.gamelogic.pieces.Bishop;
-import com.sdm.units.chessgame.gamelogic.pieces.ChessPiece;
+import com.sdm.units.chessgame.gamelogic.pieces.BoardPiece;
 import com.sdm.units.chessgame.gamelogic.pieces.ChessPieceSnapshot;
 import com.sdm.units.chessgame.gamelogic.pieces.Pawn;
 import com.sdm.units.chessgame.gamelogic.pieces.Rook;
 
-@DisplayName("ChessPiece")
-class ChessPieceTest {
+import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
+import unittest.chessgame.gamelogic.testdoubles.MovementStrategySpy;
 
-    private ChessPiece whitePiece;
-    private ChessPiece blackPiece;
+@DisplayName("BoardPiece")
+class BoardPieceTest {
+
+    private BoardPiece whitePiece;
+    private BoardPiece blackPiece;
 
     @BeforeEach
     void setUp() {
@@ -59,6 +67,34 @@ class ChessPieceTest {
         @DisplayName("should not identify opponent when colors match")
         void shouldNotIdentifyOpponentWhenColorsMatch() {
             assertThat(blackPiece.isOpponentOf(ChessPieceColor.BLACK)).isFalse();
+        }
+    }
+
+    @Nested
+    @DisplayName("legal destinations")
+    class LegalDestinations {
+
+        private MovementStrategySpy spyStrategy;
+        private Chessboard board;
+        private ChessboardPosition position;
+        private ChessPieceColor color;
+
+        @BeforeEach
+        void setUp() {
+            board = new ChessboardFake();
+            position = new ChessboardPosition(ChessboardFile.A, ChessboardRank.ONE);
+            color = ChessPieceColor.WHITE;
+        }
+
+        @Test
+        @DisplayName("should delegate to the piece movement strategy")
+        void shouldDelegateToPieceMovementStrategy() {
+            spyStrategy = new MovementStrategySpy();
+            BoardPiece boardPiece = new BoardPiece(color, ChessPieceInfo.KNIGHT, spyStrategy) {};
+
+            boardPiece.getLegalDestinations(board, position);
+
+            assertThat(spyStrategy.isCalled()).isTrue();
         }
     }
 
@@ -111,7 +147,7 @@ class ChessPieceTest {
             whitePiece.markAsMoved();
             ChessPieceSnapshot snapshot = whitePiece.createSnapshot();
 
-            ChessPiece another = new Bishop(ChessPieceColor.WHITE);
+            BoardPiece another = new Bishop(ChessPieceColor.WHITE);
             another.restoreSnapshot(snapshot);
 
             assertThat(another.hasMoved()).isFalse();

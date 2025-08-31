@@ -27,8 +27,8 @@ import com.sdm.units.chessgame.gamelogic.move.core.ReversibleMove;
 import unittest.chessgame.gamelogic.testdoubles.ChessboardFake;
 import unittest.chessgame.gamelogic.testdoubles.ReversibleMoveStub;
 
-@DisplayName("LegalMoveFinder")
-class LegalMoveFinderTest {
+@DisplayName("DefaultLegalMoveFinder")
+class DefaultLegalMoveFinderTest {
 
     private MoveValidator validatorMock;
     private MoveGenerator generatorMock;

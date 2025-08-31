@@ -51,8 +51,6 @@ class InteractionContextTest {
     void shouldResetToInitialSelectionState() {
         context.initialize();
 
-        assertThat(context)
-            .extracting("currentState")
-            .isInstanceOf(WaitingForSelectionState.class);
+        assertThat(context.getState()).isInstanceOf(WaitingForSelectionState.class);
     }
 }
