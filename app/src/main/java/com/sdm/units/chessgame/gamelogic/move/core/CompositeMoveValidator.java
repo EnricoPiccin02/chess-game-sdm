@@ -27,4 +27,8 @@ public class CompositeMoveValidator implements MoveValidator {
         }
         return Optional.empty();
     }
+
+    public List<PrioritizedMoveValidator> rules() {
+        return rules;
+    }
 }

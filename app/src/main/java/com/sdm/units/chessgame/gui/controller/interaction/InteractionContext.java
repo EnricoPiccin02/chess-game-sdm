@@ -26,6 +26,10 @@ public class InteractionContext {
         newState.onEnter();
     }
 
+    public InteractionState getState() {
+        return currentState;
+    }
+
     public void initialize() {
         setState(new WaitingForSelectionState(moveQuery, controller, this::setState, boardUI));
     }

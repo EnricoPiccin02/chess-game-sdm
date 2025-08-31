@@ -20,6 +20,10 @@ public class PawnMovementStrategy implements MovementStrategy {
         this.orientation = orientation;
     }
 
+    public ChessboardOrientation getOrientation() {
+        return orientation;
+    }
+
     @Override
     public Set<ChessboardPosition> getLegalDestinations(Chessboard board, ChessboardPosition fromPosition, ChessPieceColor playerColor) {
         Set<ChessboardPosition> legalDestinations = new HashSet<>();
