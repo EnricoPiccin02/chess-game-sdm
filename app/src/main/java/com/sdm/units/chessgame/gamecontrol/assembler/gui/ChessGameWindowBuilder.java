@@ -12,6 +12,7 @@ import com.sdm.units.chessgame.gui.board.clock.PlayerClocksFactory;
 import com.sdm.units.chessgame.gui.board.view.ChessGameFrame;
 import com.sdm.units.chessgame.gui.board.view.ChessGameView;
 import com.sdm.units.chessgame.gui.board.view.SwingDispatchingChessGameView;
+import com.sdm.units.chessgame.gui.board.view.SwingUtilitiesDispatcher;
 import com.sdm.units.chessgame.gui.controller.events.ChessGameEventPublisher;
 import com.sdm.units.chessgame.gui.controller.interaction.ToolbarInteractionStrategy;
 
@@ -55,6 +56,6 @@ public final class ChessGameWindowBuilder {
 
         publisher.addChessGameEventListener(frame);
 
-        return new SwingDispatchingChessGameView(frame, chessboardAssembly.context());
+        return new SwingDispatchingChessGameView(frame, chessboardAssembly.context(), new SwingUtilitiesDispatcher());
     }
 }

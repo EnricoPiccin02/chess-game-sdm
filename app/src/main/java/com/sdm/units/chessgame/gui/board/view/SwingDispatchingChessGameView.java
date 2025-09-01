@@ -1,7 +1,5 @@
 package com.sdm.units.chessgame.gui.board.view;
 
-import javax.swing.SwingUtilities;
-
 import com.sdm.units.chessgame.gamelogic.board.state.Chessboard;
 import com.sdm.units.chessgame.gamelogic.domain.ChessPieceColor;
 import com.sdm.units.chessgame.gui.controller.interaction.InteractionContext;
@@ -10,15 +8,16 @@ public class SwingDispatchingChessGameView implements ChessGameView {
 
     private final ChessGameView view;
     private final InteractionContext interactionContext;
+    private final SwingDispatcher dispatcher;
 
-    public SwingDispatchingChessGameView(ChessGameView view, InteractionContext interactionContext) {
+    public SwingDispatchingChessGameView(ChessGameView view, InteractionContext interactionContext, SwingDispatcher dispatcher) {
         this.view = view;
         this.interactionContext = interactionContext;
+        this.dispatcher = dispatcher;
     }
 
     private void invoke(Runnable task) {
-        if (SwingUtilities.isEventDispatchThread()) task.run();
-        else SwingUtilities.invokeLater(task);
+        dispatcher.dispatch(task);
     }
 
     @Override
